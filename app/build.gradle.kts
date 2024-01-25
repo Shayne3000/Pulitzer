@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
+    //alias(libs.plugins.hilt)
 }
 
 android {
@@ -57,6 +59,10 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
 
+    // Hilt
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+
     // Compose UI
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
@@ -64,11 +70,21 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
 
+    // Coil
+    implementation(libs.coil)
+
     // Test dependencies
-    testImplementation(libs.junit)
+    // Instrumented tests
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+
+    // Local tests
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+    testImplementation(libs.junit)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }
