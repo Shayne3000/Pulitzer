@@ -44,7 +44,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.6.0"
     }
     packaging {
         resources {
@@ -73,17 +73,46 @@ dependencies {
     // Coil
     implementation(libs.coil)
 
-    // Test dependencies
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi.converter)
+
+    // OkHttp
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.codegen)
+
+    // Kotlin Coroutine & Flows
+    implementation(libs.kotlin.coroutines)
+
+    // Room
+    implementation(libs.room)
+    ksp(libs.room.compiler)
+    // Kotlin Extensions and Coroutines support for Room
+    implementation(libs.room.ktx)
+
+    //// Test dependencies ////
     // Instrumented tests
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.agent)
 
     // Local tests
+    testImplementation(libs.coil.testing)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
+    testImplementation(libs.room.testing)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.agent)
     testImplementation(libs.junit)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
