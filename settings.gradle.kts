@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pulitzer"
 include(":app")
+include(":data:articles")
