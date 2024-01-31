@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
@@ -15,4 +17,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pulitzer"
 include(":app")
+include(":core:ui")
+include(":core:test")
 include(":data:article")
+include(":domain:articles")
+include(":domain:bookmarks")
+include(":feature:home")
+include(":feature:bookmarks")
