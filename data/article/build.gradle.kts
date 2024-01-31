@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.senijoshua.pulitzer.articles"
+    namespace = "com.senijoshua.pulitzer.data.article"
     compileSdk = 34
 
     defaultConfig {

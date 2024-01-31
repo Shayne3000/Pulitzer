@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.articles
+package com.senijoshua.pulitzer.data.article
 
 import org.junit.Test
 
