@@ -32,20 +32,25 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.6.0"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -83,8 +88,8 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 
     // Moshi
-    implementation(libs.moshi)
-    implementation(libs.moshi.codegen)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.codegen)
 
     // Kotlin Coroutine & Flows
     implementation(libs.kotlin.coroutines)

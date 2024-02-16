@@ -22,3 +22,10 @@ data class ArticleEntity(
     @ColumnInfo(name = "created_at")
     val createdAt: Long? = System.currentTimeMillis()
 )
+
+data class BookmarkedArticles(
+    val id: String,
+    val thumbnail: String,
+    val title: String,
+    val body: String
+)
