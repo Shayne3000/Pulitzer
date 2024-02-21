@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.navigation)
 
     // Coil
     implementation(libs.coil)
@@ -99,6 +100,8 @@ dependencies {
     ksp(libs.room.compiler)
     // Kotlin Extensions and Coroutines support for Room
     implementation(libs.room.ktx)
+
+    implementation(project(":core:ui"))
 
     //// Test dependencies ////
     // Instrumented tests
