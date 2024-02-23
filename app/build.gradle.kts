@@ -59,7 +59,26 @@ android {
 }
 
 dependencies {
-    // Kotlin extensions
+    //// Modules ////
+    // Feature
+    implementation(project(":feature:home"))
+    implementation(project(":feature:bookmarks"))
+    implementation(project(":feature:details"))
+
+    // Domain
+    implementation(project(":domain:articles"))
+    implementation(project(":domain:bookmarks"))
+
+    // Data
+    implementation(project(":data:articles"))
+
+    // Core
+    implementation(project(":core:database"))
+    implementation(project(":core:network"))
+    implementation(project(":core:test"))
+    implementation(project(":core:ui"))
+
+    // Kotlin extensions & core Android
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
@@ -76,52 +95,14 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.navigation)
 
-    // Coil
-    implementation(libs.coil)
-
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.moshi.converter)
-
-    // OkHttp
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-
-    // Moshi
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.codegen)
-
-    // Kotlin Coroutine & Flows
-    implementation(libs.kotlin.coroutines)
-
-    // Room
-    implementation(libs.room)
-    ksp(libs.room.compiler)
-    // Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
-
-    implementation(project(":core:ui"))
-
     //// Test dependencies ////
-    // Instrumented tests
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    androidTestImplementation(libs.mockk)
-    androidTestImplementation(libs.mockk.agent)
 
     // Local tests
-    testImplementation(libs.coil.testing)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
-    testImplementation(libs.room.testing)
-    testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.mockk)
-    testImplementation(libs.mockk.agent)
-    testImplementation(libs.junit)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+
+    // Instrumented tests
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.navigation.testing)
 }
