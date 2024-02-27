@@ -44,6 +44,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Compose UI
     implementation(platform(libs.compose.bom))
