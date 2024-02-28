@@ -26,7 +26,11 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     compileOptions {
@@ -41,12 +45,14 @@ android {
 
 dependencies {
     implementation(libs.core.ktx)
-    implementation(libs.appcompat)
+    implementation(libs.activity.compose)
+
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
