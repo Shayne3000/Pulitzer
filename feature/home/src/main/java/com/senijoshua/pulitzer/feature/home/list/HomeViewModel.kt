@@ -6,6 +6,7 @@ import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +24,12 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             // call the use case which returns a flow and update the stateflow with the result
             // We return a flow to be able to get the updated list of data from the DB anytime an article is bookmarked
+        }
+    }
+
+    fun onErrorMessageShown() {
+        _uiState.update { currentUiState ->
+            currentUiState.copy(errorMessage = null)
         }
     }
 }

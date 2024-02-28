@@ -13,9 +13,15 @@ internal fun HomeScreen(
     // create screens using UDF and state hoisting: takes in state and expose events/functions to change state
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    HomeContent(uiState) { articleId ->
-        onNavigateToDetailScreen(articleId)
-    }
+    HomeContent(
+        uiState = uiState,
+        onArticleClicked = { articleId ->
+            onNavigateToDetailScreen(articleId)
+        },
+        onErrorMessageShown = {
+            vm.onErrorMessageShown()
+        }
+    )
 
     vm.getArticles()
 }
@@ -23,9 +29,11 @@ internal fun HomeScreen(
 @Composable
 internal fun HomeContent(
     uiState: HomeUiState,
-    onArticleClicked: (String) -> Unit = { _ -> }
+    onArticleClicked: (String) -> Unit = { _ -> },
+    onErrorMessageShown: () -> Unit = {}
 ) {
-
+    // Setup scaffold to hold toolbar and snackbar
+    // Setup list
 }
 
 @Composable
