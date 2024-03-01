@@ -104,4 +104,5 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.navigation.testing)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 }
