@@ -52,6 +52,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:ui"))
+
     // Kotlin extensions & core Android
     implementation(libs.core.ktx)
     implementation(libs.activity.compose)
