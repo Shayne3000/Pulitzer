@@ -2,17 +2,27 @@
 
 package com.senijoshua.pulitzer.feature.home.list
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +52,7 @@ internal fun HomeScreen(
 
 @Composable
 internal fun HomeContent(
+    modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onArticleClicked: (String) -> Unit = { _ -> },
     onErrorMessageShown: () -> Unit = {}
@@ -64,11 +75,62 @@ internal fun HomeContent(
                 )
             )
         },
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            }
+        }
     ) { padding ->
-
+        Column(modifier = modifier.padding(padding)) {
+            // Handle the various states of the UI
+            if (uiState.articles.isNotEmpty()) {
+                HomeArticleList(
+                    modifier = modifier,
+                    uiState = uiState
+                ) { articleId -> onArticleClicked(articleId) }
+            } else if (uiState.isLoading) {
+                // show progress, sending the modifier into the composable
+            } else {
+                EmptyScreen()
+            }
+        }
     }
-    // Setup list
+
+    // We show the error snackbar regardless of the state of the UI i.e. whether it's loading, filled or empty.
+    uiState.errorMessage?.let { message ->
+        LaunchedEffect(message, snackBarHostState) {
+            snackBarHostState.showSnackbar(message)
+            onErrorMessageShown()
+        }
+    }
+}
+
+@Composable
+internal fun HomeArticleList(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
+    onArticleClicked: (String) -> Unit = { _ -> },
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.density_8)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_4))
+    ) {
+        items(items = uiState.articles, key = { article -> article.id }) { homeArticle ->
+            // Call Article card composable from UI -> Components with the animateItemPlacement modifier
+        }
+    }
+}
+
+@Composable
+internal fun EmptyScreen(
+    modifier: Modifier = Modifier,
+) {
+    // Empty State
 }
 
 @Composable
