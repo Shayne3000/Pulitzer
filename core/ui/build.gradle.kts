@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.activity.compose)
 
+    implementation(project(":core:model"))
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
