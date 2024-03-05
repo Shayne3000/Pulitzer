@@ -18,6 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "Pulitzer"
 include(":app")
 include(":core:database")
+include(":core:model")
 include(":core:network")
 include(":core:ui")
 include(":core:test")
