@@ -47,6 +47,9 @@ internal fun HomeScreen(
         }
     )
 
+    // not very thread-safe originally as a composable can be executed from several threads at once
+    // Not optimised for optimistic recomposition, if recomposition was canceled, this may still execute
+    // Composables should have no side-effects if plausible.
     vm.getArticles()
 }
 
