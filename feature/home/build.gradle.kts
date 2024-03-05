@@ -53,6 +53,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:model"))
 
     // Kotlin extensions & core Android
     implementation(libs.core.ktx)
