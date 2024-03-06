@@ -82,6 +82,9 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.activity.compose)
 
+    // Coil
+    implementation(libs.coil)
+
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
