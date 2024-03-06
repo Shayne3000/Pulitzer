@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="density_1">1dp</dimen>
+    <dimen name="density_2">2dp</dimen>
     <dimen name="density_4">4dp</dimen>
     <dimen name="density_8">8dp</dimen>
     <dimen name="density_12">12dp</dimen>
