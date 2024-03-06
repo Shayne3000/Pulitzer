@@ -2,9 +2,11 @@
 
 package com.senijoshua.pulitzer.feature.home.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -88,7 +90,12 @@ internal fun HomeContent(
             }
         }
     ) { padding ->
-        Column(modifier = modifier.padding(padding)) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(padding)
+        ) {
             // Handle the various states of the UI
             if (uiState.articles.isNotEmpty()) {
                 HomeArticleList(
@@ -133,7 +140,7 @@ internal fun HomeArticleList(
 internal fun EmptyScreen(
     modifier: Modifier = Modifier,
 ) {
-    // Empty State
+    // Setup Empty State
 }
 
 @Composable
