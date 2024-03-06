@@ -9,6 +9,14 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class Pulitzer : Application(), ImageLoaderFactory {
+
+    /**
+     * Override the image loader used globally in the app to disable respecting the
+     * directive sent from the image servers in the cache headers.
+     * This is so that regardless of the directive sent, we would serve
+     * images from the disk cache. Nominally, the directive can be to not store/serve images
+     * in/from a local disk cache.
+     */
     override fun newImageLoader(): ImageLoader {
         // See https://github.com/coil-kt/coil/issues/1857 and
         // https://stackoverflow.com/questions/72981927/coil-image-caching-not-working-with-jetpack-compose
