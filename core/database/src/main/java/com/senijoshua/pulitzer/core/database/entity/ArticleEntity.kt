@@ -15,6 +15,7 @@ data class ArticleEntity(
     val title: String,
     val headline: String,
     val main: String,
+    val author: String,
     val body: String,
     val isBookmarked: Boolean,
     @ColumnInfo(name = "publication_date")
