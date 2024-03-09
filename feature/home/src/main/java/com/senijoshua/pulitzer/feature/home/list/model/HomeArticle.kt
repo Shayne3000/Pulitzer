@@ -13,6 +13,7 @@ internal data class HomeArticle(
     override val id: String,
     override val thumbnail: String,
     override val title: String,
+    override val author: String,
     override val isBookmarked: Boolean,
     override val publicationDate: Date,
-) : PresentationArticle(id, thumbnail, title, isBookmarked, publicationDate)
+) : PresentationArticle(id, thumbnail, title, author, isBookmarked, publicationDate)

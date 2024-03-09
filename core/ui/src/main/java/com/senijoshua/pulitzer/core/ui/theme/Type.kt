@@ -30,12 +30,13 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     // article text in detail screen and article name in bookmarked screens
+    // news card card title
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
     ),
     // news card text like author and published date
     bodyMedium = TextStyle(

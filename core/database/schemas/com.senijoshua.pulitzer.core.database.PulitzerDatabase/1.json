@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1e09034e1383840253c271bc1826ad04",
+    "identityHash": "46f5a704cced13c2dcd5e46fc42431d9",
     "entities": [
       {
         "tableName": "articles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `section_name` TEXT NOT NULL, `title` TEXT NOT NULL, `headline` TEXT NOT NULL, `main` TEXT NOT NULL, `body` TEXT NOT NULL, `isBookmarked` INTEGER NOT NULL, `publication_date` INTEGER NOT NULL, `created_at` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `section_name` TEXT NOT NULL, `title` TEXT NOT NULL, `headline` TEXT NOT NULL, `main` TEXT NOT NULL, `author` TEXT NOT NULL, `body` TEXT NOT NULL, `isBookmarked` INTEGER NOT NULL, `publication_date` INTEGER NOT NULL, `created_at` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -41,6 +41,12 @@
           {
             "fieldPath": "main",
             "columnName": "main",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -82,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e09034e1383840253c271bc1826ad04')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '46f5a704cced13c2dcd5e46fc42431d9')"
     ]
   }
 }

@@ -8,6 +8,7 @@
     <dimen name="density_14">14dp</dimen>
     <dimen name="density_16">16dp</dimen>
     <dimen name="density_64">64dp</dimen>
+    <dimen name="density_72">72dp</dimen>
     <dimen name="density_100">100dp</dimen>
     <dimen name="density_192">192dp</dimen>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Pulitzer</string>
     <string name="article_thumbnail">Article thumbnail</string>
+    <string name="article_bookmark">Bookmark</string>
 </resources>
