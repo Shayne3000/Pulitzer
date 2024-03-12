@@ -32,13 +32,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.senijoshua.pulitzer.core.model.PresentationArticle
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
+import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import java.util.Date
 
 /**
@@ -51,13 +51,7 @@ fun ArticleItem(
     onArticleItemClicked: (String) -> Unit = {},
 ) {
     OutlinedCard(
-        modifier = modifier
-            .padding(
-                vertical = dimensionResource(id = R.dimen.density_8),
-                horizontal = dimensionResource(id = R.dimen.density_16)
-            )
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.density_72)),
+        modifier = modifier.cardModifier(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         ),
@@ -84,11 +78,7 @@ fun ArticleItem(
 
         Row(
             modifier = modifier
-                .fillMaxSize()
-                .padding(
-                    horizontal = dimensionResource(id = R.dimen.density_8),
-                    vertical = dimensionResource(id = R.dimen.density_8)
-                ),
+                .cardRowModifier(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(
                 dimensionResource(id = R.dimen.density_4)
@@ -121,7 +111,6 @@ fun ArticleItem(
             }
 
             IconButton(
-                modifier = modifier.weight(0.1f),
                 onClick = {
                     isBookmarked = !isBookmarked
                 }) {
@@ -147,9 +136,8 @@ fun ArticleItem(
 }
 
 @Composable
-@Preview(showBackground = true)
+@PreviewPulitzerLightDarkBackground
 fun ArticleItemPreview() {
-    // TODO Add previews for big phone size, dark and light mode.
     PulitzerTheme {
         ArticleItem(
             article = PresentationArticle(
@@ -163,3 +151,21 @@ fun ArticleItemPreview() {
         )
     }
 }
+
+@Composable
+private fun Modifier.cardModifier() = this
+    .padding(
+        vertical = dimensionResource(id = R.dimen.density_8),
+        horizontal = dimensionResource(id = R.dimen.density_16)
+    )
+    .fillMaxWidth()
+    .height(dimensionResource(id = R.dimen.density_72))
+
+
+@Composable
+private fun Modifier.cardRowModifier() = this
+    .fillMaxSize()
+    .padding(
+        horizontal = dimensionResource(id = R.dimen.density_8),
+        vertical = dimensionResource(id = R.dimen.density_8)
+    )
