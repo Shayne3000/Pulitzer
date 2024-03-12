@@ -137,7 +137,7 @@ fun ArticleItem(
 
 @Composable
 @PreviewPulitzerLightDarkBackground
-fun ArticleItemPreview() {
+private fun ArticleItemPreview() {
     PulitzerTheme {
         ArticleItem(
             article = PresentationArticle(
