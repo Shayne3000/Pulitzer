@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -23,13 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
+import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 
 @Composable
 internal fun HomeScreen(
@@ -104,6 +108,7 @@ internal fun HomeContent(
                 ) { articleId -> onArticleClicked(articleId) }
             } else if (uiState.isLoading) {
                 // show progress, sending the modifier into the composable
+                PulitzerProgressIndicator(modifier.weight(1f))
             } else {
                 EmptyScreen()
             }
@@ -137,10 +142,29 @@ internal fun HomeArticleList(
 }
 
 @Composable
+internal fun ProgressIndicator(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        PulitzerProgressIndicator(modifier.weight(1f))
+    }
+}
+
+@Composable
 internal fun EmptyScreen(
     modifier: Modifier = Modifier,
 ) {
-    // Setup Empty State
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(painter = painterResource(id = R.drawable.ic_empty), contentDescription = stringResource(
+            id = R.string.empty_article_list
+        ))
+
+
+    }
 }
 
 @Composable

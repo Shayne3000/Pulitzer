@@ -3,4 +3,6 @@
     <string name="app_name">Pulitzer</string>
     <string name="article_thumbnail">Article thumbnail</string>
     <string name="article_bookmark">Bookmark</string>
+    <string name="empty_article_list">Empty list of articles</string>
+    <string name="no_articles_text">There are no news articles at this time, check back in a few hours.</string>
 </resources>
