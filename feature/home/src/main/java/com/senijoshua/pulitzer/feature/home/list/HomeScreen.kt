@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -29,11 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
+import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
+import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 
 @Composable
 internal fun HomeScreen(
@@ -108,7 +113,7 @@ internal fun HomeContent(
                 ) { articleId -> onArticleClicked(articleId) }
             } else if (uiState.isLoading) {
                 // show progress, sending the modifier into the composable
-                PulitzerProgressIndicator(modifier.weight(1f))
+                ProgressIndicator(modifier)
             } else {
                 EmptyScreen()
             }
@@ -147,7 +152,7 @@ internal fun ProgressIndicator(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PulitzerProgressIndicator(modifier.weight(1f))
+        PulitzerProgressIndicator()
     }
 }
 
@@ -156,18 +161,34 @@ internal fun EmptyScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensionResource(id = R.dimen.density_16)),
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(painter = painterResource(id = R.drawable.ic_empty), contentDescription = stringResource(
-            id = R.string.empty_article_list
-        ))
-
-
+        Icon(
+            painter = painterResource(id = R.drawable.ic_empty),
+            contentDescription = stringResource(
+                id = R.string.empty_article_list
+            ),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.density_4)))
+        Text(
+            text = stringResource(id = R.string.no_articles_text),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 2,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
 @Composable
+@PreviewPulitzerLightDarkBackground
 private fun HomePreview() {
-    // consider multipreview templates
+    PulitzerTheme {
+        HomeContent(uiState = HomeUiState(isLoading = true))
+    }
 }

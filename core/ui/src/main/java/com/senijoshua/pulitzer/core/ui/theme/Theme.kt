@@ -50,7 +50,6 @@ fun PulitzerTheme(
 ) {
     val colorScheme = when {
         darkTheme -> DarkColors
-
         else -> LightColors
     }
 
