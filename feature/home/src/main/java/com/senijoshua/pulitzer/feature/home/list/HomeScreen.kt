@@ -35,10 +35,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.senijoshua.pulitzer.core.model.fakeArticleList
 import com.senijoshua.pulitzer.core.ui.R
+import com.senijoshua.pulitzer.core.ui.components.ArticleItem
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
+import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
 
 @Composable
 internal fun HomeScreen(
@@ -112,7 +115,6 @@ internal fun HomeContent(
                     uiState = uiState
                 ) { articleId -> onArticleClicked(articleId) }
             } else if (uiState.isLoading) {
-                // show progress, sending the modifier into the composable
                 ProgressIndicator(modifier)
             } else {
                 EmptyScreen()
@@ -141,7 +143,9 @@ internal fun HomeArticleList(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_4))
     ) {
         items(items = uiState.articles, key = { article -> article.id }) { homeArticle ->
-            // Call Article card composable from UI -> Components with the animateItemPlacement modifier
+            ArticleItem(article = homeArticle) { articleId ->
+                onArticleClicked(articleId)
+            }
         }
     }
 }
@@ -187,8 +191,17 @@ internal fun EmptyScreen(
 
 @Composable
 @PreviewPulitzerLightDarkBackground
-private fun HomePreview() {
+private fun HomeScreenPreview() {
     PulitzerTheme {
-        HomeContent(uiState = HomeUiState(isLoading = true))
+        HomeContent(uiState = HomeUiState(articles = fakeArticleList.map { article ->
+            HomeArticle(
+                article.id,
+                article.thumbnail,
+                article.title,
+                article.author,
+                article.isBookmarked,
+                article.publicationDate
+            )
+        }))
     }
 }

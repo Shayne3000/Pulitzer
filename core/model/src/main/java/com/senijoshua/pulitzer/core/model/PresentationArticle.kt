@@ -13,3 +13,14 @@ open class PresentationArticle(
     open val isBookmarked: Boolean,
     open val publicationDate: Date,
 )
+
+val fakeArticleList = List(10) { index ->
+    PresentationArticle(
+        index.toString(),
+        "Article $index",
+        "Article $index title",
+        "Article $index author",
+        index % 2 == 0,
+        Date(System.currentTimeMillis())
+    )
+}
