@@ -54,6 +54,7 @@ android {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:model"))
+    implementation(project(":domain:articles"))
 
     // Kotlin extensions & core Android
     implementation(libs.core.ktx)

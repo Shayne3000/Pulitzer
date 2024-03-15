@@ -2,10 +2,13 @@ package com.senijoshua.pulitzer.feature.home.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.domain.article.usecase.GetArticlesUseCase
 import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -13,25 +16,42 @@ import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor() : ViewModel() {
-    // setup use cases that contain and represent the business logic with dependency inversion
-
-    // In the domain layer, add an entity representation of an article with a repository interface there
-
-    // setup observable data holding container - stateflow
-    private val _uiState = MutableStateFlow(HomeUiState())
+internal class HomeViewModel @Inject constructor(private val getArticles: GetArticlesUseCase) :
+    ViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState
     private val mutex = Mutex()
 
-    fun getArticles() {
+    fun getNewsArticles() {
         viewModelScope.launch {
             // This is to make this thread-safe and prevent this from being called (by the
-            // compiler) from multiple threads at the same time i.e a race condition
-            // execute this with a mutex lock preventing other threads from calling this whilst its already executing
-            // lock access to this critical section
+            // Compose compiler) from multiple threads at the same time i.e a race condition
+            // execute this with a mutex lock preventing other threads from calling this whilst its already executing.
+            // In short, lock access to this critical section
             mutex.withLock {
-                // call the use case which returns a flow and update the stateflow with the result
-                // We return a flow to be able to get the updated list of data from the DB anytime an article is bookmarked
+                getArticles().collectLatest { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            // TODO Add a mapper class for the home feature to map from domain model to home article, make it an extension of domain article
+                            _uiState.update { currentUiState ->
+                                currentUiState.copy(
+                                    articles = result.data,
+                                    isLoading = false
+                                )
+                            }
+                        }
+
+                        is Result.Error -> {
+                            _uiState.update { currentUiState ->
+                                currentUiState.copy(
+                                    articles = emptyList(),
+                                    isLoading = false,
+                                    errorMessage = result.error.message
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -43,7 +63,6 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
     }
 }
 
-// setup representation of the UI State of the home screen at any instant in time
 /**
  * Representation of the UI State of the Home Screen at any instant in time
  */

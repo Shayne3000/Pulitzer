@@ -1,8 +1,14 @@
 package com.senijoshua.pulitzer.domain.article.usecase
 
+import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.domain.article.entity.Article
+import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
 /**
- * One of the core functionality or use cases of the app
- * wherein we retrieve a list of articles from the data layer.
+ * Represents the Core app functionality/use case of retrieving a list of news articles.
  */
-class GetArticlesUseCase {
+class GetArticlesUseCase @Inject constructor(private val repository: ArticleRepository) {
+    suspend operator fun invoke(): Flow<Result<List<Article>>> = repository.getArticles()
 }
