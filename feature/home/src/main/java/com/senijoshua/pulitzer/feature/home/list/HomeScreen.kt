@@ -199,8 +199,7 @@ private fun HomeScreenPreview() {
                 article.thumbnail,
                 article.title,
                 article.author,
-                article.isBookmarked,
-                article.publicationDate
+                article.isBookmarked
             )
         }))
     }
