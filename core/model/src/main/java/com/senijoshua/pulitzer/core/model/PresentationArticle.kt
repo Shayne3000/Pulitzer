@@ -11,7 +11,7 @@ open class PresentationArticle(
     open val title: String,
     open val author: String,
     open val isBookmarked: Boolean,
-    open val publicationDate: Date,
+    open val publicationDate: Date?,
 )
 
 val fakeArticleList = List(10) { index ->

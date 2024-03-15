@@ -1,7 +1,6 @@
 package com.senijoshua.pulitzer.feature.home.list.model
 
 import com.senijoshua.pulitzer.core.model.PresentationArticle
-import java.util.Date
 
 /**
  * [PresentationArticle] subclass with data specific to the home screen.
@@ -15,5 +14,4 @@ internal data class HomeArticle(
     override val title: String,
     override val author: String,
     override val isBookmarked: Boolean,
-    override val publicationDate: Date,
-) : PresentationArticle(id, thumbnail, title, author, isBookmarked, publicationDate)
+) : PresentationArticle(id, thumbnail, title, author, isBookmarked, null)
