@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.usecase.GetArticlesUseCase
 import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
+import com.senijoshua.pulitzer.feature.home.list.model.toPresentationFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,10 +33,9 @@ internal class HomeViewModel @Inject constructor(private val getArticles: GetArt
                 getArticles().collectLatest { result ->
                     when (result) {
                         is Result.Success -> {
-                            // TODO Add a mapper class for the home feature to map from domain model to home article, make it an extension of domain article
                             _uiState.update { currentUiState ->
                                 currentUiState.copy(
-                                    articles = result.data,
+                                    articles = result.data.toPresentationFormat(),
                                     isLoading = false
                                 )
                             }

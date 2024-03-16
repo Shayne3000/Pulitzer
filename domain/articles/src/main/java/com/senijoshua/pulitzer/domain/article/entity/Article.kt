@@ -11,7 +11,7 @@ data class Article(
     val thumbnail: String,
     val title: String,
     val author: String,
-    val body: String,
+    val body: String?,
     val isBookmarked: Boolean,
-    val publicationDate: Date,
+    val publicationDate: Date?,
 )
