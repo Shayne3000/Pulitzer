@@ -7,13 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * [ArticleRepository] implementation that retrieves [Article] data
- * aggregated from local and remote data sources in an offline-first manner.
+ * [ArticleRepository] implementation that aggregates [Article] data
+ * from local and remote data sources in an offline-first manner and
+ * returns it to the data layer.
  *
  * This abstracts away data retrieval operations from higher layers in
  * the architecture.
  */
-internal class OfflineFirstArticleRepository @Inject constructor(
+class OfflineFirstArticleRepository @Inject constructor(
 // TODO Add iODispatcher in addition to the other
 ): ArticleRepository {
 

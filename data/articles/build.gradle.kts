@@ -38,8 +38,7 @@ dependencies {
     implementation(project(":domain:articles"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
-    // Kotlin Coroutines & Flow
-    implementation(libs.kotlin.coroutines)
+
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)

@@ -17,20 +17,20 @@ import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor(private val getArticles: GetArticlesUseCase) :
+internal class HomeViewModel @Inject constructor(private val getNewsArticles: GetArticlesUseCase) :
     ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState
     private val mutex = Mutex()
 
-    fun getNewsArticles() {
+    fun getArticles() {
         viewModelScope.launch {
             // This is to make this thread-safe and prevent this from being called (by the
             // Compose compiler) from multiple threads at the same time i.e a race condition
             // execute this with a mutex lock preventing other threads from calling this whilst its already executing.
             // In short, lock access to this critical section
             mutex.withLock {
-                getArticles().collectLatest { result ->
+                getNewsArticles().collectLatest { result ->
                     when (result) {
                         is Result.Success -> {
                             _uiState.update { currentUiState ->

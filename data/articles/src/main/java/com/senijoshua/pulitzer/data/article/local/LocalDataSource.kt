@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface through which higher elements in the architectural
- * hierarchy i.e. repository can interact with the local database.
+ * hierarchy (i.e. repository) can interact (e.g. retrieve data)
+ * with the local database.
  *
  * It abstracts away implementation details of retrieving data from the
  * database and is the contract that must be implemented to perform
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
  */
 internal interface LocalDataSource {
     // TODO Add abstract functions for the other DB interactions
-    suspend fun getArticles(): Flow<List<ArticleEntity>>
+    suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     suspend fun insertArticles(articles: List<ArticleEntity>)
 
 }

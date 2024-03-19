@@ -1,17 +1,19 @@
 package com.senijoshua.pulitzer.data.article.local
 
+import com.senijoshua.pulitzer.core.database.dao.ArticleDao
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Implementation of [LocalDataSource] that directly interacts with the
+ * database to get data.
+ */
 class LocalDataSourceImpl @Inject constructor(
-    // TODO Add iODispatcher
-) : LocalDataSource{
-    override suspend fun getArticles(): Flow<List<ArticleEntity>> {
-        TODO("Not yet implemented")
-    }
+    private val dao: ArticleDao
+) : LocalDataSource {
+    override suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
 
-    override suspend fun insertArticles(articles: List<ArticleEntity>) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun insertArticles(articles: List<ArticleEntity>) =
+        dao.insertArticles(articles)
 }

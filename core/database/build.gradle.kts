@@ -42,9 +42,12 @@ android {
 }
 
 dependencies {
+    // Hilt
     implementation(libs.core.ktx)
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+
+    // Room
     implementation(libs.room)
     ksp(libs.room.compiler)
     // Kotlin Extensions and Coroutines support for Room

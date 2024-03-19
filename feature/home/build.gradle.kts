@@ -77,28 +77,6 @@ dependencies {
     // Coil
     implementation(libs.coil)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.moshi.converter)
-
-    // OkHttp
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-
-    // Moshi
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.codegen)
-
-    // Kotlin Coroutine & Flows
-    implementation(libs.kotlin.coroutines)
-
-    // Room
-    implementation(libs.room)
-    ksp(libs.room.compiler)
-    // Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
-
     //// Test dependencies ////
 
     // Local tests
