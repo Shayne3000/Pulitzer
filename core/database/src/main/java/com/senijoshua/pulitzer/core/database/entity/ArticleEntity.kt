@@ -10,16 +10,12 @@ data class ArticleEntity(
     @PrimaryKey
     val id: String,
     val thumbnail: String,
-    @ColumnInfo(name = "section_name")
-    val sectionName: String,
     val title: String,
-    val headline: String,
-    val main: String,
     val author: String,
     val body: String,
     val isBookmarked: Boolean,
-    @ColumnInfo(name = "publication_date")
-    val publicationDate: Date,
+    @ColumnInfo(name = "last_modified_date")
+    val lastModifiedDate: Date,
     @ColumnInfo(name = "created_at")
     val createdAt: Long? = System.currentTimeMillis()
 )

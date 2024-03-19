@@ -12,7 +12,7 @@ internal class RemoteDataSourceImpl @Inject constructor(
     private val api: ArticleApi
 ) : RemoteDataSource {
     override suspend fun getArticlesFromServer(): List<NetworkArticle> {
-       val response = api.getNewsArticles()
-        return response.networkArticles
+       val newsArticles = api.getNewsArticles()
+        return newsArticles.response.results
     }
 }

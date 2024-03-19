@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 private const val BASE_URL = "https://content.guardianapis.com/"
 private const val HEADER_API_KEY = "api-key"
-private const val API_KEY = ""
+private const val API_KEY = "f874836f-9822-4f92-a3c3-41f9a485f03c"
 
 @Module
 @InstallIn(SingletonComponent::class)
