@@ -13,5 +13,5 @@ data class Article(
     val author: String,
     val body: String?,
     val isBookmarked: Boolean,
-    val publicationDate: Date?,
+    val lastModifiedDate: Date?,
 )

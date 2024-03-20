@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /**
  * Implementation of the [RemoteDataSource] that interacts with the REST client
- * that executes network requests to retrieve data from the Remote service.
+ * which executes network requests to retrieve data from the Remote service.
  */
 internal class RemoteDataSourceImpl @Inject constructor(
     private val api: ArticleApi

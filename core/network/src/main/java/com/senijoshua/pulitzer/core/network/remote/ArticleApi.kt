@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface ArticleApi {
     @GET("search")
     suspend fun getNewsArticles(
-        @Query("q") searchTerm: String = "technology",
+        @Query("q") query: String = "technology",
         @Query("order-by") orderBy: String = "newest",
         @Query("show-fields") showFields: String = "headline,byline,body,thumbnail,lastModified",
         @Query("page") page: Int = 1,

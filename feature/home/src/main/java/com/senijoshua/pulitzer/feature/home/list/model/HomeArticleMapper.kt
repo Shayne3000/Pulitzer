@@ -24,7 +24,7 @@ internal fun HomeArticle.toDomainFormat() = Article(
     author = author,
     body = null,
     isBookmarked = isBookmarked,
-    publicationDate = null
+    lastModifiedDate = null
 )
 
 internal fun List<HomeArticle>.toDomainFormat() = map(HomeArticle::toDomainFormat)

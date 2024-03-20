@@ -1,9 +1,12 @@
 package com.senijoshua.pulitzer.data.article.repository
 
 import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.data.article.local.LocalDataSource
+import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -15,11 +18,14 @@ import javax.inject.Inject
  * the architecture.
  */
 class OfflineFirstArticleRepository @Inject constructor(
-// TODO Add iODispatcher in addition to the other
+    private val local: LocalDataSource,
+    private val remote: RemoteDataSource,
 ): ArticleRepository {
 
     override suspend fun getArticles(): Flow<Result<List<Article>>> {
-        TODO("Not yet implemented")
+        local.getArticlesFromDB().map {
+
+        }
     }
 
     override suspend fun getArticleGivenId(articleId: Int): Result<Article> {
