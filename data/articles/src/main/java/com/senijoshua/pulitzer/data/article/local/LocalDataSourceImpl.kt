@@ -9,11 +9,13 @@ import javax.inject.Inject
  * Implementation of [LocalDataSource] that directly interacts with the
  * database to get data.
  */
-class LocalDataSourceImpl @Inject constructor(
+internal class LocalDataSourceImpl @Inject constructor(
     private val dao: ArticleDao
 ) : LocalDataSource {
     override suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
 
     override suspend fun insertArticles(articles: List<ArticleEntity>) =
         dao.insertArticles(articles)
+
+    override suspend fun getTimeCreated() = dao.getTimeCreated()
 }

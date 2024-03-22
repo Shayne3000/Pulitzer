@@ -10,9 +10,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataModule {
+internal abstract class DataModule {
 
     @Singleton
     @Binds
-    abstract fun provideArticleRepository(repository: OfflineFirstArticleRepository): ArticleRepository
+    internal abstract fun provideArticleRepository(repository: OfflineFirstArticleRepository): ArticleRepository
 }

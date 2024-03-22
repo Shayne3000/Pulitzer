@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.Flow
  * database and is the contract that must be implemented to perform
  * said sourcing operation.
  */
-interface LocalDataSource {
-    // TODO Add abstract functions for the other DB interactions
+internal interface LocalDataSource {
     suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     suspend fun insertArticles(articles: List<ArticleEntity>)
-
+    suspend fun getTimeCreated(): Long?
 }

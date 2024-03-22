@@ -10,6 +10,6 @@ import com.senijoshua.pulitzer.core.network.model.NetworkArticle
  * remote service and is the contract that must be implemented to perform
  * said sourcing operation.
  */
-interface RemoteDataSource {
+internal interface RemoteDataSource {
     suspend fun getArticlesFromServer(): List<NetworkArticle>
 }
