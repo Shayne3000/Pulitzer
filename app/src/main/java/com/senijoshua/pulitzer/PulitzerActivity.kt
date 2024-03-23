@@ -7,12 +7,12 @@ import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class PulitzerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             PulitzerTheme {
-                PulitzerApp()
+                Pulitzer()
             }
         }
     }

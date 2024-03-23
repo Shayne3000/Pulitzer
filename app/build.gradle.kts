@@ -78,26 +78,20 @@ dependencies {
     implementation(project(":core:ui"))
 
     // Kotlin extensions & core Android
-    implementation(libs.core.ktx)
     implementation(libs.activity.compose)
-
-    // Coil
-    implementation(libs.coil)
 
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    // Coil
+    implementation(libs.coil)
+
     // Compose UI
     implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
     implementation(libs.navigation)
 
     //// Test dependencies ////
-
     // Local tests
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
