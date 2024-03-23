@@ -4,6 +4,7 @@ import java.util.Date
 
 /**
  * Representation of an Article type with data relevant to the presentation layer.
+ * It operates mainly in the presentation layer.
  */
 open class PresentationArticle(
     open val id: String,

@@ -26,7 +26,6 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val local: LocalDataSource,
     private val remote: RemoteDataSource,
 ) : ArticleRepository {
-
     // Max amount of time for which we can store article data in the DB.
     // After this, it's considered stale.
     private val cacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
