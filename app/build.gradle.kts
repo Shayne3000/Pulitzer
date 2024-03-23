@@ -66,7 +66,6 @@ dependencies {
 
     // Domain
     implementation(project(":domain:articles"))
-    implementation(project(":domain:bookmarks"))
 
     // Data
     implementation(project(":data:articles"))

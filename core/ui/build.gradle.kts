@@ -43,20 +43,16 @@ android {
 }
 
 dependencies {
-    implementation(libs.core.ktx)
+    implementation(project(":core:model"))
     implementation(libs.activity.compose)
-
     // Coil
     implementation(libs.coil)
 
-    implementation(project(":core:model"))
+    // Compose
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
 }

@@ -57,7 +57,6 @@ dependencies {
 
     // Kotlin extensions & core Android
     implementation(libs.core.ktx)
-    implementation(libs.activity.compose)
     implementation(libs.lifecycle.compose)
 
     // Hilt
@@ -69,7 +68,6 @@ dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
     implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.navigation)
