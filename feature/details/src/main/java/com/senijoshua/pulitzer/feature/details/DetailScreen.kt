@@ -3,5 +3,5 @@ package com.senijoshua.pulitzer.feature.details
 import androidx.compose.runtime.Composable
 
 @Composable
-internal fun ArticleDetailScreen() {
+internal fun DetailScreen() {
 }
