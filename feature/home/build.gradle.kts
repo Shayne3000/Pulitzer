@@ -56,7 +56,6 @@ dependencies {
     implementation(project(":domain:articles"))
 
     // Kotlin extensions & core Android
-    implementation(libs.core.ktx)
     implementation(libs.lifecycle.compose)
 
     // Hilt
