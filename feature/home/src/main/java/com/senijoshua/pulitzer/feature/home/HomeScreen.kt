@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.senijoshua.pulitzer.feature.home.list
+package com.senijoshua.pulitzer.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ import com.senijoshua.pulitzer.core.ui.components.ArticleItem
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
-import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
+import com.senijoshua.pulitzer.feature.home.model.HomeArticle
 
 @Composable
 internal fun HomeScreen(

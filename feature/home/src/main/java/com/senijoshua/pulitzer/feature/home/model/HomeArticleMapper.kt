@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.feature.home.list.model
+package com.senijoshua.pulitzer.feature.home.model
 
 import com.senijoshua.pulitzer.domain.article.entity.Article
 

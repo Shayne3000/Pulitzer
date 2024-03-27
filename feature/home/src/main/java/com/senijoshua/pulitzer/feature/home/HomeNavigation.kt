@@ -4,8 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.senijoshua.pulitzer.feature.home.detail.ArticleDetailScreen
-import com.senijoshua.pulitzer.feature.home.list.HomeScreen
 
 internal const val HOME_ROUTE = "home"
 internal const val ARTICLE_DETAILS_ROUTE = "details"
@@ -40,7 +38,7 @@ internal fun NavGraphBuilder.homeScreen(navigateToDetailScreen: (String) -> Unit
 
 internal fun NavGraphBuilder.articleDetailScreen() {
     composable(ARTICLE_DETAILS_ROUTE) {
-        ArticleDetailScreen()
+        // com.senijoshua.pulitzer.feature.details.detail.ArticleDetailScreen()
     }
 }
 

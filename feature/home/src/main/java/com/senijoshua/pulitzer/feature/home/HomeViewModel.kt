@@ -1,11 +1,11 @@
-package com.senijoshua.pulitzer.feature.home.list
+package com.senijoshua.pulitzer.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.usecase.GetArticlesUseCase
-import com.senijoshua.pulitzer.feature.home.list.model.HomeArticle
-import com.senijoshua.pulitzer.feature.home.list.model.toPresentationFormat
+import com.senijoshua.pulitzer.feature.home.model.HomeArticle
+import com.senijoshua.pulitzer.feature.home.model.toPresentationFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
