@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.feature.home.detail
+package com.senijoshua.pulitzer.feature.details
 
 import androidx.compose.runtime.Composable
 

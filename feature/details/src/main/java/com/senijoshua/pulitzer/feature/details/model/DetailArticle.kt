@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.feature.home.detail.model
+package com.senijoshua.pulitzer.feature.details.model
 
 import java.util.Date
 
