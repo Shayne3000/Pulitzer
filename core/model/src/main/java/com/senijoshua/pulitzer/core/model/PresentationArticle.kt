@@ -4,7 +4,7 @@ import java.util.Date
 
 /**
  * Representation of an Article type with data relevant to the presentation layer.
- * It operates mainly in the presentation layer.
+ * It operates mainly in the presentation layer and is helpful in testing.
  */
 open class PresentationArticle(
     open val id: String,
@@ -12,7 +12,7 @@ open class PresentationArticle(
     open val title: String,
     open val author: String,
     open val isBookmarked: Boolean,
-    open val publicationDate: Date?,
+    open val lastModified: Date?,
 )
 
 val fakeArticleList = List(10) { index ->

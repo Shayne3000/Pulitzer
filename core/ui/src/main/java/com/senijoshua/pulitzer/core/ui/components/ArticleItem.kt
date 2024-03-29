@@ -146,7 +146,7 @@ private fun ArticleItemPreview() {
                 title = "Top 50 places to travel in the world that have stores",
                 author = "John Storm",
                 isBookmarked = false,
-                publicationDate = Date(System.currentTimeMillis())
+                lastModified = Date(System.currentTimeMillis())
             )
         )
     }
