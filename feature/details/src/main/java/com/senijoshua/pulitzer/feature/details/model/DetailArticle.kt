@@ -10,9 +10,8 @@ internal data class DetailArticle(
     val id: String,
     val thumbnail: String,
     val title: String,
-    val headline: String,
-    val main: String,
+    val author: String,
     val body: String,
     val isBookmarked: Boolean,
-    val publicationDate: Date,
+    val lastModified: Date,
 )
