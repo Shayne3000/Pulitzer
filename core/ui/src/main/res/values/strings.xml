@@ -5,7 +5,7 @@
     <string name="article_bookmark">Bookmark</string>
     <string name="back_content_desc">Back</string>
     <string name="guardian_logo_content_desc">Guardian Logo</string>
-    <string name="published_guardian">Sourced from the Guardian</string>
+    <string name="published_guardian">The Guardian</string>
     <string name="empty_article_list">Empty list of articles</string>
     <string name="no_articles_text">There are no news articles at this time, check back in a few hours.</string>
 </resources>
