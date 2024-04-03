@@ -13,9 +13,11 @@ internal const val DETAILS_GRAPH_ARG_PLACEHOLDER = "$DETAILS_GRAPH/{$ARTICLE_ARG
 /**
  * Nav graph for the screens in the Details module to be nested in the app-level NavGraph.
  */
-fun NavGraphBuilder.detailGraph() {
+fun NavGraphBuilder.detailGraph(onBackClicked: () -> Unit) {
     navigation(startDestination = DETAILS_ROUTE, route = DETAILS_GRAPH_ARG_PLACEHOLDER) {
-        detailScreen()
+        detailScreen {
+            onBackClicked()
+        }
     }
 }
 
@@ -23,9 +25,11 @@ fun NavGraphBuilder.detailGraph() {
  * NavGraphBuilder extension function that adds the DetailScreen composable as a destination
  * in the Detail nav graph.
  */
-internal fun NavGraphBuilder.detailScreen() {
+internal fun NavGraphBuilder.detailScreen(onBackClicked: () -> Unit) {
     composable(DETAILS_ROUTE) {
-        DetailScreen()
+        DetailScreen {
+            onBackClicked()
+        }
     }
 }
 

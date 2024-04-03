@@ -21,6 +21,8 @@ fun Pulitzer(
         homeGraph {
             navController.navigateToDetail(it)
         }
-        detailGraph()
+        detailGraph {
+            navController.popBackStack()
+        }
     }
 }
