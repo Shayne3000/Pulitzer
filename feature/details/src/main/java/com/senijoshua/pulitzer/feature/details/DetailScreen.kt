@@ -2,9 +2,10 @@
 
 package com.senijoshua.pulitzer.feature.details
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
+import com.senijoshua.pulitzer.feature.details.model.fakeDetailArticle
 
 @Composable
 internal fun DetailScreen(
@@ -73,10 +75,10 @@ internal fun DetailContent(
                 }
             },
             title = {
-                Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(dimensionResource(R.dimen.density_48)),
-                        painter = painterResource(R.drawable.guardian_logo),
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.density_36)),
+                        painter = painterResource(id = R.drawable.guardian_logo),
                         contentDescription = stringResource(R.string.guardian_logo_content_desc)
                     )
                     Text(
@@ -88,7 +90,7 @@ internal fun DetailContent(
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                titleContentColor = MaterialTheme.colorScheme.primary,
             )
         )
     }, snackbarHost = {
@@ -129,8 +131,8 @@ internal fun DetailContent(
             contentColor = MaterialTheme.colorScheme.onPrimary
         )
     }) { paddingValues ->
-        Column {
-
+        Column(modifier = modifier.padding(paddingValues)) {
+            // TODO Add a Scrollview
         }
     }
 }
@@ -139,6 +141,6 @@ internal fun DetailContent(
 @PreviewPulitzerLightDarkBackground
 private fun DetailScreenPreview() {
     PulitzerTheme {
-
+        DetailContent(uiState = DetailUiState(details = fakeDetailArticle, isLoading = false))
     }
 }
