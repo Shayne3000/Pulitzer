@@ -48,7 +48,6 @@ internal fun HomeScreen(
     vm: HomeViewModel = hiltViewModel(),
     onNavigateToDetailScreen: (String) -> Unit = { _ -> }
 ) {
-    // create screens using UDF and state hoisting: takes in state and expose events/functions to change state
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     HomeContent(
@@ -61,10 +60,9 @@ internal fun HomeScreen(
         }
     )
 
-    // not very thread-safe originally as a composable can be executed from several threads at once
-    // Not optimised for optimistic recomposition, if recomposition was canceled, this may still execute
-    // Composables should have no side-effects if plausible.
-    vm.getArticles()
+    LaunchedEffect(Unit) {
+        vm.getArticles()
+    }
 }
 
 @Composable
