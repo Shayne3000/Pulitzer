@@ -30,6 +30,10 @@ internal class DetailViewModel @Inject constructor(
             // use the article Id to call the bookmark article use case
         }
     }
+
+    fun errorMessageShown() {
+
+    }
 }
 
 /**

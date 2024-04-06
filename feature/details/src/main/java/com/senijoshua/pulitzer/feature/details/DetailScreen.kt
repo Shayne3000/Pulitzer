@@ -3,10 +3,14 @@
 package com.senijoshua.pulitzer.feature.details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.BottomAppBar
@@ -21,6 +25,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +41,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
+import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
+import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import com.senijoshua.pulitzer.feature.details.model.fakeDetailArticle
@@ -49,6 +56,8 @@ internal fun DetailScreen(
 
     DetailContent(uiState = uiState, bookmarkArticle = {
         vm.bookmarkArticle()
+    }, onErrorMessageShown = {
+        vm.errorMessageShown()
     }, onBackClicked = {
         onBackClicked()
     })
@@ -59,7 +68,8 @@ internal fun DetailContent(
     modifier: Modifier = Modifier,
     uiState: DetailUiState,
     bookmarkArticle: () -> Unit = {},
-    onBackClicked: () -> Unit = {}
+    onErrorMessageShown: () -> Unit = {},
+    onBackClicked: () -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -131,9 +141,46 @@ internal fun DetailContent(
             contentColor = MaterialTheme.colorScheme.onPrimary
         )
     }) { paddingValues ->
-        Column(modifier = modifier.padding(paddingValues)) {
-            // TODO Add a Scrollview
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(paddingValues)
+        ) {
+            if (uiState.isLoading) {
+                PulitzerProgressIndicator(modifier)
+            } else if (uiState.details != null) {
+                ArticleDetail(modifier)
+            } else {
+                EmptyScreen(
+                    modifier,
+                    text = R.string.no_article_text,
+                    iconContentDescription = R.string.empty_article_details
+                )
+            }
         }
+        uiState.errorMessage?.let { errorMessage ->
+            LaunchedEffect(snackBarHostState, errorMessage) {
+                snackBarHostState.showSnackbar(errorMessage)
+                onErrorMessageShown()
+            }
+        }
+    }
+}
+
+@Composable
+internal fun ArticleDetail(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Setup Coil Image for large email and do contraption for it here.
+        //AsyncImage(model = , contentDescription = )
+
+        // Setup headline, author name with name cirlce, and date last modified
+
+        // Setup text for reading html setup text
     }
 }
 
