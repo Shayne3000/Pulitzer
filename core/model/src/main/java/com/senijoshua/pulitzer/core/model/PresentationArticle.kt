@@ -10,7 +10,7 @@ open class PresentationArticle(
     open val id: String,
     open val thumbnail: String,
     open val title: String,
-    open val author: String,
+    open val author: String?,
     open val isBookmarked: Boolean,
     open val lastModified: Date?,
 )
