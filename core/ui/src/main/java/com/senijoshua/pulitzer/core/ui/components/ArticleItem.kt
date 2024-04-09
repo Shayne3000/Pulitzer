@@ -27,18 +27,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.senijoshua.pulitzer.core.model.PresentationArticle
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
+import com.senijoshua.pulitzer.core.ui.util.buildAsyncImage
 import java.util.Date
 
 /**
@@ -63,16 +61,7 @@ fun ArticleItem(
             onArticleItemClicked(article.id)
         }
     ) {
-        val imageRequest = ImageRequest.Builder(LocalContext.current)
-            .data(article.thumbnail)
-            .memoryCacheKey(article.thumbnail)
-            .placeholder(R.drawable.ic_article_placeholder)
-            .error(R.drawable.ic_article_placeholder)
-            .fallback(R.drawable.ic_article_placeholder)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .diskCacheKey(article.thumbnail)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .build()
+        val imageRequest = buildAsyncImage(imageUrl = article.thumbnail)
 
         var isBookmarked by remember { mutableStateOf(article.isBookmarked) }
 
@@ -101,13 +90,16 @@ fun ArticleItem(
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
-                Text(
-                    text = article.author,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
+
+                article.author?.let {
+                    Text(
+                        text = article.author,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
             }
 
             IconButton(
