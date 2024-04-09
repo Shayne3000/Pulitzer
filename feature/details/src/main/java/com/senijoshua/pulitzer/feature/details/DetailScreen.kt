@@ -4,12 +4,16 @@ package com.senijoshua.pulitzer.feature.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,19 +36,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
+import com.senijoshua.pulitzer.core.ui.util.buildAsyncImage
+import com.senijoshua.pulitzer.feature.details.model.DetailArticle
 import com.senijoshua.pulitzer.feature.details.model.fakeDetailArticle
 
 @Composable
@@ -150,7 +159,7 @@ internal fun DetailContent(
             if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
             } else if (uiState.details != null) {
-                ArticleDetail(modifier)
+                ArticleDetail(article = uiState.details)
             } else {
                 EmptyScreen(
                     modifier,
@@ -169,18 +178,72 @@ internal fun DetailContent(
 }
 
 @Composable
-internal fun ArticleDetail(modifier: Modifier = Modifier) {
+internal fun ArticleDetail(
+    modifier: Modifier = Modifier,
+    article: DetailArticle,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // Setup Coil Image for large email and do contraption for it here.
-        //AsyncImage(model = , contentDescription = )
+        AsyncImage(
+            model = buildAsyncImage(imageUrl = article.thumbnail),
+            contentDescription = stringResource(id = R.string.detail_article_hero_img),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.density_230))
+                .padding(dimensionResource(id = R.dimen.density_16))
+        )
 
-        // Setup headline, author name with name cirlce, and date last modified
+        // Setup headline
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = article.title,
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Row {
+            // name circle, and column of author name +  last modified
+            article.author?.let { author ->
+                NameCircle(author = author)
+            }
+
+            Column {
+                article.author?.let { author ->
+                    // show author name
+                }
+                // add last modified
+            }
+        }
 
         // Setup text for reading html setup text
+    }
+}
+
+@Composable
+internal fun NameCircle(
+    modifier: Modifier = Modifier,
+    author: String
+) {
+    val firstLetter = author.firstOrNull().toString().uppercase()
+
+    Box(
+        modifier = modifier
+            .size(dimensionResource(id = R.dimen.density_48))
+            .background(MaterialTheme.colorScheme.primary)
+            .clip(CircleShape)
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = firstLetter,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
