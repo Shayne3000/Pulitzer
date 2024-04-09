@@ -6,6 +6,7 @@
     <string name="back_content_desc">Back</string>
     <string name="guardian_logo_content_desc">Guardian Logo</string>
     <string name="published_guardian">The Guardian</string>
+    <string name="detail_article_hero_img">Article Image</string>
     <string name="empty_article_details">No article detail</string>
     <string name="no_article_text">This article has no content at this time, please check back later.</string>
     <string name="empty_article_list">Empty list of articles</string>
