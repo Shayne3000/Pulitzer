@@ -10,7 +10,7 @@ val Typography = Typography(
     // Article headline in the detail screen
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 40.sp
     ),
@@ -49,8 +49,8 @@ val Typography = Typography(
     // text detail screen author and date label
     labelLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
