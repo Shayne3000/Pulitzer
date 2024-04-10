@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -75,8 +73,7 @@ fun ArticleItem(
         ) {
             AsyncImage(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.density_64))
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_2))),
+                    .size(dimensionResource(id = R.dimen.density_64)),
                 model = imageRequest,
                 contentDescription = stringResource(id = R.string.article_thumbnail),
                 contentScale = ContentScale.Crop,
@@ -91,9 +88,9 @@ fun ArticleItem(
                     maxLines = 2
                 )
 
-                article.author?.let {
+                article.author?.let { author ->
                     Text(
-                        text = article.author,
+                        text = author,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         overflow = TextOverflow.Ellipsis,
