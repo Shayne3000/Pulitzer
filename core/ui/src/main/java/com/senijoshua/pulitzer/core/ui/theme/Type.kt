@@ -12,7 +12,7 @@ val Typography = Typography(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 40.sp
+        lineHeight = 32.sp
     ),
     // Toolbar style
     titleLarge = TextStyle(
