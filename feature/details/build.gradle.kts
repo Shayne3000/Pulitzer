@@ -47,6 +47,9 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":domain:articles"))
 
+    // Material components
+    implementation(libs.material)
+
     implementation(libs.lifecycle.compose)
 
     // Hilt

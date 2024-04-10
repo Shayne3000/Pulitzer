@@ -2,9 +2,10 @@
 
 package com.senijoshua.pulitzer.feature.details
 
+import android.text.util.Linkify
+import android.util.TypedValue
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,25 +37,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.android.material.textview.MaterialTextView
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
+import com.senijoshua.pulitzer.core.ui.components.TextCircle
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import com.senijoshua.pulitzer.core.ui.util.buildAsyncImage
 import com.senijoshua.pulitzer.feature.details.model.DetailArticle
 import com.senijoshua.pulitzer.feature.details.model.fakeDetailArticle
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+private const val DATE_FORMAT = "MMMM d"
+private const val TITLE = "Title"
+private const val AUTHOR = "Author"
+private const val DATE = "Date"
+private const val BODY = "Body"
 
 @Composable
 internal fun DetailScreen(
@@ -124,7 +139,7 @@ internal fun DetailContent(
                 IconButton(onClick = {
                     isBookmarked = !isBookmarked
 
-                    if (isBookmarked) { // TODO the ui is optimistic
+                    if (isBookmarked) {
                         bookmarkArticle()
                     }
                 }) {
@@ -153,6 +168,7 @@ internal fun DetailContent(
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .background(color = MaterialTheme.colorScheme.surface)
                 .padding(paddingValues)
         ) {
@@ -185,7 +201,6 @@ internal fun ArticleDetail(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         AsyncImage(
             model = buildAsyncImage(imageUrl = article.thumbnail),
@@ -194,12 +209,18 @@ internal fun ArticleDetail(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.density_230))
-                .padding(dimensionResource(id = R.dimen.density_16))
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.density_16),
+                    vertical = dimensionResource(
+                        id = R.dimen.density_8
+                    )
+                )
         )
 
-        // Setup headline
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.density_16)).testTag(TITLE),
             text = article.title,
             maxLines = 4,
             overflow = TextOverflow.Ellipsis,
@@ -207,43 +228,72 @@ internal fun ArticleDetail(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Row {
-            // name circle, and column of author name +  last modified
+        Row(modifier = Modifier
+            .width(dimensionResource(id = R.dimen.density_192))
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.density_16), vertical = dimensionResource(
+                    id = R.dimen.density_8
+                )
+            ), verticalAlignment = Alignment.CenterVertically) {
+
             article.author?.let { author ->
-                NameCircle(author = author)
+                TextCircle(text = author.split(" ", limit = 1)[0])
             }
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(start = dimensionResource(id = R.dimen.density_8))
+            ) {
                 article.author?.let { author ->
-                    // show author name
+                    Text(
+                        modifier = Modifier.fillMaxWidth().testTag(AUTHOR),
+                        text = author,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
-                // add last modified
+
+                val lastModifiedDate =
+                    SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(article.lastModified)
+
+                Text(
+                    modifier = Modifier.fillMaxWidth().testTag(DATE),
+                    text = lastModifiedDate,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Normal,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
 
-        // Setup text for reading html setup text
-    }
-}
+        val articleText =
+            HtmlCompat.fromHtml(article.body, 0)
 
-@Composable
-internal fun NameCircle(
-    modifier: Modifier = Modifier,
-    author: String
-) {
-    val firstLetter = author.firstOrNull().toString().uppercase()
+        val linkColor: Int = MaterialTheme.colorScheme.primary.toArgb()
 
-    Box(
-        modifier = modifier
-            .size(dimensionResource(id = R.dimen.density_48))
-            .background(MaterialTheme.colorScheme.primary)
-            .clip(CircleShape)
-    ) {
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = firstLetter,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
+        val bodyTextColor: Int = MaterialTheme.colorScheme.onSurface.toArgb()
+
+        AndroidView(modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.density_16)
+            ).testTag(BODY),
+            factory = { context ->
+                MaterialTextView(context).apply {
+                    autoLinkMask = Linkify.WEB_URLS
+                    linksClickable = true
+                    setLinkTextColor(linkColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                }
+            },
+            update = { materialTextView ->
+                materialTextView.text = articleText
+                materialTextView.setTextColor(bodyTextColor)
+            })
     }
 }
 
