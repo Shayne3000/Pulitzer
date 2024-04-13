@@ -18,8 +18,8 @@ fun Pulitzer(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = HOME_GRAPH) {
-        homeGraph {
-            navController.navigateToDetail(it)
+        homeGraph { articleId ->
+            navController.navigateToDetail(articleId)
         }
         detailGraph {
             navController.popBackStack()

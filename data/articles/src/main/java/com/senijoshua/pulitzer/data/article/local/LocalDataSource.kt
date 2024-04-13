@@ -16,4 +16,5 @@ internal interface LocalDataSource {
     suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     suspend fun insertArticles(articles: List<ArticleEntity>)
     suspend fun getTimeCreated(): Long?
+    suspend fun getArticleById(articleId: String): ArticleEntity
 }

@@ -10,6 +10,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ArticleRepository {
     suspend fun getArticles(): Flow<Result<List<Article>>>
-    suspend fun getArticleGivenId(articleId: Int): Result<Article>
+    suspend fun getArticleGivenId(articleId: String): Result<Article>
     suspend fun getBookmarkedArticles(): Flow<Result<List<Article>>>
 }

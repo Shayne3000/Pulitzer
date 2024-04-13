@@ -29,20 +29,25 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     // Max amount of time for which we can store article data in the DB.
     // After this, it's considered stale.
     private val cacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+    // TODO Add a limit for clearing the cache as well
 
     override suspend fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()
         }.onEach {
-            if (shouldLoadFromNetwork()) {
+            if (shouldLoadMoreArticlesFromNetwork()) {
                 val networkResponse = remote.getArticlesFromServer()
                 local.insertArticles(networkResponse.toLocalFormat())
             }
         }.toResult()
     }
 
-    override suspend fun getArticleGivenId(articleId: Int): Result<Article> {
-        TODO("Not yet implemented")
+    override suspend fun getArticleGivenId(articleId: String): Result<Article> {
+        return try {
+            Result.Success(local.getArticleById(articleId).toDomainFormat())
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
     override suspend fun getBookmarkedArticles(): Flow<Result<List<Article>>> {
@@ -53,7 +58,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
      * We load fresh data from the remote service only if the data in the DB is stale or
      * if the database is empty
      */
-    private suspend fun shouldLoadFromNetwork(): Boolean {
+    private suspend fun shouldLoadMoreArticlesFromNetwork(): Boolean {
         return (System.currentTimeMillis() - (local.getTimeCreated()
             ?: 0)) > cacheLimit
     }

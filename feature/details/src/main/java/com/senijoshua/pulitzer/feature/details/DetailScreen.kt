@@ -85,6 +85,10 @@ internal fun DetailScreen(
     }, onBackClicked = {
         onBackClicked()
     })
+
+    LaunchedEffect(Unit) {
+        vm.getArticle()
+    }
 }
 
 @Composable
@@ -220,7 +224,8 @@ internal fun ArticleDetail(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.density_16)).testTag(TITLE),
+                .padding(horizontal = dimensionResource(id = R.dimen.density_16))
+                .testTag(TITLE),
             text = article.title,
             maxLines = 4,
             overflow = TextOverflow.Ellipsis,
@@ -231,7 +236,8 @@ internal fun ArticleDetail(
         Row(modifier = Modifier
             .width(dimensionResource(id = R.dimen.density_192))
             .padding(
-                horizontal = dimensionResource(id = R.dimen.density_16), vertical = dimensionResource(
+                horizontal = dimensionResource(id = R.dimen.density_16),
+                vertical = dimensionResource(
                     id = R.dimen.density_8
                 )
             ), verticalAlignment = Alignment.CenterVertically) {
@@ -246,7 +252,9 @@ internal fun ArticleDetail(
             ) {
                 article.author?.let { author ->
                     Text(
-                        modifier = Modifier.fillMaxWidth().testTag(AUTHOR),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag(AUTHOR),
                         text = author,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -259,7 +267,9 @@ internal fun ArticleDetail(
                     SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(article.lastModified)
 
                 Text(
-                    modifier = Modifier.fillMaxWidth().testTag(DATE),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(DATE),
                     text = lastModifiedDate,
                     maxLines = 1,
                     fontWeight = FontWeight.Normal,
@@ -281,13 +291,14 @@ internal fun ArticleDetail(
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(id = R.dimen.density_16)
-            ).testTag(BODY),
+            )
+            .testTag(BODY),
             factory = { context ->
                 MaterialTextView(context).apply {
                     autoLinkMask = Linkify.WEB_URLS
                     linksClickable = true
                     setLinkTextColor(linkColor)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
                 }
             },
             update = { materialTextView ->

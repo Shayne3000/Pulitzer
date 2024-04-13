@@ -6,7 +6,6 @@ import com.senijoshua.pulitzer.domain.article.entity.Article
  * Extension functions for converting the domain layer's [Article] model to
  * [HomeArticle] which contains data relevant to the HomeScreen.
  */
-
 internal fun Article.toPresentationFormat() = HomeArticle(
     id = id,
     thumbnail = thumbnail,
@@ -21,7 +20,7 @@ internal fun HomeArticle.toDomainFormat() = Article(
     id = id,
     thumbnail = thumbnail,
     title = title,
-    author = author,
+    author = author ?: "",
     body = null,
     isBookmarked = isBookmarked,
     lastModifiedDate = null
