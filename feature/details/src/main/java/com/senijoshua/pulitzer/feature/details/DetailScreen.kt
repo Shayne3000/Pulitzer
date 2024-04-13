@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
@@ -209,7 +211,7 @@ internal fun ArticleDetail(
         AsyncImage(
             model = buildAsyncImage(imageUrl = article.thumbnail),
             contentDescription = stringResource(id = R.string.detail_article_hero_img),
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.density_230))
@@ -219,6 +221,7 @@ internal fun ArticleDetail(
                         id = R.dimen.density_8
                     )
                 )
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_16)))
         )
 
         Text(
