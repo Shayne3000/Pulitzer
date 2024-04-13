@@ -31,7 +31,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.toString()
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     compileOptions {
@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:model"))
     implementation(project(":domain:articles"))
 
     // Material components

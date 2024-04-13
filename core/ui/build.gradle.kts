@@ -25,7 +25,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.toString()
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     buildFeatures {
