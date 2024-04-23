@@ -2,6 +2,7 @@
 
 package com.senijoshua.pulitzer.feature.details
 
+import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.TypedValue
 import androidx.compose.foundation.Image
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import androidx.core.text.util.LinkifyCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -137,6 +139,7 @@ internal fun DetailContent(
         SnackbarHost(snackBarHostState)
     }, bottomBar = {
         BottomAppBar(
+            modifier = Modifier.height(dimensionResource(id = R.dimen.density_64)),
             actions = {
                 val bookmark = uiState.details?.isBookmarked ?: false
 
@@ -161,6 +164,7 @@ internal fun DetailContent(
                     }
 
                     Icon(
+                        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.density_4)),
                         painter = painter,
                         tint = iconColor,
                         contentDescription = stringResource(id = R.string.article_bookmark)
@@ -221,7 +225,7 @@ internal fun ArticleDetail(
                         id = R.dimen.density_8
                     )
                 )
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_16)))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_4)))
         )
 
         Text(
@@ -230,29 +234,32 @@ internal fun ArticleDetail(
                 .padding(horizontal = dimensionResource(id = R.dimen.density_16))
                 .testTag(TITLE),
             text = article.title,
-            maxLines = 4,
+            maxLines = 5,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Row(modifier = Modifier
-            .width(dimensionResource(id = R.dimen.density_192))
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.density_16),
-                vertical = dimensionResource(
-                    id = R.dimen.density_8
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.density_16),
+                    vertical = dimensionResource(
+                        id = R.dimen.density_8
+                    )
+                ), verticalAlignment = Alignment.CenterVertically
+        ) {
+            val author = article.author
+            if (!author.isNullOrEmpty()) {
+                TextCircle(
+                    modifier = Modifier
+                        .padding(end = dimensionResource(id = R.dimen.density_8)),
+                    text = author.split(" ", limit = 1)[0]
                 )
-            ), verticalAlignment = Alignment.CenterVertically) {
-
-            article.author?.let { author ->
-                TextCircle(text = author.split(" ", limit = 1)[0])
             }
 
-            Column(
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.density_8))
-            ) {
+            Column {
                 article.author?.let { author ->
                     Text(
                         modifier = Modifier
@@ -283,12 +290,18 @@ internal fun ArticleDetail(
             }
         }
 
-        val articleText =
+        val articleBody =
             HtmlCompat.fromHtml(article.body, 0)
 
         val linkColor: Int = MaterialTheme.colorScheme.primary.toArgb()
 
         val bodyTextColor: Int = MaterialTheme.colorScheme.onSurface.toArgb()
+
+        val context = LocalContext.current
+
+        val articleText = remember {
+            MaterialTextView(context)
+        }
 
         AndroidView(modifier = Modifier
             .fillMaxWidth()
@@ -296,17 +309,18 @@ internal fun ArticleDetail(
                 horizontal = dimensionResource(id = R.dimen.density_16)
             )
             .testTag(BODY),
-            factory = { context ->
-                MaterialTextView(context).apply {
-                    autoLinkMask = Linkify.WEB_URLS
-                    linksClickable = true
-                    setLinkTextColor(linkColor)
+            factory = {
+                LinkifyCompat.addLinks(articleText, Linkify.WEB_URLS)
+
+                articleText.apply {
+                    setTextColor(bodyTextColor)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+                    articleText.setLinkTextColor(linkColor)
+                    articleText.movementMethod = LinkMovementMethod.getInstance()
                 }
             },
             update = { materialTextView ->
-                materialTextView.text = articleText
-                materialTextView.setTextColor(bodyTextColor)
+                materialTextView.text = articleBody
             })
     }
 }
