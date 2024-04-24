@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.domain.article.usecase.BookmarkArticleUseCase
 import com.senijoshua.pulitzer.domain.article.usecase.GetArticleGivenIdUseCase
 import com.senijoshua.pulitzer.feature.details.model.DetailArticle
 import com.senijoshua.pulitzer.feature.details.model.toPresentationFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,37 +20,41 @@ import javax.inject.Inject
 internal class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getArticleById: GetArticleGivenIdUseCase,
-): ViewModel() {
+    private val bookmarkArticleUseCase: BookmarkArticleUseCase,
+) : ViewModel() {
     private val articleId: String = checkNotNull(savedStateHandle[ARTICLE_ID_ARG])
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState
 
     fun getArticle() {
         viewModelScope.launch {
-            when(val result = getArticleById(articleId)) {
-                is Result.Success -> {
-                    _uiState.update { currentUiState ->
-                        currentUiState.copy(
-                            details = result.data.toPresentationFormat(),
-                            isLoading = false
-                        )
+            getArticleById(articleId).collectLatest { result ->
+                when (result) {
+                    is Result.Success -> {
+                        _uiState.update { currentUiState ->
+                            currentUiState.copy(
+                                details = result.data.toPresentationFormat(),
+                                isLoading = false
+                            )
+                        }
                     }
-                }
-                is Result.Error -> {
-                    _uiState.update { currentUiState ->
-                        currentUiState.copy(
-                            isLoading = false,
-                            errorMessage = result.error.message
-                        )
+
+                    is Result.Error -> {
+                        _uiState.update { currentUiState ->
+                            currentUiState.copy(
+                                isLoading = false,
+                                errorMessage = result.error.message
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    fun bookmarkArticle() {
+    fun bookmarkArticle(articleId: String) {
         viewModelScope.launch {
-            // use the article Id to call the bookmark article use case
+            bookmarkArticleUseCase(articleId)
         }
     }
 

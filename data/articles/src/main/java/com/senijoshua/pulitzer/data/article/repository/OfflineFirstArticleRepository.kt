@@ -8,7 +8,9 @@ import com.senijoshua.pulitzer.data.article.mapper.toLocalFormat
 import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.util.concurrent.TimeUnit
@@ -25,13 +27,14 @@ import javax.inject.Inject
 internal class OfflineFirstArticleRepository @Inject constructor(
     private val local: LocalDataSource,
     private val remote: RemoteDataSource,
+    private val dispatcher: CoroutineDispatcher,
 ) : ArticleRepository {
     // Max amount of time for which we can store article data in the DB.
     // After this, it's considered stale.
     private val cacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
     // TODO Add a limit for clearing the cache as well
 
-    override suspend fun getArticles(): Flow<Result<List<Article>>> {
+    override fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()
         }.onEach {
@@ -39,26 +42,29 @@ internal class OfflineFirstArticleRepository @Inject constructor(
                 val networkResponse = remote.getArticlesFromServer()
                 local.insertArticles(networkResponse.toLocalFormat())
             }
-        }.toResult()
+        }.flowOn(dispatcher).toResult()
     }
 
-    override suspend fun getArticleGivenId(articleId: String): Result<Article> {
-        return try {
-            Result.Success(local.getArticleById(articleId).toDomainFormat())
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
+    override fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
+        return local.getArticleById(articleId).flowOn(dispatcher).map { article ->
+            article.toDomainFormat()
+        }.toResult()
+
     }
 
     override suspend fun getBookmarkedArticles(): Flow<Result<List<Article>>> {
         TODO("Not yet implemented")
     }
 
+    override suspend fun bookmarkArticle(articleId: String) {
+        local.bookmarkArticle(articleId)
+    }
+
     /**
      * We load fresh data from the remote service only if the data in the DB is stale or
      * if the database is empty
      */
-    private suspend fun shouldLoadMoreArticlesFromNetwork(): Boolean {
+    private fun shouldLoadMoreArticlesFromNetwork(): Boolean {
         return (System.currentTimeMillis() - (local.getTimeCreated()
             ?: 0)) > cacheLimit
     }

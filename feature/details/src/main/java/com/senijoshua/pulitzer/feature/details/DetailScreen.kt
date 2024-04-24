@@ -33,9 +33,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -82,8 +80,8 @@ internal fun DetailScreen(
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    DetailContent(uiState = uiState, bookmarkArticle = {
-        vm.bookmarkArticle()
+    DetailContent(uiState = uiState, bookmarkArticle = { articleId ->
+        vm.bookmarkArticle(articleId)
     }, onErrorMessageShown = {
         vm.errorMessageShown()
     }, onBackClicked = {
@@ -99,7 +97,7 @@ internal fun DetailScreen(
 internal fun DetailContent(
     modifier: Modifier = Modifier,
     uiState: DetailUiState,
-    bookmarkArticle: () -> Unit = {},
+    bookmarkArticle: (String) -> Unit = {},
     onErrorMessageShown: () -> Unit = {},
     onBackClicked: () -> Unit = {},
 ) {
@@ -141,16 +139,10 @@ internal fun DetailContent(
         BottomAppBar(
             modifier = Modifier.height(dimensionResource(id = R.dimen.density_64)),
             actions = {
-                val bookmark = uiState.details?.isBookmarked ?: false
-
-                var isBookmarked by remember { mutableStateOf(bookmark) }
+                val isBookmarked = uiState.details?.isBookmarked ?: false
 
                 IconButton(onClick = {
-                    isBookmarked = !isBookmarked
-
-                    if (isBookmarked) {
-                        bookmarkArticle()
-                    }
+                    bookmarkArticle(uiState.details?.id!!)
                 }) {
                     val painter: Painter
                     val iconColor: Color
