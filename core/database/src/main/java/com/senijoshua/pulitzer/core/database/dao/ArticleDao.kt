@@ -17,7 +17,7 @@ interface ArticleDao {
     fun getArticles(): Flow<List<ArticleEntity>>
 
     @Query("SELECT * FROM articles WHERE id = :id")
-    suspend fun getArticleById(id: String): ArticleEntity
+    fun getArticleById(id: String): Flow<ArticleEntity>
 
     @Query("UPDATE articles SET isBookmarked = CASE WHEN isBookmarked = 1 THEN 0 ELSE 1 END WHERE id = :articleId")
     suspend fun bookmarkArticle(articleId: String)
@@ -29,5 +29,5 @@ interface ArticleDao {
     suspend fun removeArticlesFromBookmarks(vararg articleEntity: ArticleEntity)
 
     @Query("SELECT created_at FROM articles ORDER BY created_at DESC LIMIT 1")
-    suspend fun getTimeCreated(): Long?
+    fun getTimeCreated(): Long?
 }
