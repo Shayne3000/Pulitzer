@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.Flow
  * said sourcing operation.
  */
 internal interface LocalDataSource {
-    suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>>
+    fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     suspend fun insertArticles(articles: List<ArticleEntity>)
-    suspend fun getTimeCreated(): Long?
-    suspend fun getArticleById(articleId: String): ArticleEntity
+    fun getTimeCreated(): Long?
+    fun getArticleById(articleId: String): Flow<ArticleEntity>
+    suspend fun bookmarkArticle(articleId: String)
 }

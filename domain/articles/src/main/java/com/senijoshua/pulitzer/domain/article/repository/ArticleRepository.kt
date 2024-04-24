@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
  * to provision article data from the data layer (in an offline-first manner) to the domain layer.
  */
 interface ArticleRepository {
-    suspend fun getArticles(): Flow<Result<List<Article>>>
-    suspend fun getArticleGivenId(articleId: String): Result<Article>
+    fun getArticles(): Flow<Result<List<Article>>>
+    fun getArticleGivenId(articleId: String): Flow<Result<Article>>
     suspend fun getBookmarkedArticles(): Flow<Result<List<Article>>>
+    suspend fun bookmarkArticle(articleId: String)
 }

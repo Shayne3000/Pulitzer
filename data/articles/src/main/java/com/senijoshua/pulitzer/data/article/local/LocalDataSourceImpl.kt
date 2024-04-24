@@ -12,11 +12,12 @@ import javax.inject.Inject
 internal class LocalDataSourceImpl @Inject constructor(
     private val dao: ArticleDao
 ) : LocalDataSource {
-    override suspend fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
+    override fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
 
     override suspend fun insertArticles(articles: List<ArticleEntity>) =
         dao.insertArticles(articles)
 
-    override suspend fun getTimeCreated() = dao.getTimeCreated()
-    override suspend fun getArticleById(articleId: String) = dao.getArticleById(articleId)
+    override fun getTimeCreated() = dao.getTimeCreated()
+    override fun getArticleById(articleId: String) = dao.getArticleById(articleId)
+    override suspend fun bookmarkArticle(articleId: String) = dao.bookmarkArticle(articleId)
 }
