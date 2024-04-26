@@ -29,17 +29,30 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val remote: RemoteDataSource,
     private val dispatcher: CoroutineDispatcher,
 ) : ArticleRepository {
-    // Max amount of time for which we can store article data in the DB.
-    // After this, it's considered stale.
-    private val cacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
-    // TODO Add a limit for clearing the cache as well
+    /**
+     * The cache limit is the max amount of time for which we
+     * can serve article data in the DB after which, it will be
+     * considered old and fresh will be requested from the server.
+     */
+    private val refreshCacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
+
+    /**
+     * The clear limit is  the max amount of time for which we
+     * can store article data in the DB after which it will be
+     * considered stale and deleted from the DB.
+     */
+    private val clearCacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
 
     override fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()
         }.onEach {
-            if (shouldLoadMoreArticlesFromNetwork()) {
+            if (shouldLoadArticlesFromRemoteService()) {
                 val networkResponse = remote.getArticlesFromServer()
+
+                if (shouldClearStaleData()) {
+                    local.clearArticles()
+                }
                 local.insertArticles(networkResponse.toLocalFormat())
             }
         }.flowOn(dispatcher).toResult()
@@ -61,11 +74,18 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     }
 
     /**
-     * We load fresh data from the remote service only if the data in the DB is stale or
-     * if the database is empty
+     * We load fresh data from the remote service only if the data in the DB is old or
+     * if the database is empty.
      */
-    private fun shouldLoadMoreArticlesFromNetwork(): Boolean {
-        return (System.currentTimeMillis() - (local.getTimeCreated()
-            ?: 0)) > cacheLimit
+    private fun shouldLoadArticlesFromRemoteService(): Boolean {
+        return isLimitExceeded(refreshCacheLimit)
     }
+
+    /**
+     * We delete data from the DB if the data in the DB is stale.
+     */
+    private fun shouldClearStaleData(): Boolean = isLimitExceeded(clearCacheLimit)
+
+    private fun isLimitExceeded(cacheLimit: Long) =
+        (System.currentTimeMillis() - (local.getTimeCreated() ?: 0)) > cacheLimit
 }

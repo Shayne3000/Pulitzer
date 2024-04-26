@@ -30,4 +30,7 @@ interface ArticleDao {
 
     @Query("SELECT created_at FROM articles ORDER BY created_at DESC LIMIT 1")
     fun getTimeCreated(): Long?
+
+    @Query("DELETE FROM articles")
+    fun clearArticles()
 }

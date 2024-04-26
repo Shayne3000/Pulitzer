@@ -18,4 +18,5 @@ internal interface LocalDataSource {
     fun getTimeCreated(): Long?
     fun getArticleById(articleId: String): Flow<ArticleEntity>
     suspend fun bookmarkArticle(articleId: String)
+    suspend fun clearArticles()
 }

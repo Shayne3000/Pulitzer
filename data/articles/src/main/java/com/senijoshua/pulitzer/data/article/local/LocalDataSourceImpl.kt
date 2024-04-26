@@ -20,4 +20,5 @@ internal class LocalDataSourceImpl @Inject constructor(
     override fun getTimeCreated() = dao.getTimeCreated()
     override fun getArticleById(articleId: String) = dao.getArticleById(articleId)
     override suspend fun bookmarkArticle(articleId: String) = dao.bookmarkArticle(articleId)
+    override suspend fun clearArticles() = dao.clearArticles()
 }
