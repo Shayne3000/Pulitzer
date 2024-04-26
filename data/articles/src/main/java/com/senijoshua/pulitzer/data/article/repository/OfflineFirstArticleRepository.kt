@@ -34,7 +34,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
      * can serve article data in the DB after which, it will be
      * considered old and fresh will be requested from the server.
      */
-    private val refreshCacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES)
+    private val refreshCacheLimit = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
 
     /**
      * The clear limit is  the max amount of time for which we
