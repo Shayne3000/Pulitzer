@@ -46,7 +46,8 @@ import java.util.Date
 fun ArticleItem(
     modifier: Modifier = Modifier,
     article: PresentationArticle,
-    onArticleItemClicked: (String) -> Unit = {},
+    onArticleClicked: (String) -> Unit = {},
+    onArticleBookmarked: (String) -> Unit = {},
 ) {
     OutlinedCard(
         modifier = modifier.cardModifier(),
@@ -58,7 +59,7 @@ fun ArticleItem(
             MaterialTheme.colorScheme.onSurface
         ),
         onClick = {
-            onArticleItemClicked(article.id)
+            onArticleClicked(article.id)
         }
     ) {
         val imageRequest = buildAsyncImage(imageUrl = article.thumbnail)
@@ -105,6 +106,7 @@ fun ArticleItem(
             IconButton(
                 onClick = {
                     isBookmarked = !isBookmarked
+                    onArticleBookmarked(article.id)
                 }) {
                 val painter: Painter
                 val iconColor: Color

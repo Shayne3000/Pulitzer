@@ -3,6 +3,7 @@ package com.senijoshua.pulitzer.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.domain.article.usecase.BookmarkArticleUseCase
 import com.senijoshua.pulitzer.domain.article.usecase.GetArticlesUseCase
 import com.senijoshua.pulitzer.feature.home.model.HomeArticle
 import com.senijoshua.pulitzer.feature.home.model.toPresentationFormat
@@ -15,8 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor(private val getNewsArticles: GetArticlesUseCase) :
-    ViewModel() {
+internal class HomeViewModel @Inject constructor(
+    private val getNewsArticles: GetArticlesUseCase,
+    private val bookmarkArticleUseCase: BookmarkArticleUseCase,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState
 
@@ -44,6 +47,12 @@ internal class HomeViewModel @Inject constructor(private val getNewsArticles: Ge
                     }
                 }
             }
+        }
+    }
+
+    fun bookmarkArticle(articleId: String) {
+        viewModelScope.launch {
+            bookmarkArticleUseCase(articleId)
         }
     }
 

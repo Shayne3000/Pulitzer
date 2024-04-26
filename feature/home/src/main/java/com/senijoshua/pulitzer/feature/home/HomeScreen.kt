@@ -50,6 +50,9 @@ internal fun HomeScreen(
         onArticleClicked = { articleId ->
             onNavigateToDetailScreen(articleId)
         },
+        onArticleBookmarked = { articleId ->
+            vm.bookmarkArticle(articleId)
+        },
         onErrorMessageShown = {
             vm.onErrorMessageShown()
         }
@@ -65,6 +68,7 @@ internal fun HomeContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onArticleClicked: (String) -> Unit = { _ -> },
+    onArticleBookmarked: (String) -> Unit = {},
     onErrorMessageShown: () -> Unit = {}
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -105,15 +109,17 @@ internal fun HomeContent(
             if (uiState.articles.isNotEmpty()) {
                 HomeArticleList(
                     modifier = modifier,
-                    uiState = uiState
-                ) { articleId -> onArticleClicked(articleId) }
+                    uiState = uiState,
+                    onArticleClicked = { articleId -> onArticleClicked(articleId) },
+                    onArticleBookmarked = { articleId -> onArticleBookmarked(articleId) },
+                )
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
             } else {
                 EmptyScreen(
                     modifier,
                     text = R.string.no_articles_text,
-                    iconContentDescription =  R.string.empty_article_list
+                    iconContentDescription = R.string.empty_article_list
                 )
             }
         }
@@ -132,7 +138,8 @@ internal fun HomeContent(
 internal fun HomeArticleList(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
-    onArticleClicked: (String) -> Unit = { _ -> },
+    onArticleClicked: (String) -> Unit = {},
+    onArticleBookmarked: (String) -> Unit = {},
 ) {
     LazyColumn(
         modifier = modifier,
@@ -140,9 +147,11 @@ internal fun HomeArticleList(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_4))
     ) {
         items(items = uiState.articles, key = { article -> article.id }) { homeArticle ->
-            ArticleItem(article = homeArticle) { articleId ->
+            ArticleItem(article = homeArticle, onArticleClicked = { articleId ->
                 onArticleClicked(articleId)
-            }
+            }, onArticleBookmarked = { articleId ->
+                onArticleBookmarked(articleId)
+            })
         }
     }
 }
