@@ -17,10 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,8 +60,6 @@ fun ArticleItem(
     ) {
         val imageRequest = buildAsyncImage(imageUrl = article.thumbnail)
 
-        var isBookmarked by remember { mutableStateOf(article.isBookmarked) }
-
         Row(
             modifier = modifier
                 .cardRowModifier(),
@@ -105,13 +99,12 @@ fun ArticleItem(
 
             IconButton(
                 onClick = {
-                    isBookmarked = !isBookmarked
                     onArticleBookmarked(article.id)
                 }) {
                 val painter: Painter
                 val iconColor: Color
 
-                if (isBookmarked) {
+                if (article.isBookmarked) {
                     painter = painterResource(id = R.drawable.ic_bookmark_filled)
                     iconColor = MaterialTheme.colorScheme.primary
                 } else {
