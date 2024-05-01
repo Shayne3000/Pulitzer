@@ -12,11 +12,16 @@ const val HOME_GRAPH = "home_graph"
  * Its screens have internal visibility as they are self-contained/encapsulated within the feature
  * module and not accessible to other modules.
  */
-fun NavGraphBuilder.homeGraph(navigateToDetailScreen: (String) -> Unit) {
+fun NavGraphBuilder.homeGraph(
+    navigateToDetailScreen: (String) -> Unit,
+    navigateToBookmarksScreen: () -> Unit,
+) {
     navigation(startDestination = HOME_ROUTE, route = HOME_GRAPH) {
-        homeScreen { articleId ->
+        homeScreen(toDetailScreen = { articleId ->
             navigateToDetailScreen(articleId)
-        }
+        }, toBookmarksScreen = {
+            navigateToBookmarksScreen()
+        })
     }
 }
 
@@ -24,10 +29,15 @@ fun NavGraphBuilder.homeGraph(navigateToDetailScreen: (String) -> Unit) {
  * NavGraphBuilder extension function that adds the HomeScreen composable as a destination
  * in the Home nav graph.
  */
-internal fun NavGraphBuilder.homeScreen(navigateToDetailScreen: (String) -> Unit) {
+internal fun NavGraphBuilder.homeScreen(
+    toDetailScreen: (String) -> Unit,
+    toBookmarksScreen: () -> Unit
+) {
     composable(HOME_ROUTE) {
-        HomeScreen { articleId ->
-            navigateToDetailScreen(articleId)
-        }
+        HomeScreen(onNavigateToDetailScreen = { articleId ->
+            toDetailScreen(articleId)
+        }, onNavigateToBookmarksScreen = {
+            toBookmarksScreen()
+        })
     }
 }

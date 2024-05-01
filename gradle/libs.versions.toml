@@ -18,11 +18,7 @@ lifecycle = "2.7.0"
 activity-compose = "1.9.0"
 compose-bom = "2024.04.01"
 okhttp-bom = "4.12.0"
-compose-compiler = "1.5.11"
-espresso-core = "3.5.1"
-appcompat = "1.6.1"
 material3 = "1.2.1"
-material = "1.11.0"
 com-google-android-material-material = "1.11.0"
 
 [libraries]
@@ -98,8 +94,6 @@ kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 # Compose UI test
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material-material" }
 
 [plugins]

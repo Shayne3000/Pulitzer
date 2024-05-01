@@ -41,7 +41,8 @@ import com.senijoshua.pulitzer.feature.home.model.HomeArticle
 @Composable
 internal fun HomeScreen(
     vm: HomeViewModel = hiltViewModel(),
-    onNavigateToDetailScreen: (String) -> Unit = { _ -> }
+    onNavigateToDetailScreen: (String) -> Unit = {},
+    onNavigateToBookmarksScreen: () -> Unit = {}
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 

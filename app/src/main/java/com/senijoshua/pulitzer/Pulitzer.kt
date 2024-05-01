@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.senijoshua.pulitzer.feature.bookmarks.bookmarksGraph
+import com.senijoshua.pulitzer.feature.bookmarks.navigateToBookmarks
 import com.senijoshua.pulitzer.feature.details.detailGraph
 import com.senijoshua.pulitzer.feature.details.navigateToDetail
 import com.senijoshua.pulitzer.feature.home.HOME_GRAPH
@@ -18,10 +20,15 @@ fun Pulitzer(
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(navController = navController, startDestination = HOME_GRAPH) {
-        homeGraph { articleId ->
+        homeGraph(navigateToDetailScreen =  { articleId ->
             navController.navigateToDetail(articleId)
-        }
+        }, navigateToBookmarksScreen = {
+            navController.navigateToBookmarks()
+        })
         detailGraph {
+            navController.popBackStack()
+        }
+        bookmarksGraph {
             navController.popBackStack()
         }
     }

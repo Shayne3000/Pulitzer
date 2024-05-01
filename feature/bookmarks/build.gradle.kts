@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -36,17 +38,33 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation(libs.core.ktx)
-    implementation(libs.appcompat)
+    implementation(project(":core:ui"))
+    implementation(project(":core:model"))
+    implementation(project(":domain:articles"))
+
+    // Compose lifecycle runtime
+    implementation(libs.lifecycle.compose)
+
+    // Hilt
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // Coil
+    implementation(libs.coil)
+
+    // Compose UI
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation(libs.navigation)
 }

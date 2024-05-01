@@ -217,7 +217,7 @@ internal fun ArticleDetail(
                         id = R.dimen.density_8
                     )
                 )
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_4)))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_8)))
         )
 
         Text(
