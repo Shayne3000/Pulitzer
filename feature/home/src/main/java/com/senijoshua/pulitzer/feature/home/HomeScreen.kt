@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -25,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +51,9 @@ internal fun HomeScreen(
 
     HomeContent(
         uiState = uiState,
+        onBookmarkIconClicked = {
+            onNavigateToBookmarksScreen()
+        },
         onArticleClicked = { articleId ->
             onNavigateToDetailScreen(articleId)
         },
@@ -69,6 +75,7 @@ internal fun HomeContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onArticleClicked: (String) -> Unit = { _ -> },
+    onBookmarkIconClicked: () -> Unit = {},
     onArticleBookmarked: (String) -> Unit = {},
     onErrorMessageShown: () -> Unit = {}
 ) {
@@ -87,7 +94,18 @@ internal fun HomeContent(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        onBookmarkIconClicked()
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_bookmark_filled),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            contentDescription = stringResource(id = R.string.bookmarks_menu_item)
+                        )
+                    }
+                }
             )
         },
         snackbarHost = {
