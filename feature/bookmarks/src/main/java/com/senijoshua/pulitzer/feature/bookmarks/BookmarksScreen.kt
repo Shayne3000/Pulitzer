@@ -81,7 +81,7 @@ internal fun BookmarksContent(
             // Search result content
         }
 
-        // Show search menu if context menu isn't showing.
+        // TODO Show search menu if context menu isn't showing.
 
         // TODO Error snack bar aligned to the bottom.
     }
