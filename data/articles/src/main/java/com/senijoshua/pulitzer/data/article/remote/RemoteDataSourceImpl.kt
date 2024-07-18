@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 /**
  * Implementation of the [RemoteDataSource] that interacts with the REST client
- * which executes network requests to retrieve data from the Remote service.
+ * that executes network requests to retrieve data from the Guardian web service.
  */
 internal class RemoteDataSourceImpl @Inject constructor(
     private val api: ArticleApi

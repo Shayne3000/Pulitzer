@@ -11,9 +11,9 @@ internal const val DETAILS_GRAPH = "detail_graph"
 internal const val DETAILS_NAV_ROUTE = "$DETAILS_GRAPH/$DETAILS_ROUTE?$ARTICLE_ID_ARG={$ARTICLE_ID_ARG}"
 
 /**
- * Nav graph for the screens in the Details module to be nested in the app-level NavGraph.
+ * Nav graph for the screens in the Details module that will be nested in the app-level NavGraph.
  *
- * In navigating from one screen to another with arguments in a nested nav graph in a navhost
+ * In navigating from one screen to another with arguments in a nested nav graph within a navhost,
  * keep in mind three things:
  *
  * 1. We navigate to destinations and not graphs so the route to the destination matters
