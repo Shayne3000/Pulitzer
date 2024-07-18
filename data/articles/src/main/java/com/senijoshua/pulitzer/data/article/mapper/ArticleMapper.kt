@@ -26,9 +26,9 @@ internal fun List<ArticleEntity>.toDomainFormat() = map(ArticleEntity::toDomainF
 
 internal fun NetworkArticle.toLocalFormat() = ArticleEntity(
     id = id,
-    thumbnail = fields.thumbnail,
+    thumbnail = fields.thumbnail ?: "",
     title = fields.headline,
-    author = fields.byline,
+    author = fields.byline ?: "",
     body = fields.body,
     isBookmarked = false,
     lastModifiedDate = fields.lastModified,

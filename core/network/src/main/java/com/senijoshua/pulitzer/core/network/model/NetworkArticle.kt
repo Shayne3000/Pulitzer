@@ -15,8 +15,8 @@ data class NetworkArticle(val id: String, val fields: NetworkArticleFields)
 @JsonClass(generateAdapter = true)
 data class NetworkArticleFields(
     val headline: String, // Title
-    val byline: String, // author
+    val byline: String?, // author
     val body: String, // Body
-    val thumbnail: String, // TODO Big photo ends with 1000.jpg, thumbnails are 500.jpg
+    val thumbnail: String?, // TODO Big photo ends with 1000.jpg, thumbnails are 500.jpg
     val lastModified: Date,
 )
