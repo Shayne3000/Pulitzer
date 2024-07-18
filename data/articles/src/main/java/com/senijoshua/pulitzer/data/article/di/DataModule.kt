@@ -1,5 +1,7 @@
 package com.senijoshua.pulitzer.data.article.di
 
+import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
+import com.senijoshua.pulitzer.data.article.local.DbCacheLimitImpl
 import com.senijoshua.pulitzer.data.article.local.LocalDataSource
 import com.senijoshua.pulitzer.data.article.local.LocalDataSourceImpl
 import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
@@ -22,6 +24,10 @@ internal abstract class DataModule {
     @Singleton
     @Binds
     internal abstract fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource
+
+    @Singleton
+    @Binds
+    internal abstract fun provideDbCache(dbCacheLimitImpl: DbCacheLimitImpl): DbCacheLimit
 
     @Singleton
     @Binds
