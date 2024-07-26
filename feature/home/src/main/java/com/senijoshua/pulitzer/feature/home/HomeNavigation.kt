@@ -3,9 +3,19 @@ package com.senijoshua.pulitzer.feature.home
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import kotlinx.serialization.Serializable
 
-internal const val HOME_ROUTE = "home"
-const val HOME_GRAPH = "home_graph"
+/**
+ * Route for the home module nav graph that will be nested in the global navhost
+ */
+@Serializable
+object HomeGraph
+
+/**
+ * Route for the Home screen composable
+ */
+@Serializable
+object HomeRoute
 
 /**
  * Nav graph for the screens within the Home module to be nested in the app-level NavGraph.
@@ -16,7 +26,7 @@ fun NavGraphBuilder.homeGraph(
     navigateToDetailScreen: (String) -> Unit,
     navigateToBookmarksScreen: () -> Unit,
 ) {
-    navigation(startDestination = HOME_ROUTE, route = HOME_GRAPH) {
+    navigation<HomeGraph>(startDestination = HomeRoute) {
         homeScreen(toDetailScreen = { articleId ->
             navigateToDetailScreen(articleId)
         }, toBookmarksScreen = {
@@ -33,7 +43,7 @@ internal fun NavGraphBuilder.homeScreen(
     toDetailScreen: (String) -> Unit,
     toBookmarksScreen: () -> Unit
 ) {
-    composable(HOME_ROUTE) {
+    composable<HomeRoute> {
         HomeScreen(onNavigateToDetailScreen = { articleId ->
             toDetailScreen(articleId)
         }, onNavigateToBookmarksScreen = {

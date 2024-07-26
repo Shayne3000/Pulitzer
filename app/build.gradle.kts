@@ -30,7 +30,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            
+
             composeCompiler {
                 enableStrongSkippingMode = true
             }

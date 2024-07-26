@@ -8,7 +8,7 @@ import com.senijoshua.pulitzer.feature.bookmarks.bookmarksGraph
 import com.senijoshua.pulitzer.feature.bookmarks.navigateToBookmarks
 import com.senijoshua.pulitzer.feature.details.detailGraph
 import com.senijoshua.pulitzer.feature.details.navigateToDetail
-import com.senijoshua.pulitzer.feature.home.HOME_GRAPH
+import com.senijoshua.pulitzer.feature.home.HomeGraph
 import com.senijoshua.pulitzer.feature.home.homeGraph
 
 /**
@@ -19,7 +19,7 @@ import com.senijoshua.pulitzer.feature.home.homeGraph
 fun Pulitzer(
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController = navController, startDestination = HOME_GRAPH) {
+    NavHost(navController = navController, startDestination = HomeGraph) {
         homeGraph(navigateToDetailScreen =  { articleId ->
             navController.navigateToDetail(articleId)
         }, navigateToBookmarksScreen = {

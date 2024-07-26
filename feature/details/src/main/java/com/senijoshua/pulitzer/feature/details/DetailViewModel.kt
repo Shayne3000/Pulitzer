@@ -3,6 +3,7 @@ package com.senijoshua.pulitzer.feature.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.usecase.BookmarkArticleUseCase
 import com.senijoshua.pulitzer.domain.article.usecase.GetArticleGivenIdUseCase
@@ -22,13 +23,13 @@ internal class DetailViewModel @Inject constructor(
     private val getArticleById: GetArticleGivenIdUseCase,
     private val bookmarkArticleUseCase: BookmarkArticleUseCase,
 ) : ViewModel() {
-    private val articleId: String = checkNotNull(savedStateHandle[ARTICLE_ID_ARG])
+    private val detail: DetailRoute = savedStateHandle.toRoute()
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState
 
     fun getArticle() {
         viewModelScope.launch {
-            getArticleById(articleId).collectLatest { result ->
+            getArticleById(detail.articleId).collectLatest { result ->
                 when (result) {
                     is Result.Success -> {
                         _uiState.update { currentUiState ->

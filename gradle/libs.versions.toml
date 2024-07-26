@@ -9,8 +9,11 @@ hiltNavigation = "1.2.0"
 ksp = "2.0.0-1.0.23"
 junit = "4.13.2"
 moshi = "1.15.1"
+kotlinxSerialization = "2.0.0"
+kotlinxSerializationJson = "1.7.1"
 mockk = "1.13.9"
-navigation = "2.7.7"
+# TODO The below is tentative as we're only doing this to triage the new built-in type safe APIs for compile-time type safety for navigation graphs.
+navigation = "2.8.0-beta06"
 retrofit = "2.9.0"
 room = "2.6.1"
 androidx-test-ext-junit = "1.2.1"
@@ -54,6 +57,9 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
 # Kotlin Coroutine & Flows
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# Kotlin Serialization
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson"}
 
 # OkHttp3
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp-bom" }
@@ -99,6 +105,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
