@@ -252,7 +252,7 @@ internal fun ArticleDetail(
             }
 
             Column {
-                article.author?.let { author ->
+                if (!author.isNullOrEmpty()) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()

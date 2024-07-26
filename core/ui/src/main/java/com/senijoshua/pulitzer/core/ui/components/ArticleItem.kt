@@ -36,7 +36,7 @@ import com.senijoshua.pulitzer.core.ui.util.buildAsyncImage
 import java.util.Date
 
 /**
- * Article card composable that can be reused in across feature modules.
+ * Article card composable that can be reused across feature modules.
  */
 @Composable
 fun ArticleItem(
