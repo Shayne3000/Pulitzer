@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -16,20 +17,16 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            composeCompiler {
+                enableStrongSkippingMode = true
+            }
         }
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.12"
-    }
-
-    buildFeatures {
-        compose = true
     }
 
     compileOptions {
