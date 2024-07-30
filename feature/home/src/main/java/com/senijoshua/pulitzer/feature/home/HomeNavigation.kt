@@ -15,7 +15,7 @@ object HomeGraph
  * Route for the Home screen composable
  */
 @Serializable
-object HomeRoute
+internal object HomeRoute
 
 /**
  * Nav graph for the screens within the Home module to be nested in the app-level NavGraph.

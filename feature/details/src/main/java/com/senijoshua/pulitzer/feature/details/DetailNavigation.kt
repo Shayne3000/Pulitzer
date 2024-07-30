@@ -53,6 +53,5 @@ internal fun NavGraphBuilder.detailScreen(onBackClicked: () -> Unit) {
  * Type-safe nav controller extension to navigate to the Details destination in its nav graph whilst
  * passing arguments through to said nav graph in tandem.
  */
-fun NavController.navigateToDetail(articleId: String) {
+fun NavController.navigateToDetail(articleId: String) =
     this.navigate(DetailRoute(articleId = articleId))
-}

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -48,6 +49,9 @@ dependencies {
 
     // Compose lifecycle runtime
     implementation(libs.lifecycle.compose)
+
+    // Kotlin Serialization
+    implementation(libs.kotlin.serialization.json)
 
     // Hilt
     implementation(libs.hilt)

@@ -4,16 +4,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import kotlinx.serialization.Serializable
 
-const val BOOKMARKS_ROUTE = "bookmarks"
-private const val BOOKMARKS_GRAPH = "bookmarks_graph"
+@Serializable
+internal object BookmarksGraph
+
+@Serializable
+internal object BookmarksRoute
 
 /**
  * Nav graph for the screens in the Bookmarks module to be nested in the app-level NavGraph.
  */
 fun NavGraphBuilder.bookmarksGraph(onBackClicked: () -> Unit) {
-    navigation(startDestination = BOOKMARKS_ROUTE, route = BOOKMARKS_GRAPH) {
-        composable(BOOKMARKS_ROUTE) {
+    navigation< BookmarksGraph>(startDestination = BookmarksRoute) {
+        composable<BookmarksRoute> {
             BookmarksScreen {
                 onBackClicked()
             }
@@ -25,5 +29,5 @@ fun NavGraphBuilder.bookmarksGraph(onBackClicked: () -> Unit) {
  * Type-safe nav controller extension to navigate to the Bookmarks nav graph.
  */
 fun NavController.navigateToBookmarks() {
-    this.navigate(BOOKMARKS_ROUTE)
+    this.navigate(BookmarksRoute)
 }
