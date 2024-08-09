@@ -29,6 +29,8 @@ internal class DetailViewModel @Inject constructor(
 
     fun getArticle() {
         viewModelScope.launch {
+            // NB: For testing the ViewModel, we use the actual implementation of the use case because the business logic is simple but reusable,
+            // If the business logic was complex, we would depend on an abstraction as as to make the ViewModel much more testable.
             getArticleById(detail.articleId).collectLatest { result ->
                 when (result) {
                     is Result.Success -> {

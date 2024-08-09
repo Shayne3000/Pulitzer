@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,33 +28,35 @@ internal fun BookmarksScreen(
     vm: BookmarksViewModel = hiltViewModel(),
     onBackClicked: () -> Unit = {}
 ) {
-    // Setup content screen, UDF and state production paradigms
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    val searchQuery = vm.searchQuery
-
-    // TODO Also get the search query from the viewmodel. The viewmodel is the stateholder and source of truth of data for the UI so we store the search query there.
-
-    BookmarksContent(uiState = uiState,
-        searchQuery = searchQuery,
-        onSearchQueryChanged = { newQuery ->
+    BookmarksContent(
+        uiState = uiState,
+        searchQuery = vm.searchQuery,
+        updateSearchQuery = { newQuery ->
             vm.updateSearchQuery(newQuery)
         },
         onBackClicked = {
             onBackClicked()
-        })
+        },
+    )
+
+    LaunchedEffect(Unit) {
+        vm.initialiseSearch()
+    }
 }
 
 @Composable
 internal fun BookmarksContent(
     modifier: Modifier = Modifier,
     uiState: BookmarksScreenState,
-    searchQuery: String = "",
-    onSearchQueryChanged: (String) -> Unit = {},
-    onSearchTriggered: (String) -> Unit = {},// TODO onSearchQueryChanged()
+    searchQuery: String,
+    updateSearchQuery: (String) -> Unit = {},
     onBackClicked: () -> Unit = {},
 ) {
-    // TODO Setup the search bar which holds screen content.
+    // TODO Setup the UI of the search bar and the various columns/screen that hold search data.
+
+    // TODO Potential blog on search?
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -61,12 +64,15 @@ internal fun BookmarksContent(
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
+        // TODO Build your own searchbar component with BasicTextField that takes a state
+        //  instead of a text and use it here since we cannot explicitly update TextFieldState or just use mutableStateOf in the ViewModel to store textField state
+
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter),
             query = searchQuery,
-            onQueryChange = onSearchQueryChanged,
+            onQueryChange = updateSearchQuery,
             onSearch = {
                 // TODO Hide keyboard
                 keyboardController?.hide()
