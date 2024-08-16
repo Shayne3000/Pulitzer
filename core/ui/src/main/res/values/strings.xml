@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pulitzer</string>
+    <!--Home-->
     <string name="article_thumbnail">Article thumbnail</string>
     <string name="article_bookmark">Bookmark</string>
     <string name="bookmarks_menu_item">Bookmarks</string>
     <string name="search_bookmarks">Search bookmarks by title</string>
     <string name="back_content_desc">Back</string>
+    <string name="close_content_desc">Close</string>
     <string name="guardian_logo_content_desc">Guardian Logo</string>
     <string name="published_guardian">The Guardian</string>
     <string name="detail_article_hero_img">Article Image</string>
