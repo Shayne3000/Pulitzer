@@ -21,8 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class BookmarksViewModel @Inject constructor() : ViewModel() {
-    private val _uiState = MutableStateFlow(BookmarksScreenState())
-    val uiState: StateFlow<BookmarksScreenState> = _uiState
+    private val _uiState = MutableStateFlow(BookmarksUiState())
+    val uiState: StateFlow<BookmarksUiState> = _uiState
 
     // store the state (i.e. search query) of the search textfield in the viewmodel using mutableState
     // to survive configuration changes and circumvent the undesirable behaviour of
@@ -69,7 +69,7 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
 /**
  * Representation of the Screen's UI State at any instant in time.
  */
-internal data class BookmarksScreenState(
+internal data class BookmarksUiState(
     val articles: List<BookmarksArticle> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? =  null,

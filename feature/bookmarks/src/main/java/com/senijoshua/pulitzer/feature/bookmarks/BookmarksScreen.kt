@@ -17,7 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
+import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 
 @Composable
@@ -60,7 +63,7 @@ internal fun BookmarksScreen(
 @Composable
 internal fun BookmarksContent(
     modifier: Modifier = Modifier,
-    uiState: BookmarksScreenState,
+    uiState: BookmarksUiState,
     searchQuery: String,
     updateSearchQuery: (String) -> Unit = {},
     onBackClicked: () -> Unit = {},
@@ -72,6 +75,7 @@ internal fun BookmarksContent(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
             .padding(dimensionResource(id = R.dimen.density_16))
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,8 +85,7 @@ internal fun BookmarksContent(
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .background(color = MaterialTheme.colorScheme.primaryContainer),
+                .align(Alignment.TopCenter),
             query = searchQuery,
             onQueryChange = updateSearchQuery,
             onSearch = {
@@ -90,7 +93,12 @@ internal fun BookmarksContent(
             },
             leadingIcon = {
                 IconButton(onClick = {
-                    if (!isExpanded) {
+                    // If the search bar is active and empty and this is clicked,
+                    // it would go back to the normal state. If it is clicked again,
+                    // it would go back to the previous screen.
+                    if (isExpanded) {
+                        isExpanded = false
+                    } else {
                         onBackClicked()
                     }
                 }) {
@@ -104,9 +112,18 @@ internal fun BookmarksContent(
                 }
             },
             shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.density_36)),
-            placeholder = { Text(text = stringResource(id = R.string.search_bookmarks)) }, // TODO Make light and italics using annotation in the string resource
+            colors = SearchBarDefaults.colors(inputFieldColors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )),
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search_bookmarks),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            },
             trailingIcon = {
-                if (searchQuery.isNotEmpty()) {
+                if (isExpanded && searchQuery.isNotEmpty()) {
                     Icon(
                         modifier = Modifier.clickable {
                             updateSearchQuery("")
@@ -118,9 +135,8 @@ internal fun BookmarksContent(
                 }
             },
             active = isExpanded,
-            onActiveChange = { expandedState ->
-                isExpanded = expandedState
-            },
+            onActiveChange = { isExpanded = it}
+
         ) {
             // Search result content
         }
@@ -132,6 +148,9 @@ internal fun BookmarksContent(
 }
 
 @PreviewPulitzerLightDarkBackground
+@Composable
 private fun BookmarksScreenPreview() {
-
+    PulitzerTheme {
+        BookmarksContent(uiState = BookmarksUiState(), searchQuery = "")
+    }
 }

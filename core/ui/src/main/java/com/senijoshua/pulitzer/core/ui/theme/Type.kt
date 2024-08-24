@@ -59,12 +59,10 @@ val Typography = Typography(
     // Search form hint
     labelMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Light,
         fontStyle = FontStyle.Italic,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
-
-    // TODO Add search bar textstyle in italics
 )
