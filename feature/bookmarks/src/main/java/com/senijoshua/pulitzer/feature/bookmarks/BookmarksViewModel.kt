@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,6 +61,14 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
 
     // Setup a coroutine to implement the search with a search query.
 
+    fun updateErrorState() {
+        _uiState.update { currentUiState ->
+            currentUiState.copy(
+                isLoading = false,
+                errorMessage = null,
+            )
+        }
+    }
 
     fun updateSearchQuery(newQuery: String) {
         searchQuery = newQuery
@@ -70,7 +79,7 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
  * Representation of the Screen's UI State at any instant in time.
  */
 internal data class BookmarksUiState(
-    val articles: List<BookmarksArticle> = emptyList(),
+    val bookmarkedArticles: List<BookmarksArticle> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? =  null,
 )

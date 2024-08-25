@@ -13,6 +13,8 @@
     <string name="detail_article_hero_img">Article Image</string>
     <string name="empty_article_details">No article detail</string>
     <string name="no_article_text">This article has no content at this time, please check back later.</string>
+    <string name="no_article_search_result_text">The article title you\'re looking for does not match that of any article. Please search for a different title.</string>
+    <string name="no_bookmarked_articles">You have no bookmarked articles. Please bookmark some articles to see them listed here.</string>
     <string name="empty_article_list">Empty list of articles</string>
     <string name="no_articles_text">There are no news articles at this time, check back in a few hours.</string>
 </resources>

@@ -18,6 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -34,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
+import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
+import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 
@@ -49,6 +53,9 @@ internal fun BookmarksScreen(
         searchQuery = vm.searchQuery,
         updateSearchQuery = { newQuery ->
             vm.updateSearchQuery(newQuery)
+        },
+        onErrorShown = {
+            vm.updateErrorState()
         },
         onBackClicked = {
             onBackClicked()
@@ -66,11 +73,12 @@ internal fun BookmarksContent(
     uiState: BookmarksUiState,
     searchQuery: String,
     updateSearchQuery: (String) -> Unit = {},
+    onErrorShown: () -> Unit = {},
     onBackClicked: () -> Unit = {},
 ) {
-    // TODO Setup the UI of the search bar and the various columns/screen that hold search data.
+    val snackBarHostState = remember { SnackbarHostState() }
 
-    // TODO Potential blog on search?
+    SnackbarHost(hostState = snackBarHostState)
 
     Box(
         modifier = modifier
@@ -94,11 +102,11 @@ internal fun BookmarksContent(
             leadingIcon = {
                 IconButton(onClick = {
                     // If the search bar is active and empty and this is clicked,
-                    // it would go back to the normal state. If it is clicked again,
-                    // it would go back to the previous screen.
                     if (isExpanded) {
+                        // it would go back to the normal state. If it is clicked again,
                         isExpanded = false
                     } else {
+                        // it would go back to the previous screen.
                         onBackClicked()
                     }
                 }) {
@@ -113,7 +121,8 @@ internal fun BookmarksContent(
             },
             shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.density_36)),
             colors = SearchBarDefaults.colors(inputFieldColors = TextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                unfocusedPrefixColor = MaterialTheme.colorScheme.outline,
             )),
             placeholder = {
                 Text(
@@ -139,11 +148,36 @@ internal fun BookmarksContent(
 
         ) {
             // Search result content
+            // TODO Setup the UI of the various columns/screens that holds search data.
+            if (uiState.bookmarkedArticles.isNotEmpty()) {
+                // show a list of bookmarks filtered by the search query
+            } else if (uiState.isLoading) {
+                PulitzerProgressIndicator(modifier)
+            } else {
+                val emptyScreenText = if (searchQuery.isNotEmpty()) {
+                    R.string.no_article_search_result_text
+                } else {
+                    R.string.no_bookmarked_articles
+                }
+
+                EmptyScreen(
+                    modifier,
+                    text = emptyScreenText,
+                    iconContentDescription = emptyScreenText
+                )
+            }
         }
 
         // TODO Show search menu if context menu isn't showing.
 
         // TODO Error snack bar aligned to the bottom.
+
+        uiState.errorMessage?.let { errorMessage ->
+            LaunchedEffect(snackBarHostState, errorMessage) {
+                snackBarHostState.showSnackbar(errorMessage)
+                onErrorShown()
+            }
+        }
     }
 }
 
