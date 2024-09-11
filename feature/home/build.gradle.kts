@@ -36,6 +36,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    hilt {
+        enableAggregatingTask = true
+    }
+
     kotlinOptions {
         jvmTarget = "17"
     }
