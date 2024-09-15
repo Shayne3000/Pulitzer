@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.core.ui.components
+package com.senijoshua.pulitzer.feature.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -28,20 +28,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
-import com.senijoshua.pulitzer.core.model.PresentationArticle
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import com.senijoshua.pulitzer.core.ui.util.buildAsyncImage
-import java.util.Date
+import com.senijoshua.pulitzer.feature.home.model.HomeArticle
 
 /**
  * Article card composable that can be reused across feature modules.
  */
 @Composable
-fun ArticleItem(
+internal fun HomeArticleItem(
     modifier: Modifier = Modifier,
-    article: PresentationArticle,
+    article: HomeArticle,
     onArticleClicked: (String) -> Unit = {},
     onArticleBookmarked: (String) -> Unit = {},
 ) {
@@ -126,14 +125,13 @@ fun ArticleItem(
 @PreviewPulitzerLightDarkBackground
 private fun ArticleItemPreview() {
     PulitzerTheme {
-        ArticleItem(
-            article = PresentationArticle(
+        HomeArticleItem(
+            article = HomeArticle(
                 id = "article_id",
                 thumbnail = "",
                 title = "Top 50 places to travel in the world that have stores",
                 author = "John Storm",
                 isBookmarked = false,
-                lastModified = Date(System.currentTimeMillis())
             )
         )
     }

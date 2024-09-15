@@ -32,14 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.senijoshua.pulitzer.core.model.fakeArticleList
 import com.senijoshua.pulitzer.core.ui.R
-import com.senijoshua.pulitzer.core.ui.components.ArticleItem
 import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import com.senijoshua.pulitzer.feature.home.model.HomeArticle
+import com.senijoshua.pulitzer.feature.home.model.fakeArticleList
 
 @Composable
 internal fun HomeScreen(
@@ -166,7 +165,7 @@ internal fun HomeArticleList(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_4))
     ) {
         items(items = uiState.articles, key = { article -> article.id }) { homeArticle ->
-            ArticleItem(article = homeArticle, onArticleClicked = { articleId ->
+            HomeArticleItem(article = homeArticle, onArticleClicked = { articleId ->
                 onArticleClicked(articleId)
             }, onArticleBookmarked = { articleId ->
                 onArticleBookmarked(articleId)
