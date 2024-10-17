@@ -4,10 +4,14 @@ package com.senijoshua.pulitzer.feature.bookmarks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -40,6 +43,7 @@ import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
+import com.senijoshua.pulitzer.feature.bookmarks.model.BookmarksArticle
 
 @Composable
 internal fun BookmarksScreen(
@@ -91,66 +95,69 @@ internal fun BookmarksContent(
         var isExpanded by remember { mutableStateOf(false) }
 
         SearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            query = searchQuery,
-            onQueryChange = updateSearchQuery,
-            onSearch = {
-                keyboardController?.hide()
-            },
-            leadingIcon = {
-                IconButton(onClick = {
-                    // If the search bar is active and empty and this is clicked,
-                    if (isExpanded) {
-                        // it would go back to the normal state. If it is clicked again,
-                        isExpanded = false
-                    } else {
-                        // it would go back to the previous screen.
-                        onBackClicked()
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(
-                            id = R.string.back_content_desc
-                        ),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
-            },
-            shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.density_36)),
-            colors = SearchBarDefaults.colors(inputFieldColors = TextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                unfocusedPrefixColor = MaterialTheme.colorScheme.outline,
-            )),
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.search_bookmarks),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = searchQuery,
+                    onQueryChange = updateSearchQuery,
+                    onSearch = {
+                        keyboardController?.hide()
+                    },
+                    leadingIcon = {
+                        IconButton(onClick = {
+                            // If the search bar is active and empty and this is clicked,
+                            if (isExpanded) {
+                                // it would go back to the normal state. If it is clicked again,
+                                isExpanded = false
+                            } else {
+                                // it would go back to the previous screen.
+                                onBackClicked()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(
+                                    id = R.string.back_content_desc
+                                ),
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            )
+                        }
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        unfocusedPrefixColor = MaterialTheme.colorScheme.outline,
+                    ),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.search_bookmarks),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    },
+                    trailingIcon = {
+                        if (isExpanded && searchQuery.isNotEmpty()) {
+                            Icon(
+                                modifier = Modifier.clickable {
+                                    updateSearchQuery("")
+                                },
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = stringResource(
+                                    id = R.string.close_content_desc
+                                ),
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+                    },
+                    expanded = isExpanded,
+                    onExpandedChange = { isExpanded = it }
                 )
             },
-            trailingIcon = {
-                if (isExpanded && searchQuery.isNotEmpty()) {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            updateSearchQuery("")
-                        },
-                        imageVector = Icons.Filled.Close, contentDescription = stringResource(
-                            id = R.string.close_content_desc
-                        ), tint = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            },
-            active = isExpanded,
-            onActiveChange = { isExpanded = it}
-
-        ) {
-            // Search result content
+            shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.density_36)),
+            colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = it }) {
             // TODO Setup the UI of the various columns/screens that holds search data.
             if (uiState.bookmarkedArticles.isNotEmpty()) {
-                // show a list of bookmarks filtered by the search query
+                BookmarkedArticlesList(bookmarkedArticles = uiState.bookmarkedArticles)
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
             } else {
