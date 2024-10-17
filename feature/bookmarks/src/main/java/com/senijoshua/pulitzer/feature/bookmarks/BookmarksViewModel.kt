@@ -80,6 +80,6 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
  */
 internal data class BookmarksUiState(
     val bookmarkedArticles: List<BookmarksArticle> = emptyList(),
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val errorMessage: String? =  null,
 )
