@@ -203,7 +203,7 @@ internal fun BookmarkedArticlesList(
             items(
                 items = bookmarkedArticles,
                 key = { bookmarkedArticle -> bookmarkedArticle.id }) { bookmarkedArticle ->
-                BookmarkedArticleItem()
+                BookmarksArticleItem()
             }
         },
     )
