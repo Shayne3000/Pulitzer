@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.senijoshua.pulitzer.feature.home"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
