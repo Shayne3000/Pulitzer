@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -157,7 +157,7 @@ internal fun BookmarksContent(
             onExpandedChange = { isExpanded = it }) {
             // TODO Setup the UI of the various columns/screens that holds search data.
             if (uiState.bookmarkedArticles.isNotEmpty()) {
-                BookmarkedArticlesList(bookmarkedArticles = uiState.bookmarkedArticles)
+                BookmarkedArticlesList(modifier = modifier, bookmarkedArticles = uiState.bookmarkedArticles)
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
             } else {
@@ -186,6 +186,27 @@ internal fun BookmarksContent(
             }
         }
     }
+}
+
+@Composable
+internal fun BookmarkedArticlesList(
+    modifier: Modifier = Modifier,
+    bookmarkedArticles: List<BookmarksArticle>
+) {
+    LazyVerticalStaggeredGrid(
+        modifier = modifier.fillMaxSize(),
+        columns = StaggeredGridCells.Fixed(2),
+        contentPadding = PaddingValues(dimensionResource(id = R.dimen.density_16)),
+        verticalItemSpacing = dimensionResource(id = R.dimen.density_4),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_8)),
+        content = {
+            items(
+                items = bookmarkedArticles,
+                key = { bookmarkedArticle -> bookmarkedArticle.id }) { bookmarkedArticle ->
+                BookmarkedArticleItem()
+            }
+        },
+    )
 }
 
 @PreviewPulitzerLightDarkBackground
