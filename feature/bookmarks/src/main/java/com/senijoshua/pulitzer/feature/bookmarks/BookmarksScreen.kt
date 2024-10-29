@@ -1,13 +1,17 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
 package com.senijoshua.pulitzer.feature.bookmarks
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -31,11 +35,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
@@ -84,17 +90,16 @@ internal fun BookmarksContent(
 
     SnackbarHost(hostState = snackBarHostState)
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(dimensionResource(id = R.dimen.density_16))
+            .padding(horizontal = 16.dp)
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
-        var isExpanded by remember { mutableStateOf(false) }
-
         SearchBar(
+            modifier = Modifier.fillMaxWidth(),
             inputField = {
                 SearchBarDefaults.InputField(
                     query = searchQuery,
@@ -104,12 +109,8 @@ internal fun BookmarksContent(
                     },
                     leadingIcon = {
                         IconButton(onClick = {
-                            // If the search bar is active and empty and this is clicked,
-                            if (isExpanded) {
-                                // it would go back to the normal state. If it is clicked again,
-                                isExpanded = false
-                            } else {
-                                // it would go back to the previous screen.
+                            // If the search bar is empty and this is clicked,
+                            if (searchQuery.isEmpty()){
                                 onBackClicked()
                             }
                         }) {
@@ -134,7 +135,7 @@ internal fun BookmarksContent(
                         )
                     },
                     trailingIcon = {
-                        if (isExpanded && searchQuery.isNotEmpty()) {
+                        if (searchQuery.isNotEmpty()) {
                             Icon(
                                 modifier = Modifier.clickable {
                                     updateSearchQuery("")
@@ -147,17 +148,22 @@ internal fun BookmarksContent(
                             )
                         }
                     },
-                    expanded = isExpanded,
-                    onExpandedChange = { isExpanded = it }
+                    expanded = false,
+                    onExpandedChange = { }
                 )
             },
             shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.density_36)),
             colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-            expanded = isExpanded,
-            onExpandedChange = { isExpanded = it }) {
-            // TODO Setup the UI of the various columns/screens that holds search data.
+            expanded = false,
+            onExpandedChange = { }
+        ){
+        }
+        Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)) {
             if (uiState.bookmarkedArticles.isNotEmpty()) {
-                BookmarkedArticlesList(modifier = modifier, bookmarkedArticles = uiState.bookmarkedArticles)
+                BookmarkedArticlesList(
+                    modifier = modifier,
+                    bookmarkedArticles = uiState.bookmarkedArticles
+                )
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
             } else {
@@ -174,6 +180,8 @@ internal fun BookmarksContent(
                 )
             }
         }
+
+            // TODO Setup the UI of the various columns/screens that holds search data.
 
         // TODO Show search menu if context menu isn't showing.
 
@@ -193,17 +201,37 @@ internal fun BookmarkedArticlesList(
     modifier: Modifier = Modifier,
     bookmarkedArticles: List<BookmarksArticle>
 ) {
+    val haptics = LocalHapticFeedback.current
+
+    // TODO Move selectedArticles and isInSelectionMode to parent
+    val selectedArticles = rememberSaveable { mutableStateOf(emptySet<Int>()) }
+
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
         columns = StaggeredGridCells.Fixed(2),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.density_16)),
-        verticalItemSpacing = dimensionResource(id = R.dimen.density_4),
+        verticalItemSpacing = dimensionResource(id = R.dimen.density_8),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_8)),
         content = {
             items(
                 items = bookmarkedArticles,
                 key = { bookmarkedArticle -> bookmarkedArticle.id }) { bookmarkedArticle ->
-                BookmarksArticleItem()
+                // TODO If the context menu is closed, animate it away and recompose every article item in the list or the whole list to remove the borders.
+                BookmarksArticleItem(
+                    modifier = Modifier.combinedClickable(
+                        onClick = {
+                            // TODO if context menu is shown,
+                            //  if not highlighted, recompose the item to now show a border
+                            //  if highlighted, recompose the article item to remove the a border
+
+                            // TODO If context menu is not shown, clicking navigates to the detail screen
+                        },
+                        onLongClick = {
+                            // TODO if context menu is not shown, show it and recompose the long clicked article item to show the border
+                            // TODO If the context menu is shown, recompose the article to remove the border
+                        }
+                    ), article = bookmarkedArticle
+                )
             }
         },
     )

@@ -2,6 +2,9 @@ package com.senijoshua.pulitzer.feature.bookmarks.model
 
 import java.util.Date
 
+/**
+ * Representation of an Article type with data specific to the Bookmarks screen.
+ */
 internal data class BookmarksArticle(
     val id: String,
     val thumbnail: String,

@@ -25,6 +25,8 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(BookmarksUiState())
     val uiState: StateFlow<BookmarksUiState> = _uiState
 
+    // Consider using a cold flow as said
+
     // store the state (i.e. search query) of the search textfield in the viewmodel using mutableState
     // to survive configuration changes and circumvent the undesirable behaviour of
     // updating text field state asynchronously whilst typing.
