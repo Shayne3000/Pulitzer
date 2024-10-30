@@ -180,13 +180,9 @@ internal fun BookmarksContent(
                 )
             }
         }
-
-            // TODO Setup the UI of the various columns/screens that holds search data.
-
         // TODO Show search menu if context menu isn't showing.
 
         // TODO Error snack bar aligned to the bottom.
-
         uiState.errorMessage?.let { errorMessage ->
             LaunchedEffect(snackBarHostState, errorMessage) {
                 snackBarHostState.showSnackbar(errorMessage)
