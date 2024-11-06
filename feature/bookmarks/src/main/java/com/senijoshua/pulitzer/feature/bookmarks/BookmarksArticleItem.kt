@@ -1,18 +1,25 @@
 package com.senijoshua.pulitzer.feature.bookmarks
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -43,27 +50,26 @@ internal fun BookmarksArticleItem(
         ),
         border = BorderStroke(
             dimensionResource(id = if (isSelected) R.dimen.density_4 else R.dimen.density_1),
-            if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+            if (isSelected) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            }
         ),
     ) {
         Column {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.density_148))
-                    .clip(
-                        RoundedCornerShape(
-                            topEnd = 16.dp,
-                            topStart = 16.dp,
-                            bottomEnd = 0.dp,
-                            bottomStart = 0.dp
-                        )
-                    ),
-                model = buildAsyncImage(imageUrl = article.thumbnail),
-                contentDescription = stringResource(id = R.string.article_thumbnail),
-                contentScale = ContentScale.Crop,
+            // TODO Animate the image to rotate on its axis and show a tick in the middle if selected
+            val thumbnailShape = RoundedCornerShape(
+                topEnd = 12.dp,
+                topStart = 12.dp,
+                bottomEnd = 0.dp,
+                bottomStart = 0.dp
             )
-
+            if (isSelected) {
+                BookmarkedArticleSelectedCheck(checkmarkContainerShape = thumbnailShape)
+            } else {
+                BookmarkedArticleImage(article = article, imageShape = thumbnailShape)
+            }
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
@@ -91,6 +97,47 @@ internal fun BookmarksArticleItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun BookmarkedArticleImage(
+    modifier: Modifier = Modifier,
+    imageShape: RoundedCornerShape,
+    article: BookmarksArticle,
+) {
+    AsyncImage(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.density_148))
+            .clip(
+                imageShape
+            ),
+        model = buildAsyncImage(imageUrl = article.thumbnail),
+        contentDescription = stringResource(id = R.string.article_thumbnail),
+        contentScale = ContentScale.Crop,
+    )
+}
+
+@Composable
+private fun BookmarkedArticleSelectedCheck(
+    modifier: Modifier = Modifier,
+    checkmarkContainerShape: RoundedCornerShape,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.density_148))
+            .clip(checkmarkContainerShape)
+            .background(MaterialTheme.colorScheme.primary),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            modifier = Modifier.size(dimensionResource(id = R.dimen.density_64)),
+            imageVector = Icons.Outlined.CheckCircle,
+            tint = MaterialTheme.colorScheme.onPrimary,
+            contentDescription = stringResource(R.string.selected_bookmarked_article)
+        )
     }
 }
 
