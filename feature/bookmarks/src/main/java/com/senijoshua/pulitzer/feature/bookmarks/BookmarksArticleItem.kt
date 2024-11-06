@@ -1,9 +1,12 @@
 package com.senijoshua.pulitzer.feature.bookmarks
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,10 +22,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,25 +57,30 @@ internal fun BookmarksArticleItem(
         border = BorderStroke(
             dimensionResource(id = if (isSelected) R.dimen.density_4 else R.dimen.density_1),
             if (isSelected) {
-                MaterialTheme.colorScheme.onPrimaryContainer
+                MaterialTheme.colorScheme.onSecondaryContainer
             } else {
                 MaterialTheme.colorScheme.onSurface
             }
         ),
     ) {
         Column {
-            // TODO Animate the image to rotate on its axis and show a tick in the middle if selected
-            val thumbnailShape = RoundedCornerShape(
-                topEnd = 12.dp,
-                topStart = 12.dp,
-                bottomEnd = 0.dp,
-                bottomStart = 0.dp
+            val rotation: Float by animateFloatAsState(
+                targetValue = if (isSelected) 180f else 0f,
+                animationSpec = tween(durationMillis = 345),
+                label = "Rotation"
             )
-            if (isSelected) {
-                BookmarkedArticleSelectedCheck(checkmarkContainerShape = thumbnailShape)
-            } else {
-                BookmarkedArticleImage(article = article, imageShape = thumbnailShape)
-            }
+
+            val density = LocalDensity.current
+
+            BookmarkArticleHeader(
+                modifier = Modifier.graphicsLayer {
+                    rotationY = rotation
+                    cameraDistance = with(density) { 12.dp.toPx() }
+                },
+                article = article,
+                rotationValue = rotation,
+            )
+
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
@@ -101,18 +112,40 @@ internal fun BookmarksArticleItem(
 }
 
 @Composable
+private fun BookmarkArticleHeader(
+    modifier: Modifier = Modifier,
+    article: BookmarksArticle,
+    rotationValue: Float,
+) {
+    val thumbnailShape = RoundedCornerShape(
+        topEnd = 12.dp,
+        topStart = 12.dp,
+        bottomEnd = 0.dp,
+        bottomStart = 0.dp
+    )
+
+    Box(
+        modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.density_148))
+            .clip(thumbnailShape)
+    ) {
+        if (rotationValue > 90f) {
+            BookmarkedArticleSelectedCheck()
+        } else {
+            BookmarkedArticleImage(article = article)
+        }
+    }
+}
+
+@Composable
 private fun BookmarkedArticleImage(
     modifier: Modifier = Modifier,
-    imageShape: RoundedCornerShape,
     article: BookmarksArticle,
 ) {
     AsyncImage(
         modifier = modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.density_148))
-            .clip(
-                imageShape
-            ),
+            .fillMaxSize(),
         model = buildAsyncImage(imageUrl = article.thumbnail),
         contentDescription = stringResource(id = R.string.article_thumbnail),
         contentScale = ContentScale.Crop,
@@ -122,14 +155,12 @@ private fun BookmarkedArticleImage(
 @Composable
 private fun BookmarkedArticleSelectedCheck(
     modifier: Modifier = Modifier,
-    checkmarkContainerShape: RoundedCornerShape,
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.density_148))
-            .clip(checkmarkContainerShape)
-            .background(MaterialTheme.colorScheme.primary),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
+            .graphicsLayer { rotationY = 180f },
         contentAlignment = Alignment.Center
     ) {
         Icon(
