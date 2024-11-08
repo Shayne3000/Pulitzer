@@ -31,7 +31,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
 
-    override fun getArticles(): Flow<Result<List<Article>>> {
+    override suspend fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()
         }.onEach {
@@ -47,7 +47,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
         }.flowOn(dispatcher).toResult()
     }
 
-    override fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
+    override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
         return local.getArticleById(articleId).flowOn(dispatcher).map { article ->
             article.toDomainFormat()
         }.toResult()

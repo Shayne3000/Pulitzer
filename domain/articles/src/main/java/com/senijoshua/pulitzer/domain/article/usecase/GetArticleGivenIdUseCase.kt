@@ -11,5 +11,5 @@ import javax.inject.Inject
  * article whose id matches the supplied id
  */
 class GetArticleGivenIdUseCase @Inject constructor(private val repository: ArticleRepository){
-    operator fun invoke(articleId: String): Flow<Result<Article>> = repository.getArticleGivenId(articleId)
+    suspend operator fun invoke(articleId: String): Flow<Result<Article>> = repository.getArticleGivenId(articleId)
 }

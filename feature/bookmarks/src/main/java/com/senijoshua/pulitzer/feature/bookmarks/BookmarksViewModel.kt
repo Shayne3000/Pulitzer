@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,16 +24,15 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(BookmarksUiState())
     val uiState: StateFlow<BookmarksUiState> = _uiState
 
-    // Consider using a cold flow as said
-
-    // store the state (i.e. search query) of the search textfield in the viewmodel using mutableState
-    // to survive configuration changes and circumvent the undesirable behaviour of
-    // updating text field state asynchronously whilst typing.
+    // store the state of the search textfield (i.e. search query) here in the viewmodel
+    // using mutableState to survive configuration changes and circumvent the undesirable
+    // behaviour of updating text field state asynchronously whilst typing resulting in the
+    // query text being shown out of order.
     var searchQuery by mutableStateOf("")
         private set
 
     // TODO Observe any changes to the search field's state i.e. the search query by converting it to a flow and trigger
-    //  a search debounced by 500ms via a use case when the query changes (i.e. on each emission)
+    //  a search debounced by 500ms (preventing a race) via a use case when the query changes (i.e. on each emission)
     //  and then Update the uiState with the search result from the use case
 
     // On start call the initialise search function with the current textfield state being empty
@@ -42,20 +40,28 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
         snapshotFlow { searchQuery }
             .debounce(500)
             .onEach { searchQuery ->
-            getBookmarkedArticles(searchQuery)
-        }.launchIn(viewModelScope)
+                getBookmarkedArticles(searchQuery)
+            }.launchIn(viewModelScope)
     }
 
     private fun getBookmarkedArticles(query: String) {
-        viewModelScope.launch {
-            // call GetBookmarkedArticleUseCase and make the repository manipulation main-safe
-            if (searchQuery.isBlank()) {
-                // get the list of all bookmarked articles given no filter
-                // Update the Screen state
-            } else {
-                // get bookmarked articles whose title contains searchQuery
-                // Update the Screen state
+        _uiState.update { currentUiState ->
+            currentUiState.copy(
+                isLoading = true,
+            )
+        }
+        // call GetBookmarkedArticleUseCase and make the repository manipulation main-safe
+        if (query.isBlank()) {
+            // get the list of all bookmarked articles given no filter
+            // Update the Screen state
+            _uiState.update { currentUiState ->
+                currentUiState.copy(
+                    isLoading = false,
+                )
             }
+        } else {
+            // get bookmarked articles whose title contains searchQuery
+            // Update the Screen state
         }
     }
 
@@ -83,5 +89,5 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
 internal data class BookmarksUiState(
     val bookmarkedArticles: List<BookmarksArticle> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? =  null,
+    val errorMessage: String? = null,
 )

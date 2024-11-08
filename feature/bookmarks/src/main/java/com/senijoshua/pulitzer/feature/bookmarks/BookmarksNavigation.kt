@@ -16,7 +16,7 @@ internal object BookmarksRoute
  * Nav graph for the screens in the Bookmarks module to be nested in the app-level NavGraph.
  */
 fun NavGraphBuilder.bookmarksGraph(onBackClicked: () -> Unit) {
-    navigation< BookmarksGraph>(startDestination = BookmarksRoute) {
+    navigation<BookmarksGraph>(startDestination = BookmarksRoute) {
         composable<BookmarksRoute> {
             BookmarksScreen {
                 onBackClicked()
