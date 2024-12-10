@@ -21,7 +21,7 @@ import javax.inject.Inject
  * from local and remote data sources in an offline-first manner and
  * returns it to the domain layer.
  *
- * This abstracts away data retrieval operations from higher layers in
+ * This abstracts away data retrieval operations/logic from higher layers in
  * the architecture.
  */
 internal class OfflineFirstArticleRepository @Inject constructor(
@@ -51,11 +51,11 @@ internal class OfflineFirstArticleRepository @Inject constructor(
         return local.getArticleById(articleId).flowOn(dispatcher).map { article ->
             article.toDomainFormat()
         }.toResult()
-
     }
 
-    override suspend fun getBookmarkedArticles(): Flow<Result<List<Article>>> {
-        TODO("Not yet implemented")
+    override suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>> {
+        return local.getBookmarkedArticles(searchQuery = searchQuery)
+            .map { bookmarkArticles -> bookmarkArticles.toDomainFormat() }.toResult()
     }
 
     override suspend fun bookmarkArticle(articleId: String) {

@@ -7,10 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * Represents the core app functionality of getting the list of all the bookmarked articles
+ * Represents the core app functionality of getting a list of all bookmarked articles
  */
 class GetBookmarkedArticlesUseCase @Inject constructor(
     private val repository: ArticleRepository,
 ){
-    suspend operator fun invoke(): Flow<Result<List<Article>>> = repository.getBookmarkedArticles()
+    suspend operator fun invoke(searchQuery: String): Flow<Result<List<Article>>> =
+        repository.getBookmarkedArticles(searchQuery = searchQuery)
 }
