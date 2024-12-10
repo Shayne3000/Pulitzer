@@ -1,6 +1,7 @@
 package com.senijoshua.pulitzer.data.article.mapper
 
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
+import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
 import com.senijoshua.pulitzer.core.network.model.NetworkArticle
 import com.senijoshua.pulitzer.domain.article.entity.Article
 
@@ -36,3 +37,15 @@ internal fun NetworkArticle.toLocalFormat() = ArticleEntity(
 )
 
 internal fun List<NetworkArticle>.toLocalFormat() = map(NetworkArticle::toLocalFormat)
+
+internal fun BookmarkedArticles.toDomainFormat() =  Article(
+    id = id,
+    thumbnail = thumbnail,
+    title = title,
+    author = author,
+    body = null,
+    isBookmarked = false,
+    lastModifiedDate = null
+)
+
+internal fun List<BookmarkedArticles>.toDomainFormat() = map(BookmarkedArticles::toDomainFormat)
