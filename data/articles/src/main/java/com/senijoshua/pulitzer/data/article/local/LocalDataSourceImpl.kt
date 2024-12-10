@@ -2,6 +2,7 @@ package com.senijoshua.pulitzer.data.article.local
 
 import com.senijoshua.pulitzer.core.database.dao.ArticleDao
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
+import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -20,5 +21,6 @@ internal class LocalDataSourceImpl @Inject constructor(
     override fun getTimeCreated() = dao.getTimeCreated()
     override fun getArticleById(articleId: String) = dao.getArticleById(articleId)
     override suspend fun bookmarkArticle(articleId: String) = dao.bookmarkArticle(articleId)
+    override fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>> = dao.getBookmarkedArticles(searchQuery)
     override suspend fun clearArticles() = dao.clearArticles()
 }

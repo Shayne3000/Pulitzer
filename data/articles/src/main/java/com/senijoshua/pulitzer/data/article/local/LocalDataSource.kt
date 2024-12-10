@@ -1,6 +1,7 @@
 package com.senijoshua.pulitzer.data.article.local
 
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
+import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,10 +14,11 @@ import kotlinx.coroutines.flow.Flow
  * said sourcing operation.
  */
 internal interface LocalDataSource {
-    fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     suspend fun insertArticles(articles: List<ArticleEntity>)
-    fun getTimeCreated(): Long?
+    fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     fun getArticleById(articleId: String): Flow<ArticleEntity>
     suspend fun bookmarkArticle(articleId: String)
+    fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>
     suspend fun clearArticles()
+    fun getTimeCreated(): Long?
 }

@@ -24,5 +24,5 @@ data class BookmarkedArticles(
     val id: String,
     val thumbnail: String,
     val title: String,
-    val body: String
+    val author: String
 )
