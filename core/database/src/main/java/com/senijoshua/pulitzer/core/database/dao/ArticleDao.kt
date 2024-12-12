@@ -22,7 +22,7 @@ interface ArticleDao {
     @Query("UPDATE articles SET isBookmarked = CASE WHEN isBookmarked = 1 THEN 0 ELSE 1 END WHERE id = :articleId")
     suspend fun bookmarkArticle(articleId: String)
 
-    @Query("SELECT id, thumbnail, title, author FROM articles WHERE title LIKE :searchQuery AND isBookmarked = 1")
+    @Query("SELECT id, thumbnail, title, author FROM articles WHERE title LIKE '%' || :searchQuery || '%' AND isBookmarked = 1")
     fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>
 
     @Update
