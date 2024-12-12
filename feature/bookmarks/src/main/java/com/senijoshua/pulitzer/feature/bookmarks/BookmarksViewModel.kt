@@ -8,11 +8,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.senijoshua.pulitzer.core.model.Result
+import com.senijoshua.pulitzer.domain.article.usecase.GetBookmarkedArticlesUseCase
 import com.senijoshua.pulitzer.feature.bookmarks.model.BookmarksArticle
+import com.senijoshua.pulitzer.feature.bookmarks.model.toPresentationFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,7 +24,9 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-internal class BookmarksViewModel @Inject constructor() : ViewModel() {
+internal class BookmarksViewModel @Inject constructor(
+    private val getBookmarkedArticles: GetBookmarkedArticlesUseCase,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(BookmarksUiState())
     val uiState: StateFlow<BookmarksUiState> = _uiState
 
@@ -31,10 +37,6 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
     var searchQuery by mutableStateOf("")
         private set
 
-    // TODO Observe any changes to the search field's state i.e. the search query by converting it to a flow and trigger
-    //  a search debounced by 500ms (preventing a race) via a use case when the query changes (i.e. on each emission)
-    //  and then Update the uiState with the search result from the use case
-
     // On start call the initialise search function with the current textfield state being empty
     fun initialiseSearch() {
         snapshotFlow { searchQuery }
@@ -44,35 +46,47 @@ internal class BookmarksViewModel @Inject constructor() : ViewModel() {
             }.launchIn(viewModelScope)
     }
 
-    private fun getBookmarkedArticles(query: String) {
+    private suspend fun getBookmarkedArticles(query: String) {
         _uiState.update { currentUiState ->
             currentUiState.copy(
                 isLoading = true,
             )
         }
-        // call GetBookmarkedArticleUseCase and make the repository manipulation main-safe
+
         if (query.isBlank()) {
-            // get the list of all bookmarked articles given no filter
-            // Update the Screen state
             _uiState.update { currentUiState ->
                 currentUiState.copy(
                     isLoading = false,
                 )
             }
         } else {
-            // get bookmarked articles whose title contains searchQuery
-            // Update the Screen state
+            getBookmarkedArticles(searchQuery = query).collectLatest { result ->
+                when(result) {
+                    is Result.Success -> {
+                        _uiState.update { currentUiState ->
+                            currentUiState.copy(
+                                isLoading = false,
+                                bookmarkedArticles = result.data.toPresentationFormat(),
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        _uiState.update { currentUiState ->
+                            currentUiState.copy(
+                                isLoading = false,
+                                errorMessage = result.error.message
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-
-    // Setup a coroutine to load the list of bookmarks from the DB
-
-    // Setup a coroutine to implement the search with a search query.
 
     fun updateErrorState() {
         _uiState.update { currentUiState ->
             currentUiState.copy(
-                isLoading = false,
                 errorMessage = null,
             )
         }

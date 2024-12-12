@@ -38,7 +38,7 @@ internal fun NetworkArticle.toLocalFormat() = ArticleEntity(
 
 internal fun List<NetworkArticle>.toLocalFormat() = map(NetworkArticle::toLocalFormat)
 
-internal fun BookmarkedArticles.toDomainFormat() =  Article(
+internal fun BookmarkedArticles.toDomain() =  Article(
     id = id,
     thumbnail = thumbnail,
     title = title,
@@ -48,4 +48,4 @@ internal fun BookmarkedArticles.toDomainFormat() =  Article(
     lastModifiedDate = null
 )
 
-internal fun List<BookmarkedArticles>.toDomainFormat() = map(BookmarkedArticles::toDomainFormat)
+internal fun List<BookmarkedArticles>.toDomain() = map(BookmarkedArticles::toDomain)

@@ -4,6 +4,7 @@ import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.LocalDataSource
+import com.senijoshua.pulitzer.data.article.mapper.toDomain
 import com.senijoshua.pulitzer.data.article.mapper.toDomainFormat
 import com.senijoshua.pulitzer.data.article.mapper.toLocalFormat
 import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
@@ -11,9 +12,11 @@ import com.senijoshua.pulitzer.domain.article.entity.Article
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -44,22 +47,27 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 
                 local.insertArticles(networkResponse.toLocalFormat())
             }
-        }.flowOn(dispatcher).toResult()
+        }.distinctUntilChanged().flowOn(dispatcher).toResult()
     }
 
     override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
-        return local.getArticleById(articleId).flowOn(dispatcher).map { article ->
+        return local.getArticleById(articleId).map { article ->
             article.toDomainFormat()
-        }.toResult()
+        }.flowOn(dispatcher).toResult()
     }
 
     override suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>> {
         return local.getBookmarkedArticles(searchQuery = searchQuery)
-            .map { bookmarkArticles -> bookmarkArticles.toDomainFormat() }.toResult()
+            .distinctUntilChanged()
+            .map { bookmarkArticles -> bookmarkArticles.toDomain() }
+            .flowOn(dispatcher)
+            .toResult()
     }
 
     override suspend fun bookmarkArticle(articleId: String) {
-        local.bookmarkArticle(articleId)
+        withContext(dispatcher) {
+            local.bookmarkArticle(articleId)
+        }
     }
 
     /**
