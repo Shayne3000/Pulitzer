@@ -9,7 +9,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -72,8 +71,8 @@ internal fun BookmarksScreen(
         },
     )
 
-    LaunchedEffect(Unit) {
-        vm.initialiseSearch()
+    LaunchedEffect(vm.searchQuery) {
+        vm.triggerSearch()
     }
 }
 
@@ -99,7 +98,9 @@ internal fun BookmarksContent(
         val keyboardController = LocalSoftwareKeyboardController.current
 
         SearchBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.density_8)),
             inputField = {
                 SearchBarDefaults.InputField(
                     query = searchQuery,
@@ -157,8 +158,9 @@ internal fun BookmarksContent(
             expanded = false,
             onExpandedChange = { }
         ){
+            // No content in the search bar itself. We put the content directly below it.
         }
-        Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)) {
+        Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.bookmarkedArticles.isNotEmpty()) {
                 BookmarkedArticlesList(
                     modifier = modifier,
@@ -189,7 +191,6 @@ internal fun BookmarksContent(
                 onErrorShown()
             }
         }
-
     }
 }
 
@@ -198,6 +199,7 @@ internal fun BookmarkedArticlesList(
     modifier: Modifier = Modifier,
     bookmarkedArticles: List<BookmarksArticle>
 ) {
+    // Feedback on LongPress
     val haptics = LocalHapticFeedback.current
 
     // TODO Move selectedArticles and isInSelectionMode to parent
@@ -206,7 +208,6 @@ internal fun BookmarkedArticlesList(
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
         columns = StaggeredGridCells.Fixed(2),
-        contentPadding = PaddingValues(dimensionResource(id = R.dimen.density_16)),
         verticalItemSpacing = dimensionResource(id = R.dimen.density_8),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_8)),
         content = {
@@ -224,6 +225,7 @@ internal fun BookmarkedArticlesList(
                             // TODO If context menu is not shown, clicking navigates to the detail screen
                         },
                         onLongClick = {
+                            // TODO Haptic feedback onLongClick
                             // TODO if context menu is not shown, show it and recompose the long clicked article item to show the border
                             // TODO If the context menu is shown, recompose the article to remove the border
                         }
