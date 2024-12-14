@@ -28,8 +28,10 @@ fun Pulitzer(
         detailGraph {
             navController.popBackStack()
         }
-        bookmarksGraph {
+        bookmarksGraph(navigateToDetailScreen = { articleId ->
+            navController.navigateToDetail(articleId)
+        }, onBackClicked = {
             navController.popBackStack()
-        }
+        })
     }
 }

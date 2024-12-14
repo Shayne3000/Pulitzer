@@ -53,6 +53,7 @@ import com.senijoshua.pulitzer.feature.bookmarks.model.BookmarksArticle
 @Composable
 internal fun BookmarksScreen(
     vm: BookmarksViewModel = hiltViewModel(),
+    onNavigateToDetailScreen: (String) -> Unit = {},
     onBackClicked: () -> Unit = {}
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -65,6 +66,9 @@ internal fun BookmarksScreen(
         },
         onErrorShown = {
             vm.updateErrorState()
+        },
+        onArticleClicked = { articleId ->
+            onNavigateToDetailScreen(articleId)
         },
         onBackClicked = {
             onBackClicked()
@@ -83,6 +87,7 @@ internal fun BookmarksContent(
     searchQuery: String,
     updateSearchQuery: (String) -> Unit = {},
     onErrorShown: () -> Unit = {},
+    onArticleClicked: (String) -> Unit = { _ -> },
     onBackClicked: () -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -110,7 +115,6 @@ internal fun BookmarksContent(
                     },
                     leadingIcon = {
                         IconButton(onClick = {
-                            // If the search bar is empty and this is clicked,
                             if (searchQuery.isEmpty()){
                                 onBackClicked()
                             }
@@ -164,7 +168,8 @@ internal fun BookmarksContent(
             if (uiState.bookmarkedArticles.isNotEmpty()) {
                 BookmarkedArticlesList(
                     modifier = modifier,
-                    bookmarkedArticles = uiState.bookmarkedArticles
+                    bookmarkedArticles = uiState.bookmarkedArticles,
+                    onArticleClicked = onArticleClicked
                 )
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
@@ -197,7 +202,8 @@ internal fun BookmarksContent(
 @Composable
 internal fun BookmarkedArticlesList(
     modifier: Modifier = Modifier,
-    bookmarkedArticles: List<BookmarksArticle>
+    bookmarkedArticles: List<BookmarksArticle>,
+    onArticleClicked: (String) -> Unit = {},
 ) {
     // Feedback on LongPress
     val haptics = LocalHapticFeedback.current
@@ -218,9 +224,11 @@ internal fun BookmarkedArticlesList(
                 BookmarksArticleItem(
                     modifier = Modifier.combinedClickable(
                         onClick = {
+                            onArticleClicked(bookmarkedArticle.id)
                             // TODO if context menu is shown,
                             //  if not highlighted, recompose the item to now show a border
                             //  if highlighted, recompose the article item to remove the a border
+                            //  and then navigate to the detail screen.
 
                             // TODO If context menu is not shown, clicking navigates to the detail screen
                         },

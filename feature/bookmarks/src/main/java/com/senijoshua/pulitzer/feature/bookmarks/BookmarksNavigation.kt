@@ -15,12 +15,20 @@ internal object BookmarksRoute
 /**
  * Nav graph for the screens in the Bookmarks module to be nested in the app-level NavGraph.
  */
-fun NavGraphBuilder.bookmarksGraph(onBackClicked: () -> Unit) {
+fun NavGraphBuilder.bookmarksGraph(
+    navigateToDetailScreen: (String) -> Unit,
+    onBackClicked: () -> Unit,
+) {
     navigation<BookmarksGraph>(startDestination = BookmarksRoute) {
         composable<BookmarksRoute> {
-            BookmarksScreen {
-                onBackClicked()
-            }
+            BookmarksScreen(
+                onNavigateToDetailScreen = { articleId ->
+                    navigateToDetailScreen(articleId)
+                },
+                onBackClicked = {
+                    onBackClicked()
+                },
+            )
         }
     }
 }
