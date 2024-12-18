@@ -159,7 +159,7 @@ internal fun DetailContent(
                         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.density_4)),
                         painter = painter,
                         tint = iconColor,
-                        contentDescription = stringResource(id = R.string.article_bookmark)
+                        contentDescription = stringResource(id = R.string.article_bookmark_content_desc)
                     )
                 }
             },

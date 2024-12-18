@@ -72,7 +72,7 @@ internal fun HomeArticleItem(
                     .size(dimensionResource(id = R.dimen.density_64))
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.density_8))),
                 model = imageRequest,
-                contentDescription = stringResource(id = R.string.article_thumbnail),
+                contentDescription = stringResource(id = R.string.article_thumbnail_content_desc),
                 contentScale = ContentScale.Crop,
             )
 
@@ -114,7 +114,7 @@ internal fun HomeArticleItem(
                 Icon(
                     painter = painter,
                     tint = iconColor,
-                    contentDescription = stringResource(id = R.string.article_bookmark)
+                    contentDescription = stringResource(id = R.string.article_bookmark_content_desc)
                 )
             }
         }

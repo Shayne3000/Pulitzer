@@ -147,7 +147,7 @@ private fun BookmarkedArticleImage(
         modifier = modifier
             .fillMaxSize(),
         model = buildAsyncImage(imageUrl = article.thumbnail),
-        contentDescription = stringResource(id = R.string.article_thumbnail),
+        contentDescription = stringResource(id = R.string.article_thumbnail_content_desc),
         contentScale = ContentScale.Crop,
     )
 }
@@ -167,7 +167,7 @@ private fun BookmarkedArticleSelectedCheck(
             modifier = Modifier.size(dimensionResource(id = R.dimen.density_64)),
             imageVector = Icons.Outlined.CheckCircle,
             tint = MaterialTheme.colorScheme.onPrimary,
-            contentDescription = stringResource(R.string.selected_bookmarked_article)
+            contentDescription = stringResource(R.string.selected_bookmarked_article_content_desc)
         )
     }
 }

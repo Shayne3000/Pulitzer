@@ -137,7 +137,7 @@ internal fun HomeContent(
                 EmptyScreen(
                     modifier,
                     text = R.string.no_articles_text,
-                    iconContentDescription = R.string.empty_article_list
+                    iconContentDescription = R.string.empty_article_list_content_desc
                 )
             }
         }
