@@ -46,7 +46,6 @@ internal fun BookmarksArticleItem(
     modifier: Modifier = Modifier,
     article: BookmarksArticle,
     isSelected: Boolean = false,
-    isInSelectionMode: Boolean = false,
 ) {
     OutlinedCard(
         modifier = modifier

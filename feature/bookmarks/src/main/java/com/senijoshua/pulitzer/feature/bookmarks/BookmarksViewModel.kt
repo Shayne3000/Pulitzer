@@ -1,5 +1,6 @@
 package com.senijoshua.pulitzer.feature.bookmarks
 
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -43,10 +44,12 @@ internal class BookmarksViewModel @Inject constructor(
         getBookmarkedArticles(searchQuery = query).collectLatest { result ->
             when (result) {
                 is Result.Success -> {
+                    val articleResult = result.data
                     _uiState.update { currentUiState ->
                         currentUiState.copy(
                             isLoading = false,
-                            bookmarkedArticles = result.data.toPresentationFormat(),
+                            bookmarkedArticles = articleResult.toPresentationFormat(),
+                            hasNoBookmarks = articleResult.isEmpty() && searchQuery.isBlank()
                         )
                     }
                 }
@@ -55,7 +58,7 @@ internal class BookmarksViewModel @Inject constructor(
                     _uiState.update { currentUiState ->
                         currentUiState.copy(
                             isLoading = false,
-                            errorMessage = result.error.message
+                            errorMessage = result.error.message,
                         )
                     }
                 }
@@ -79,8 +82,10 @@ internal class BookmarksViewModel @Inject constructor(
 /**
  * Representation of the Screen's UI State at any instant in time.
  */
+@Stable
 internal data class BookmarksUiState(
     val bookmarkedArticles: List<BookmarksArticle> = emptyList(),
+    val hasNoBookmarks: Boolean = true,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
 )
