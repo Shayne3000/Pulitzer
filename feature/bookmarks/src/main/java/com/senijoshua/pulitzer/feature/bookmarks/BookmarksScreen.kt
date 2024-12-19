@@ -2,6 +2,8 @@
 
 package com.senijoshua.pulitzer.feature.bookmarks
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,11 +37,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -79,6 +81,9 @@ internal fun BookmarksScreen(
         onArticleClicked = { articleId ->
             onNavigateToDetailScreen(articleId)
         },
+        unbookmarkArticles = { selectedArticles ->
+            vm.unbookmarkArticles(selectedArticles)
+        },
         onBackClicked = {
             onBackClicked()
         },
@@ -97,13 +102,25 @@ internal fun BookmarksContent(
     updateSearchQuery: (String) -> Unit = {},
     onErrorShown: () -> Unit = {},
     onArticleClicked: (String) -> Unit = { _ -> },
+    unbookmarkArticles: (List<String>) -> Unit = {},
     onBackClicked: () -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val selectedArticleIds by rememberSaveable { mutableStateOf(emptySet<String>()) }
+    val selectedArticleIds: MutableSet<String> = rememberSaveable { mutableStateOf(emptySet<String>()) }.value.toMutableSet()
 
-    val isInSelectionMode by remember { derivedStateOf { selectedArticleIds.isNotEmpty() } }
+    var isInSelectionMode by remember { mutableStateOf(false)}
+
+    val resetSelectionMode = {
+        isInSelectionMode = false
+        selectedArticleIds.clear()
+    }
+
+    // NB: We do not dismiss selection mode until we go back or press the close button in the multi select bar
+    BackHandler(
+        enabled = isInSelectionMode,
+        onBack = resetSelectionMode
+    )
 
     val haptics = LocalHapticFeedback.current
 
@@ -117,13 +134,28 @@ internal fun BookmarksContent(
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
-        if (isInSelectionMode) {
-            // TODO Animate out search bar and animate in Multi-select bar
-        } else {
-            // TODO Animate out Multi-select bar and animate in Search bar.
+        AnimatedVisibility(!isInSelectionMode) {
+            SearchBar(searchQuery, updateSearchQuery, keyboardController, onBackClicked)
         }
 
-        SearchBar(searchQuery, updateSearchQuery, keyboardController, onBackClicked)
+        AnimatedVisibility(isInSelectionMode) {
+            MultiSelectBar(
+                numberOfSelectedArticles = selectedArticleIds.size,
+                hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.size,
+                onSelectAll = { shouldSelectAll ->
+                    if (shouldSelectAll) {
+                        selectedArticleIds.addAll(uiState.bookmarkedArticles.map { it.id })
+                    } else {
+                        selectedArticleIds.clear()
+                    }
+                },
+                unbookmarkSelectedArticles = {
+                    resetSelectionMode()
+                    unbookmarkArticles(selectedArticleIds.toList())
+                },
+                onClose = { resetSelectionMode() }
+            )
+        }
 
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.bookmarkedArticles.isNotEmpty()) {
@@ -133,7 +165,10 @@ internal fun BookmarksContent(
                     selectedArticleIds = selectedArticleIds,
                     isInSelectionMode = isInSelectionMode,
                     hapticFeedback = haptics,
-                    onArticleClicked = onArticleClicked
+                    onArticleClicked = onArticleClicked,
+                    initiateSelectionMode = {
+                        isInSelectionMode = true
+                    }
                 )
             } else if (uiState.isLoading) {
                 PulitzerProgressIndicator(modifier)
@@ -151,9 +186,8 @@ internal fun BookmarksContent(
                 )
             }
         }
-        // TODO Show search menu if context menu isn't showing.
 
-        // TODO Error snack bar aligned to the bottom.
+        // TODO Align error snack bar to the bottom.
         uiState.errorMessage?.let { errorMessage ->
             LaunchedEffect(snackBarHostState, errorMessage) {
                 snackBarHostState.showSnackbar(errorMessage)
@@ -164,7 +198,7 @@ internal fun BookmarksContent(
 }
 
 @Composable
-private fun SearchBar(
+internal fun SearchBar(
     searchQuery: String,
     updateSearchQuery: (String) -> Unit,
     keyboardController: SoftwareKeyboardController?,
@@ -235,15 +269,13 @@ private fun SearchBar(
 }
 
 @Composable
-private fun MultiSelectBar(
+internal fun MultiSelectBar(
     numberOfSelectedArticles: Int,
+    hasSelectedAllItems: Boolean,
     onSelectAll: (Boolean) -> Unit = { _ -> },
     unbookmarkSelectedArticles: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
-    val hasSelectedAllItems =
-        false// true if numberOfSelectedArticles and size of selected items are equal. DerivedState
-
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -303,6 +335,7 @@ internal fun BookmarkedArticlesList(
     isInSelectionMode: Boolean,
     hapticFeedback: HapticFeedback,
     onArticleClicked: (String) -> Unit = {},
+    initiateSelectionMode: () -> Unit = {},
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
@@ -315,27 +348,27 @@ internal fun BookmarkedArticlesList(
                 key = { bookmarkedArticle -> bookmarkedArticle.id }) { bookmarkedArticle ->
 
                 val selected = selectedArticleIds.contains(bookmarkedArticle.id)
-                // TODO If the context menu is closed, animate it away and recompose every article item in the list or the whole list to remove the borders.
                 BookmarksArticleItem(
                     modifier = Modifier.combinedClickable(
                         onClick = {
-                            onArticleClicked(bookmarkedArticle.id)
-                            // TODO if context menu is shown,
-                            //  if not highlighted, recompose the item to now show a border
-                            //  if highlighted, recompose the article item to remove the a border
-                            //  and then navigate to the detail screen.
-
-                            // TODO If context menu is not shown, clicking navigates to the detail screen
+                            if (isInSelectionMode) {
+                                toggleArticleSelection(selected, selectedArticleIds, bookmarkedArticle)
+                            } else {
+                                onArticleClicked(bookmarkedArticle.id)
+                            }
                         },
                         onLongClick = {
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            if (selected) {
-                                selectedArticleIds.minus(bookmarkedArticle.id)
+                            if (isInSelectionMode) {
+                                toggleArticleSelection(
+                                    selected,
+                                    selectedArticleIds,
+                                    bookmarkedArticle
+                                )
                             } else {
+                                initiateSelectionMode()
                                 selectedArticleIds.plus(bookmarkedArticle.id)
                             }
-                            // TODO if context menu is not shown, show it and recompose the long clicked article item to show the border
-                            // TODO If the context menu is shown, recompose the article to remove the border
                         }
                     ),
                     article = bookmarkedArticle,
@@ -344,6 +377,18 @@ internal fun BookmarkedArticlesList(
             }
         },
     )
+}
+
+internal fun toggleArticleSelection(
+    selected: Boolean,
+    selectedArticleIds: Set<String>,
+    bookmarkedArticle: BookmarksArticle
+) {
+    if (selected) {
+        selectedArticleIds.plus(bookmarkedArticle.id)
+    } else {
+        selectedArticleIds.minus(bookmarkedArticle.id)
+    }
 }
 
 @PreviewPulitzerLightDarkBackground
