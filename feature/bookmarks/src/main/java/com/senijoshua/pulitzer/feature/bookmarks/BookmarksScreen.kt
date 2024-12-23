@@ -390,9 +390,9 @@ internal fun toggleArticleSelection(
     bookmarkedArticle: BookmarksArticle
 ) {
     if (selected) {
-        addArticleId(selectedArticleIds, bookmarkedArticle.id)
-    } else {
         removeArticleIds(selectedArticleIds, bookmarkedArticle.id)
+    } else {
+        addArticleId(selectedArticleIds, bookmarkedArticle.id)
     }
 }
 
