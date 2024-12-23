@@ -37,10 +37,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -60,6 +60,7 @@ import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 import com.senijoshua.pulitzer.core.ui.util.PreviewPulitzerLightDarkBackground
 import com.senijoshua.pulitzer.feature.bookmarks.model.BookmarksArticle
+import com.senijoshua.pulitzer.feature.bookmarks.model.fakeBookmarkedArticles
 
 @Composable
 internal fun BookmarksScreen(
@@ -107,13 +108,14 @@ internal fun BookmarksContent(
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val selectedArticleIds: MutableSet<String> = rememberSaveable { mutableStateOf(emptySet<String>()) }.value.toMutableSet()
+    // TODO Use mutableStateSetOf and delete the helper class by the time Compose v1.8.0 is stable
+    val selectedArticleIds = remember { mutableStateOf(emptySet<String>()) }
 
     var isInSelectionMode by remember { mutableStateOf(false)}
 
     val resetSelectionMode = {
         isInSelectionMode = false
-        selectedArticleIds.clear()
+        clearArticleIds(selectedArticleIds)
     }
 
     // NB: We do not dismiss selection mode until we go back or press the close button in the multi select bar
@@ -135,23 +137,24 @@ internal fun BookmarksContent(
         val keyboardController = LocalSoftwareKeyboardController.current
 
         AnimatedVisibility(!isInSelectionMode) {
+            // animate like spreading horizontally.
             SearchBar(searchQuery, updateSearchQuery, keyboardController, onBackClicked)
         }
 
         AnimatedVisibility(isInSelectionMode) {
             MultiSelectBar(
-                numberOfSelectedArticles = selectedArticleIds.size,
-                hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.size,
+                numberOfSelectedArticles = selectedArticleIds.value.size,
+                hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.value.size,
                 onSelectAll = { shouldSelectAll ->
                     if (shouldSelectAll) {
-                        selectedArticleIds.addAll(uiState.bookmarkedArticles.map { it.id })
+                        addAllArticleIds(selectedArticleIds, uiState.bookmarkedArticles.map { it.id })
                     } else {
-                        selectedArticleIds.clear()
+                        clearArticleIds(selectedArticleIds)
                     }
                 },
                 unbookmarkSelectedArticles = {
                     resetSelectionMode()
-                    unbookmarkArticles(selectedArticleIds.toList())
+                    unbookmarkArticles(selectedArticleIds.value.toList())
                 },
                 onClose = { resetSelectionMode() }
             )
@@ -277,6 +280,7 @@ internal fun MultiSelectBar(
     onClose: () -> Unit = {},
 ) {
     TopAppBar(
+        modifier = Modifier.padding(bottom = 8.dp),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
@@ -331,7 +335,7 @@ internal fun MultiSelectBar(
 internal fun BookmarkedArticlesList(
     modifier: Modifier = Modifier,
     bookmarkedArticles: List<BookmarksArticle>,
-    selectedArticleIds: Set<String>,
+    selectedArticleIds: MutableState<Set<String>>,
     isInSelectionMode: Boolean,
     hapticFeedback: HapticFeedback,
     onArticleClicked: (String) -> Unit = {},
@@ -347,7 +351,8 @@ internal fun BookmarkedArticlesList(
                 items = bookmarkedArticles,
                 key = { bookmarkedArticle -> bookmarkedArticle.id }) { bookmarkedArticle ->
 
-                val selected = selectedArticleIds.contains(bookmarkedArticle.id)
+                val selected = selectedArticleIds.value.contains(bookmarkedArticle.id)
+
                 BookmarksArticleItem(
                     modifier = Modifier.combinedClickable(
                         onClick = {
@@ -366,8 +371,8 @@ internal fun BookmarkedArticlesList(
                                     bookmarkedArticle
                                 )
                             } else {
+                                addArticleId(selectedArticleIds, bookmarkedArticle.id)
                                 initiateSelectionMode()
-                                selectedArticleIds.plus(bookmarkedArticle.id)
                             }
                         }
                     ),
@@ -381,13 +386,13 @@ internal fun BookmarkedArticlesList(
 
 internal fun toggleArticleSelection(
     selected: Boolean,
-    selectedArticleIds: Set<String>,
+    selectedArticleIds: MutableState<Set<String>>,
     bookmarkedArticle: BookmarksArticle
 ) {
     if (selected) {
-        selectedArticleIds.plus(bookmarkedArticle.id)
+        addArticleId(selectedArticleIds, bookmarkedArticle.id)
     } else {
-        selectedArticleIds.minus(bookmarkedArticle.id)
+        removeArticleIds(selectedArticleIds, bookmarkedArticle.id)
     }
 }
 
@@ -395,6 +400,29 @@ internal fun toggleArticleSelection(
 @Composable
 private fun BookmarksScreenPreview() {
     PulitzerTheme {
-        BookmarksContent(uiState = BookmarksUiState(), searchQuery = "")
+        BookmarksContent(uiState = BookmarksUiState(bookmarkedArticles = fakeBookmarkedArticles), searchQuery = "")
     }
+}
+
+// Helper functions for operations on the Set holding selected article ids
+private fun addArticleId(articleIdsSet: MutableState<Set<String>>, id: String) {
+    articleIdsSet.value = articleIdsSet.value.toMutableSet().apply {
+        add(id)
+    }
+}
+
+private fun addAllArticleIds(articleIdsSet: MutableState<Set<String>>, idList: List<String>) {
+    articleIdsSet.value = articleIdsSet.value.toMutableSet().apply {
+        addAll(idList)
+    }
+}
+
+private fun removeArticleIds(articleIdsSet: MutableState<Set<String>>, id: String) {
+    articleIdsSet.value = articleIdsSet.value.toMutableSet().apply {
+        remove(id)
+    }
+}
+
+private fun clearArticleIds(articleIdsSet: MutableState<Set<String>>) {
+    articleIdsSet.value = mutableSetOf()
 }
