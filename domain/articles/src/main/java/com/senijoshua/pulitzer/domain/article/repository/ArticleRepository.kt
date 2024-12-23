@@ -13,4 +13,5 @@ interface ArticleRepository {
     suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>>
     suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>>
     suspend fun bookmarkArticle(articleId: String)
+    suspend fun unBookmarkArticles(articleIds: List<String>)
 }

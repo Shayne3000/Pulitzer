@@ -2,7 +2,6 @@ package com.senijoshua.pulitzer.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import androidx.room.Upsert
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
@@ -25,8 +24,8 @@ interface ArticleDao {
     @Query("SELECT id, thumbnail, title, author FROM articles WHERE title LIKE '%' || :searchQuery || '%' AND isBookmarked = 1")
     fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>
 
-    @Update
-    suspend fun unbookmarkArticles(vararg articleEntity: ArticleEntity)
+    @Query("UPDATE articles SET isBookmarked = 0 WHERE id IN (:articleIds)")
+    suspend fun unBookmarkArticles(articleIds: List<String>)
 
     @Query("SELECT created_at FROM articles ORDER BY created_at DESC LIMIT 1")
     fun getTimeCreated(): Long?

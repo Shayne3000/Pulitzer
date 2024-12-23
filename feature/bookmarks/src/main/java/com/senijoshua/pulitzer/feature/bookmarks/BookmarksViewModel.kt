@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.usecase.GetBookmarkedArticlesUseCase
+import com.senijoshua.pulitzer.domain.article.usecase.UnbookmarkArticlesUseCase
 import com.senijoshua.pulitzer.feature.bookmarks.model.BookmarksArticle
 import com.senijoshua.pulitzer.feature.bookmarks.model.toPresentationFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class BookmarksViewModel @Inject constructor(
     private val getBookmarkedArticles: GetBookmarkedArticlesUseCase,
+    private val unBookmarkArticles: UnbookmarkArticlesUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BookmarksUiState())
     val uiState: StateFlow<BookmarksUiState> = _uiState
@@ -66,15 +68,10 @@ internal class BookmarksViewModel @Inject constructor(
         }
     }
 
-    fun unbookmarkArticles(selectedArticles: List<String>) {
-        // Start the loading
-        _uiState.update { currentUiState ->
-            currentUiState.copy(
-                isLoading = true,
-            )
+    fun unBookmarkSelectedArticles(selectedArticles: List<String>) {
+        viewModelScope.launch {
+            unBookmarkArticles(selectedArticles)
         }
-        // call unbookmarkArticle use case and pass the list then following the clean arch implementation,
-        // we unbookmark all of them at once in a db transaction.
     }
 
     fun updateErrorState() {

@@ -70,6 +70,12 @@ internal class OfflineFirstArticleRepository @Inject constructor(
         }
     }
 
+    override suspend fun unBookmarkArticles(articleIds: List<String>) {
+        withContext(dispatcher) {
+            local.unBookmarkArticles(articleIds)
+        }
+    }
+
     /**
      * We load fresh data from the remote service only if the data in the DB is old or
      * if the database is empty.

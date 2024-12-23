@@ -82,8 +82,8 @@ internal fun BookmarksScreen(
         onArticleClicked = { articleId ->
             onNavigateToDetailScreen(articleId)
         },
-        unbookmarkArticles = { selectedArticles ->
-            vm.unbookmarkArticles(selectedArticles)
+        unBookmarkArticles = { selectedArticles ->
+            vm.unBookmarkSelectedArticles(selectedArticles)
         },
         onBackClicked = {
             onBackClicked()
@@ -103,7 +103,7 @@ internal fun BookmarksContent(
     updateSearchQuery: (String) -> Unit = {},
     onErrorShown: () -> Unit = {},
     onArticleClicked: (String) -> Unit = { _ -> },
-    unbookmarkArticles: (List<String>) -> Unit = {},
+    unBookmarkArticles: (List<String>) -> Unit = {},
     onBackClicked: () -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -137,7 +137,7 @@ internal fun BookmarksContent(
         val keyboardController = LocalSoftwareKeyboardController.current
 
         AnimatedVisibility(!isInSelectionMode) {
-            // animate like spreading horizontally.
+            // TODO animate like spreading horizontally.
             SearchBar(searchQuery, updateSearchQuery, keyboardController, onBackClicked)
         }
 
@@ -154,9 +154,9 @@ internal fun BookmarksContent(
                         clearArticleIds(selectedArticleIds)
                     }
                 },
-                unbookmarkSelectedArticles = {
+                unBookmarkSelectedArticles = {
+                    unBookmarkArticles(selectedArticleIds.value.toList())
                     resetSelectionMode()
-                    unbookmarkArticles(selectedArticleIds.value.toList())
                 },
                 onClose = { resetSelectionMode() }
             )
@@ -278,7 +278,7 @@ internal fun MultiSelectBar(
     numberOfSelectedArticles: Int,
     hasSelectedAllItems: Boolean,
     onSelectAll: (Boolean) -> Unit = { _ -> },
-    unbookmarkSelectedArticles: () -> Unit = {},
+    unBookmarkSelectedArticles: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     TopAppBar(
@@ -307,7 +307,7 @@ internal fun MultiSelectBar(
         },
         actions = {
             IconButton(onClick = {
-                unbookmarkSelectedArticles()
+                unBookmarkSelectedArticles()
             }) {
                 Icon(
                     modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.density_4)),

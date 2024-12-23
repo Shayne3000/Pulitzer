@@ -17,8 +17,9 @@ internal interface LocalDataSource {
     suspend fun insertArticles(articles: List<ArticleEntity>)
     fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     fun getArticleById(articleId: String): Flow<ArticleEntity>
-    suspend fun bookmarkArticle(articleId: String)
     fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>
+    suspend fun bookmarkArticle(articleId: String)
+    suspend fun unBookmarkArticles(articleIds: List<String>)
     suspend fun clearArticles()
     fun getTimeCreated(): Long?
 }
