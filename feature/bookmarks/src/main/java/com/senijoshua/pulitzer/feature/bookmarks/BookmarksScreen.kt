@@ -111,7 +111,7 @@ internal fun BookmarksContent(
     // TODO Use mutableStateSetOf and delete the helper class by the time Compose v1.8.0 is stable
     val selectedArticleIds = remember { mutableStateOf(emptySet<String>()) }
 
-    var isInSelectionMode by remember { mutableStateOf(false)}
+    var isInSelectionMode by remember { mutableStateOf(false) }
 
     val resetSelectionMode = {
         isInSelectionMode = false
@@ -147,7 +147,9 @@ internal fun BookmarksContent(
                 hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.value.size,
                 onSelectAll = { shouldSelectAll ->
                     if (shouldSelectAll) {
-                        addAllArticleIds(selectedArticleIds, uiState.bookmarkedArticles.map { it.id })
+                        addAllArticleIds(
+                            selectedArticleIds,
+                            uiState.bookmarkedArticles.map { it.id })
                     } else {
                         clearArticleIds(selectedArticleIds)
                     }
@@ -357,7 +359,11 @@ internal fun BookmarkedArticlesList(
                     modifier = Modifier.combinedClickable(
                         onClick = {
                             if (isInSelectionMode) {
-                                toggleArticleSelection(selected, selectedArticleIds, bookmarkedArticle)
+                                toggleArticleSelection(
+                                    selected,
+                                    selectedArticleIds,
+                                    bookmarkedArticle
+                                )
                             } else {
                                 onArticleClicked(bookmarkedArticle.id)
                             }
@@ -400,7 +406,10 @@ internal fun toggleArticleSelection(
 @Composable
 private fun BookmarksScreenPreview() {
     PulitzerTheme {
-        BookmarksContent(uiState = BookmarksUiState(bookmarkedArticles = fakeBookmarkedArticles), searchQuery = "")
+        BookmarksContent(
+            uiState = BookmarksUiState(bookmarkedArticles = fakeBookmarkedArticles),
+            searchQuery = ""
+        )
     }
 }
 

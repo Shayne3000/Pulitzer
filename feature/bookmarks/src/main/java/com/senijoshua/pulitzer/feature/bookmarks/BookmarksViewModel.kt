@@ -67,6 +67,12 @@ internal class BookmarksViewModel @Inject constructor(
     }
 
     fun unbookmarkArticles(selectedArticles: List<String>) {
+        // Start the loading
+        _uiState.update { currentUiState ->
+            currentUiState.copy(
+                isLoading = true,
+            )
+        }
         // call unbookmarkArticle use case and pass the list then following the clean arch implementation,
         // we unbookmark all of them at once in a db transaction.
     }
