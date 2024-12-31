@@ -4,6 +4,10 @@ package com.senijoshua.pulitzer.feature.bookmarks
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -136,12 +140,19 @@ internal fun BookmarksContent(
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
-        AnimatedVisibility(!isInSelectionMode) {
-            // TODO animate like spreading horizontally.
+        AnimatedVisibility(
+            visible = !isInSelectionMode,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
             SearchBar(searchQuery, updateSearchQuery, keyboardController, onBackClicked)
         }
 
-        AnimatedVisibility(isInSelectionMode) {
+        AnimatedVisibility(
+            visible = isInSelectionMode,
+            enter = scaleIn() + expandVertically(),
+            exit = scaleOut() + shrinkVertically(),
+        ) {
             MultiSelectBar(
                 numberOfSelectedArticles = selectedArticleIds.value.size,
                 hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.value.size,
