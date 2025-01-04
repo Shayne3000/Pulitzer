@@ -177,6 +177,7 @@ internal fun BookmarksContent(
             if (uiState.bookmarkedArticles.isNotEmpty()) {
                 BookmarkedArticlesList(
                     modifier = modifier,
+                    searchQuery = searchQuery,
                     bookmarkedArticles = uiState.bookmarkedArticles,
                     selectedArticleIds = selectedArticleIds,
                     isInSelectionMode = isInSelectionMode,
@@ -347,6 +348,7 @@ internal fun MultiSelectBar(
 @Composable
 internal fun BookmarkedArticlesList(
     modifier: Modifier = Modifier,
+    searchQuery: String,
     bookmarkedArticles: List<BookmarksArticle>,
     selectedArticleIds: MutableState<Set<String>>,
     isInSelectionMode: Boolean,
@@ -394,6 +396,7 @@ internal fun BookmarkedArticlesList(
                         }
                     ),
                     article = bookmarkedArticle,
+                    searchQuery = searchQuery,
                     isSelected = selected,
                 )
             }

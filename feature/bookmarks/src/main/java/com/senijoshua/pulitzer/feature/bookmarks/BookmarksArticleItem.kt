@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +32,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.senijoshua.pulitzer.core.ui.R
@@ -45,6 +49,7 @@ import com.senijoshua.pulitzer.feature.bookmarks.model.fakeBookmarkedArticles
 internal fun BookmarksArticleItem(
     modifier: Modifier = Modifier,
     article: BookmarksArticle,
+    searchQuery: String = "",
     isSelected: Boolean = false,
 ) {
     OutlinedCard(
@@ -86,14 +91,9 @@ internal fun BookmarksArticleItem(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+            HighlightingText(
                 text = article.title,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textToHighlight = searchQuery,
             )
 
             if (!article.author.isNullOrEmpty()) {
@@ -117,8 +117,8 @@ private fun BookmarkArticleHeader(
     rotationValue: Float,
 ) {
     val thumbnailShape = RoundedCornerShape(
-        topEnd = 12.dp,
-        topStart = 12.dp,
+        topEnd = dimensionResource(id = R.dimen.density_12),
+        topStart = dimensionResource(id = R.dimen.density_12),
         bottomEnd = 0.dp,
         bottomStart = 0.dp
     )
@@ -169,6 +169,111 @@ private fun BookmarkedArticleSelectedCheck(
             contentDescription = stringResource(R.string.selected_bookmarked_article_content_desc)
         )
     }
+}
+
+/**
+ *  Text Composable that highlights the words in [text]
+ *  that matches [textToHighlight] provided that the
+ *  words are sequential.
+ */
+@Composable
+private fun HighlightingText(
+    text: String,
+    textToHighlight: String,
+) {
+    val highlightColor = MaterialTheme.colorScheme.onPrimary
+    val textColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+    val annotatedTitle = remember(text, textToHighlight) {
+        if (textToHighlight.isBlank()) {
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = textColor)) {
+                    append(text)
+                }
+            }
+        } else {
+            val lowerTitle = text.lowercase()
+            val lowerQuery = textToHighlight.lowercase()
+            // Split textToHighlight into words trimming all whitespace in tandem
+            val words = lowerQuery.split("\\s+".toRegex())
+
+            buildAnnotatedString {
+                var currentPosition = 0
+
+                // We're basically matching the next match index to the currentPosition
+                // to determine from which index to start highlighting and
+                // how many characters will be highlighted.
+                while (currentPosition < text.length) {
+                    // We'll only highlight if this remains true
+                    // after cycling through the words in textToHighlight
+                    var allWordsMatch = true
+                    // Number of characters in the title that match the query per time
+                    var matchCharacterCount = 0
+
+                    for (word in words) {
+                        val nextMatchIndex = lowerTitle.indexOf(
+                            word,
+                            currentPosition + matchCharacterCount
+                        )
+
+                        if (nextMatchIndex != currentPosition + matchCharacterCount) {
+                            // The next match index does not match the word at currentPosition
+                            // so break out of for-loop because we shall not highlight starting from
+                            // this index.
+                            allWordsMatch = false
+                            break
+                        }
+
+                        matchCharacterCount += word.length
+
+                        // Account for the space between words, unless it's the last word
+                        if (word != words.last()) {
+                            // Gate to prevent index out-of-bounds error in lowerTitle[cp + mcm],
+                            // for the edge case where the length of textToHighlight exceeds text
+                            // and one or more words in textToHighlight matches.
+                            if (currentPosition + matchCharacterCount >= text.length ||
+                                lowerTitle[currentPosition + matchCharacterCount] != ' ') {
+                                // There's no space after this word so break out of for-loop
+                                allWordsMatch = false
+                                break
+                            }
+                            // There's space after this word so increase match character count
+                            matchCharacterCount++
+                        }
+                    }
+
+                    if (allWordsMatch) {
+                        // Highlight the matching characters with the highlighted color
+                        // and append it to the builder for the annotated title.
+                        withStyle(SpanStyle(color = highlightColor)) {
+                            append(text.substring(currentPosition, currentPosition + matchCharacterCount))
+                        }
+                        currentPosition += matchCharacterCount
+                    } else {
+                        // Highlight character at the currentPosition index in the text
+                        // with the un-highlighted color and append it to the builder for
+                        // the annotated title.
+                        withStyle(style = SpanStyle(color = textColor)) {
+                            append(text[currentPosition].toString())
+                        }
+                        currentPosition++
+                    }
+                }
+            }
+        }
+    }
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensionResource(id = R.dimen.density_8),
+                end = dimensionResource(id = R.dimen.density_8),
+                top = dimensionResource(id = R.dimen.density_8)
+            ),
+        text = annotatedTitle,
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.titleLarge,
+    )
 }
 
 @Composable
