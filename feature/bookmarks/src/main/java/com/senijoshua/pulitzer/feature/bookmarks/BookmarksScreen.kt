@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -46,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -55,7 +57,6 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.senijoshua.pulitzer.core.ui.R
@@ -130,13 +131,10 @@ internal fun BookmarksContent(
 
     val haptics = LocalHapticFeedback.current
 
-    SnackbarHost(hostState = snackBarHostState)
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 16.dp)
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -173,7 +171,7 @@ internal fun BookmarksContent(
             )
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()){
             if (uiState.bookmarkedArticles.isNotEmpty()) {
                 BookmarkedArticlesList(
                     modifier = modifier,
@@ -202,14 +200,25 @@ internal fun BookmarksContent(
                     iconContentDescription = emptyScreenText
                 )
             }
-        }
 
-        // TODO Align error snack bar to the bottom.
-        uiState.errorMessage?.let { errorMessage ->
-            LaunchedEffect(snackBarHostState, errorMessage) {
-                snackBarHostState.showSnackbar(errorMessage)
-                onErrorShown()
-            }
+            SnackbarHost(
+                hostState = snackBarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                snackbar = { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                }
+            )
+        }
+    }
+
+    uiState.errorMessage?.let { errorMessage ->
+        LaunchedEffect(snackBarHostState, errorMessage) {
+            snackBarHostState.showSnackbar(errorMessage)
+            onErrorShown()
         }
     }
 }
@@ -224,7 +233,11 @@ internal fun SearchBar(
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.density_8)),
+            .padding(
+                start = dimensionResource(id = R.dimen.density_16),
+                end = dimensionResource(id = R.dimen.density_16),
+                bottom = dimensionResource(id = R.dimen.density_8)
+            ),
         inputField = {
             SearchBarDefaults.InputField(
                 query = searchQuery,
@@ -294,7 +307,10 @@ internal fun MultiSelectBar(
     onClose: () -> Unit = {},
 ) {
     TopAppBar(
-        modifier = Modifier.padding(bottom = 8.dp),
+        modifier = Modifier.padding(
+            start = dimensionResource(id = R.dimen.density_16),
+            end = dimensionResource(id = R.dimen.density_16),
+            bottom = dimensionResource(id = R.dimen.density_8)),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
@@ -357,7 +373,10 @@ internal fun BookmarkedArticlesList(
     initiateSelectionMode: () -> Unit = {},
 ) {
     LazyVerticalStaggeredGrid(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.padding(
+            start = dimensionResource(id = R.dimen.density_16),
+            end = dimensionResource(id = R.dimen.density_16)
+        ),
         columns = StaggeredGridCells.Fixed(2),
         verticalItemSpacing = dimensionResource(id = R.dimen.density_8),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_8)),
@@ -421,7 +440,9 @@ internal fun toggleArticleSelection(
 private fun BookmarksScreenPreview() {
     PulitzerTheme {
         BookmarksContent(
-            uiState = BookmarksUiState(bookmarkedArticles = fakeBookmarkedArticles),
+            uiState = BookmarksUiState(
+                bookmarkedArticles = fakeBookmarkedArticles,
+            ),
             searchQuery = ""
         )
     }

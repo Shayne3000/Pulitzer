@@ -187,7 +187,8 @@ private fun HomeScreenPreview() {
                     article.author,
                     article.isBookmarked
                 )
-            }
+            },
+            errorMessage = "hey!"
         ))
     }
 }
