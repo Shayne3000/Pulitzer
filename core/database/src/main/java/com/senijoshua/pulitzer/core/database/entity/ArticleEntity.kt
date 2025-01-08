@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
+/**
+ * Entity class representing a row in the Article table
+ */
 @Entity(tableName = "articles")
 data class ArticleEntity(
     @PrimaryKey
@@ -17,7 +20,8 @@ data class ArticleEntity(
     @ColumnInfo(name = "last_modified_date")
     val lastModifiedDate: Date,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long? = System.currentTimeMillis()
+    val createdAt: Long? = System.currentTimeMillis(),
+    val page: Int,
 )
 
 data class BookmarkedArticles(

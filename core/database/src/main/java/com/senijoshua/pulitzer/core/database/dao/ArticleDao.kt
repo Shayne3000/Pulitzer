@@ -1,5 +1,6 @@
 package com.senijoshua.pulitzer.core.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -14,6 +15,9 @@ interface ArticleDao {
 
     @Query("SELECT * FROM articles ORDER BY created_at DESC")
     fun getArticles(): Flow<List<ArticleEntity>>
+
+    @Query("SELECT * FROM articles ORDER BY page ASC, last_modified_date DESC")
+    fun getPagedArticles(): PagingSource<Int, ArticleEntity>
 
     @Query("SELECT * FROM articles WHERE id = :id")
     fun getArticleById(id: String): Flow<ArticleEntity>
