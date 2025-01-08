@@ -13,6 +13,7 @@ kotlinxSerialization = "2.0.0"
 kotlinxSerializationJson = "1.7.1"
 mockk = "1.13.9"
 navigation = "2.8.3"
+paging = "3.3.5"
 retrofit = "2.9.0"
 room = "2.6.1"
 androidx-test-ext-junit = "1.2.1"
@@ -74,6 +75,10 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 
+# Paging
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging"}
+paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
+
 ### Test dependencies ###
 
 # Junit
@@ -92,6 +97,9 @@ coil-testing = { group = "io.coil-kt", name = "coil-test", version.ref = "coil" 
 
 # Room testing
 room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+
+# Paging testing
+paging-test = { group = "androidx.paging", name = "paging-common", version.ref = "paging"}
 
 # Kotlin Coroutines test
 kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
