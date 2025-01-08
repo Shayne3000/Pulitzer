@@ -11,8 +11,8 @@ import javax.inject.Inject
 internal class RemoteDataSourceImpl @Inject constructor(
     private val api: ArticleApi
 ) : RemoteDataSource {
-    override suspend fun getArticlesFromServer(): List<NetworkArticle> {
-       val newsArticles = api.getNewsArticles()
+    override suspend fun getArticlesFromServer(page: Int): List<NetworkArticle> {
+       val newsArticles = api.getNewsArticles(page = page)
         return newsArticles.response.results
     }
 }

@@ -11,5 +11,5 @@ import com.senijoshua.pulitzer.core.network.model.NetworkArticle
  * said sourcing operation.
  */
 internal interface RemoteDataSource {
-    suspend fun getArticlesFromServer(): List<NetworkArticle>
+    suspend fun getArticlesFromServer(page: Int): List<NetworkArticle>
 }

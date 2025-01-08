@@ -7,7 +7,7 @@ import java.util.Date
 data class ArticleResponse(val response: NetworkArticleResults)
 
 @JsonClass(generateAdapter = true)
-data class NetworkArticleResults(val results: List<NetworkArticle>)
+data class NetworkArticleResults(val currentPage: Int, val results: List<NetworkArticle>)
 
 @JsonClass(generateAdapter = true)
 data class NetworkArticle(val id: String, val fields: NetworkArticleFields)

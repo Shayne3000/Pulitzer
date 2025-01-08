@@ -13,7 +13,7 @@ interface ArticleApi {
         @Query("q") query: String = "technology",
         @Query("order-by") orderBy: String = "newest",
         @Query("show-fields") showFields: String = "headline,byline,body,thumbnail,lastModified",
-        @Query("page") page: Int = 1,
+        @Query("page") page: Int,
         @Query("page-size") pageSize: Int = 20
     ): ArticleResponse
 }
