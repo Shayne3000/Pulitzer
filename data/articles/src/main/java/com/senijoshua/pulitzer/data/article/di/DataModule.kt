@@ -2,10 +2,11 @@ package com.senijoshua.pulitzer.data.article.di
 
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimitImpl
-import com.senijoshua.pulitzer.data.article.local.LocalDataSource
-import com.senijoshua.pulitzer.data.article.local.LocalDataSourceImpl
-import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
-import com.senijoshua.pulitzer.data.article.remote.RemoteDataSourceImpl
+import com.senijoshua.pulitzer.data.article.local.LocalArticleDataSource
+import com.senijoshua.pulitzer.data.article.local.LocalArticleDataSourceImpl
+import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSource
+import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSourceImpl
+import com.senijoshua.pulitzer.data.article.repository.ArticleRemoteMediator
 import com.senijoshua.pulitzer.data.article.repository.OfflineFirstArticleRepository
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
 import dagger.Binds
@@ -19,11 +20,11 @@ import javax.inject.Singleton
 internal abstract class DataModule {
     @Singleton
     @Binds
-    internal abstract fun provideLocalDataSource(localDataSourceImpl: LocalDataSourceImpl): LocalDataSource
+    internal abstract fun provideLocalDataSource(localDataSourceImpl: LocalArticleDataSourceImpl): LocalArticleDataSource
 
     @Singleton
     @Binds
-    internal abstract fun provideRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource
+    internal abstract fun provideRemoteDataSource(remoteDataSourceImpl: RemoteArticleDataSourceImpl): RemoteArticleDataSource
 
     @Singleton
     @Binds

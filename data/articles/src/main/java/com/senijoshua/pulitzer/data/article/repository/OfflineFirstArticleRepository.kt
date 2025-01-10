@@ -3,11 +3,11 @@ package com.senijoshua.pulitzer.data.article.repository
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
-import com.senijoshua.pulitzer.data.article.local.LocalDataSource
+import com.senijoshua.pulitzer.data.article.local.LocalArticleDataSource
 import com.senijoshua.pulitzer.data.article.mapper.toDomain
 import com.senijoshua.pulitzer.data.article.mapper.toDomainFormat
 import com.senijoshua.pulitzer.data.article.mapper.toLocalFormat
-import com.senijoshua.pulitzer.data.article.remote.RemoteDataSource
+import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSource
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,11 +28,12 @@ import javax.inject.Inject
  * the architecture.
  */
 internal class OfflineFirstArticleRepository @Inject constructor(
-    private val local: LocalDataSource,
-    private val remote: RemoteDataSource,
+    private val local: LocalArticleDataSource,
+    private val remote: RemoteArticleDataSource,
     private val dispatcher: CoroutineDispatcher,
     private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
+    // TODO Inject a remote mediator interface to load paged article data from the Guardian service and store it in the articles table
 
     override suspend fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
