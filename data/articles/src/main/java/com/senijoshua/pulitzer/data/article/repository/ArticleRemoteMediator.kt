@@ -86,7 +86,13 @@ internal class ArticleRemoteMediator @Inject constructor(
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
-            return MediatorResult.Error(exception)
+            if (state.isEmpty()) {
+                // No locally-cached paged data either so trigger an error state to the presentation layer
+                return MediatorResult.Error(exception)
+            }
+
+            // Return the paged data cached in the DB
+            return MediatorResult.Success(endOfPaginationReached = true)
         }
     }
 }
