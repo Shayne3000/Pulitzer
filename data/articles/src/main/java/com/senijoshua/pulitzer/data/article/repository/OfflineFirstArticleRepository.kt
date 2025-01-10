@@ -3,7 +3,7 @@ package com.senijoshua.pulitzer.data.article.repository
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
-import com.senijoshua.pulitzer.data.article.local.LocalArticleDataSource
+import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSource
 import com.senijoshua.pulitzer.data.article.mapper.toDomain
 import com.senijoshua.pulitzer.data.article.mapper.toDomainFormat
 import com.senijoshua.pulitzer.data.article.mapper.toLocalFormat
