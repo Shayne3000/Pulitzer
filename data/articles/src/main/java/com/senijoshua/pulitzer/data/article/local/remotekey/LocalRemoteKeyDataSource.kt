@@ -9,6 +9,6 @@ import com.senijoshua.pulitzer.core.database.entity.RemoteKeyEntity
 internal interface LocalRemoteKeyDataSource {
     suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeyEntity>)
     suspend fun getRemoteKeyByArticleId(articleId: String): RemoteKeyEntity
-    suspend fun getCreatedTime(): Long
+    suspend fun getCreatedTime(): Long?
     suspend fun clearRemoteKeys()
 }

@@ -50,4 +50,8 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
+
+    // Paging
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
 }
