@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.data.article.local
+package com.senijoshua.pulitzer.data.article.local.article
 
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Interface through which higher elements in the architectural
- * hierarchy (i.e. repository) can interact (e.g. retrieve data)
- * with the local database.
+ * hierarchy (i.e. repository) can interact (e.g. perform operations)
+ * with the Articles table in the local database.
  *
  * It abstracts away implementation details of retrieving data from the
  * database and is the contract that must be implemented to perform

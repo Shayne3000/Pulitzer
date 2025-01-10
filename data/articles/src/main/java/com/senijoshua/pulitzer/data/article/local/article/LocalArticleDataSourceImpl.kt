@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.data.article.local
+package com.senijoshua.pulitzer.data.article.local.article
 
 import com.senijoshua.pulitzer.core.database.dao.ArticleDao
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
