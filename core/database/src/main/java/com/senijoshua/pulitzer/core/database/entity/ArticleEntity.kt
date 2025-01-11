@@ -21,7 +21,6 @@ data class ArticleEntity(
     val lastModifiedDate: Date,
     @ColumnInfo(name = "created_at")
     val createdAt: Long? = System.currentTimeMillis(),
-    val page: Int,
 )
 
 data class BookmarkedArticles(

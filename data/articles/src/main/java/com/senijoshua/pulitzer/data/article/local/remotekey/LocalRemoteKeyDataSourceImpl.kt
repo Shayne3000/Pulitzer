@@ -8,7 +8,7 @@ internal class LocalRemoteKeyDataSourceImpl @Inject constructor(private val dao:
     override suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeyEntity>) =
         dao.insertRemoteKeys(remoteKeys)
 
-    override suspend fun getRemoteKeyByArticleId(articleId: String) =
+    override suspend fun getRemoteKeyGivenArticleId(articleId: String) =
         dao.getRemoteKeyByArticleId(articleId)
 
     override suspend fun getCreatedTime() = dao.getCreatedTime()

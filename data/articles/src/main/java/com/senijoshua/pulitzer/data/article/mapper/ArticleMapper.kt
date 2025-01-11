@@ -33,7 +33,7 @@ internal fun NetworkArticle.toLocalFormat() = ArticleEntity(
     body = fields.body,
     isBookmarked = false,
     lastModifiedDate = fields.lastModified,
-    createdAt = System.currentTimeMillis()
+    createdAt = System.currentTimeMillis(),
 )
 
 internal fun List<NetworkArticle>.toLocalFormat() = map(NetworkArticle::toLocalFormat)
