@@ -2,6 +2,7 @@ package com.senijoshua.pulitzer.data.article.di
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.RemoteMediator
+import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimitImpl
 import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSource
@@ -39,5 +40,5 @@ internal abstract class DataModule {
     @OptIn(ExperimentalPagingApi::class)
     @Singleton
     @Binds
-    internal abstract fun provideRemoteMediator(remoteMediator: RemoteMediator<Any, Any>): ArticleRemoteMediator
+    internal abstract fun provideRemoteMediator(remoteMediator: RemoteMediator<Int, ArticleEntity>): ArticleRemoteMediator
 }

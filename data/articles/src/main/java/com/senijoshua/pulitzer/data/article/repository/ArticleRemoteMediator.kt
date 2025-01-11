@@ -47,7 +47,7 @@ internal class ArticleRemoteMediator @Inject constructor(
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeyForLastArticleItem = state.lastItemOrNull()?.let { article ->
-                    localRemoteKeySource.getRemoteKeyByArticleId(article.id)
+                    localRemoteKeySource.getRemoteKeyGivenArticleId(article.id)
                 }
 
                 remoteKeyForLastArticleItem?.nextPageKey
@@ -60,6 +60,7 @@ internal class ArticleRemoteMediator @Inject constructor(
         try {
             val response = remote.getPagedArticlesFromServer(pageToLoad)
             val articles = response.results
+            val loadedPage = response.currentPage
             val endOfPaginationReached = articles.isEmpty()
 
             dbTransactionProvider.withTransaction {
@@ -68,14 +69,14 @@ internal class ArticleRemoteMediator @Inject constructor(
                     localRemoteKeySource.clearRemoteKeys()
                 }
 
-                val prevPageKey = if (pageToLoad > 1) pageToLoad - 1 else null
-                val nextPageKey = if (endOfPaginationReached) null else pageToLoad + 1
+                val prevPageKey = if (loadedPage > 1) loadedPage - 1 else null
+                val nextPageKey = if (endOfPaginationReached) null else loadedPage + 1
 
                 val remoteKeys = articles.map { article ->
                     RemoteKeyEntity(
                         articleId = article.id,
                         prevPageKey = prevPageKey,
-                        currentPageKey = pageToLoad,
+                        currentPageKey = loadedPage,
                         nextPageKey = nextPageKey
                     )
                 }
@@ -87,7 +88,7 @@ internal class ArticleRemoteMediator @Inject constructor(
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
             if (state.isEmpty()) {
-                // No locally-cached paged data either so trigger an error state to the presentation layer
+                // No locally-cached paged data either so send an error "no data" state to the presentation layer
                 return MediatorResult.Error(exception)
             }
 
