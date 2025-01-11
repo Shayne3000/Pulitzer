@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * Represents the Core app functionality/use case of retrieving a list of news articles.
+ * Represents the core app functionality/use case of retrieving a list of news articles.
  */
 class GetArticlesUseCase @Inject constructor(private val repository: ArticleRepository) {
     suspend operator fun invoke(): Flow<Result<List<Article>>> = repository.getArticles()
