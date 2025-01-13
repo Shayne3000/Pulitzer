@@ -1,5 +1,9 @@
 package com.senijoshua.pulitzer.feature.home.model
 
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+
 /**
  * Representation of an Article type with data specific to the home screen.
  *
@@ -23,3 +27,6 @@ internal val fakeArticleList = List(10) { index ->
         index % 2 == 0,
     )
 }
+
+internal val fakePagedArticleList: Flow<PagingData<HomeArticle>> =
+    flowOf(PagingData.from(fakeArticleList))
