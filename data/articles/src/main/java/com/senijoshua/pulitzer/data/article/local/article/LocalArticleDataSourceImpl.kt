@@ -1,6 +1,5 @@
 package com.senijoshua.pulitzer.data.article.local.article
 
-import androidx.paging.PagingSource
 import com.senijoshua.pulitzer.core.database.dao.ArticleDao
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
@@ -15,9 +14,6 @@ internal class LocalArticleDataSourceImpl @Inject constructor(
     private val dao: ArticleDao
 ) : LocalArticleDataSource {
     override fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
-
-    override suspend fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity> =
-        dao.getPagedArticles()
 
     override suspend fun insertArticles(articles: List<ArticleEntity>) =
         dao.insertArticles(articles)

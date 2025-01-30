@@ -1,14 +1,5 @@
-@file:OptIn(ExperimentalPagingApi::class)
-
 package com.senijoshua.pulitzer.data.article.repository
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.RemoteMediator
-import androidx.paging.map
-import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
@@ -39,24 +30,9 @@ import javax.inject.Inject
 internal class OfflineFirstArticleRepository @Inject constructor(
     private val local: LocalArticleDataSource,
     private val remote: RemoteArticleDataSource,
-    private val remoteMediator: RemoteMediator<Int, ArticleEntity>,
     private val dispatcher: CoroutineDispatcher,
     private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
-    override suspend fun getPagedArticles(): Flow<PagingData<Article>> {
-        return withContext(dispatcher) {
-            Pager(
-                config = PagingConfig(pageSize = 20),
-                remoteMediator = remoteMediator,
-                pagingSourceFactory = { local.getPagedArticlesFromDB() }
-            ).flow.map { pagingData: PagingData<ArticleEntity> ->
-                pagingData.map { articleEntity ->
-                    articleEntity.toDomainFormat()
-                }
-            }
-        }
-    }
-
     override suspend fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()

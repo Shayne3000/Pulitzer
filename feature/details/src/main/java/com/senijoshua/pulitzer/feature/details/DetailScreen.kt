@@ -291,29 +291,29 @@ internal fun ArticleDetail(
 
         val context = LocalContext.current
 
-        val articleText = remember {
-            MaterialTextView(context)
-        }
-
-        AndroidView(modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.density_16)
-            )
-            .testTag(BODY),
-            factory = {
-                LinkifyCompat.addLinks(articleText, Linkify.WEB_URLS)
-
-                articleText.apply {
-                    setTextColor(bodyTextColor)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-                    articleText.setLinkTextColor(linkColor)
-                    articleText.movementMethod = LinkMovementMethod.getInstance()
-                }
-            },
-            update = { materialTextView ->
-                materialTextView.text = articleBody
-            })
+//        val articleText = remember {
+//            MaterialTextView(context)
+//        }
+//
+//        AndroidView(modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(
+//                horizontal = dimensionResource(id = R.dimen.density_16)
+//            )
+//            .testTag(BODY),
+//            factory = {
+//                LinkifyCompat.addLinks(articleText, Linkify.WEB_URLS)
+//
+//                articleText.apply {
+//                    setTextColor(bodyTextColor)
+//                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+//                    articleText.setLinkTextColor(linkColor)
+//                    articleText.movementMethod = LinkMovementMethod.getInstance()
+//                }
+//            },
+//            update = { materialTextView ->
+//                materialTextView.text = articleBody
+//            })
     }
 }
 

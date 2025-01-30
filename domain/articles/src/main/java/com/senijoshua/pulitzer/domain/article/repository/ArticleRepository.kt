@@ -1,6 +1,5 @@
 package com.senijoshua.pulitzer.domain.article.repository
 
-import androidx.paging.PagingData
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ArticleRepository {
     suspend fun getArticles(): Flow<Result<List<Article>>>
-    suspend fun getPagedArticles(): Flow<PagingData<Article>>
     suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>>
     suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>>
     suspend fun bookmarkArticle(articleId: String)

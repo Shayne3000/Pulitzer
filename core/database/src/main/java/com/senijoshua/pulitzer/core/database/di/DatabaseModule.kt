@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.senijoshua.pulitzer.core.database.PulitzerDatabase
 import com.senijoshua.pulitzer.core.database.dao.ArticleDao
-import com.senijoshua.pulitzer.core.database.dao.RemoteKeyDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,8 +28,4 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideArticleDao(db: PulitzerDatabase): ArticleDao = db.articleDao()
-
-    @Provides
-    @Singleton
-    fun provideRemoteKeyDao(db: PulitzerDatabase): RemoteKeyDao = db.remoteKeyDao()
 }

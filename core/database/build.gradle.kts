@@ -52,8 +52,4 @@ dependencies {
     ksp(libs.room.compiler)
     // Kotlin Extensions and Coroutines support for Room
     implementation(libs.room.ktx)
-
-    // Paging
-    implementation(libs.paging.runtime)
-    implementation(libs.paging.compose)
 }

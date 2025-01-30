@@ -1,6 +1,5 @@
 package com.senijoshua.pulitzer.data.article.local.article
 
-import androidx.paging.PagingSource
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.database.entity.BookmarkedArticles
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 internal interface LocalArticleDataSource {
     suspend fun insertArticles(articles: List<ArticleEntity>)
     fun getArticlesFromDB(): Flow<List<ArticleEntity>>
-    fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity>
     fun getArticleById(articleId: String): Flow<ArticleEntity>
     fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>
     suspend fun bookmarkArticle(articleId: String)
