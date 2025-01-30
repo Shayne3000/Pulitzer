@@ -132,7 +132,10 @@ internal fun HomeContent(
                     onArticleBookmarked = { articleId -> onArticleBookmarked(articleId) },
                 )
             } else if (uiState.isLoading) {
-                PulitzerProgressIndicator(modifier)
+                PulitzerProgressIndicator(
+                    modifier = modifier,
+                    size = dimensionResource(id = R.dimen.density_64)
+                )
             } else {
                 EmptyScreen(
                     modifier,

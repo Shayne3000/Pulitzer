@@ -5,6 +5,7 @@ package com.senijoshua.pulitzer.feature.details
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.TypedValue
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -54,7 +55,6 @@ import androidx.core.text.util.LinkifyCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.android.material.textview.MaterialTextView
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.components.EmptyScreen
 import com.senijoshua.pulitzer.core.ui.components.PulitzerProgressIndicator
@@ -175,7 +175,10 @@ internal fun DetailContent(
                 .padding(paddingValues)
         ) {
             if (uiState.isLoading) {
-                PulitzerProgressIndicator(modifier)
+                PulitzerProgressIndicator(
+                    modifier = modifier,
+                    size = dimensionResource(id = R.dimen.density_64)
+                )
             } else if (uiState.details != null) {
                 ArticleDetail(article = uiState.details)
             } else {
@@ -314,6 +317,7 @@ internal fun ArticleDetail(
 //            update = { materialTextView ->
 //                materialTextView.text = articleBody
 //            })
+
     }
 }
 

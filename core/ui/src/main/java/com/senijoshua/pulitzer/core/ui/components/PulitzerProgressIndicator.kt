@@ -12,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.senijoshua.pulitzer.core.ui.R
 import com.senijoshua.pulitzer.core.ui.theme.PulitzerTheme
 
 const val PROGRESS_TAG: String = "PulitzerProgress"
 
 @Composable
-fun PulitzerProgressIndicator(modifier: Modifier = Modifier) {
+fun PulitzerProgressIndicator(modifier: Modifier = Modifier, size: Dp) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
@@ -26,7 +27,7 @@ fun PulitzerProgressIndicator(modifier: Modifier = Modifier) {
         CircularProgressIndicator(
             modifier = Modifier
                 .testTag(PROGRESS_TAG)
-                .size(dimensionResource(id = R.dimen.density_64)),
+                .size(size),
             color = MaterialTheme.colorScheme.primary
         )
     }
@@ -36,6 +37,6 @@ fun PulitzerProgressIndicator(modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 private fun PulitzerProgressIndicatorPreview() {
     PulitzerTheme {
-        PulitzerProgressIndicator()
+        PulitzerProgressIndicator(size = dimensionResource(id = R.dimen.density_64))
     }
 }
