@@ -46,7 +46,11 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     override suspend fun getPagedArticles(): Flow<PagingData<Article>> {
         return withContext(dispatcher) {
             Pager(
-                config = PagingConfig(pageSize = 20),
+                config = PagingConfig(
+                    pageSize = 20,
+                    prefetchDistance = 0,
+                    initialLoadSize = 20
+                ),
                 remoteMediator = remoteMediator,
                 pagingSourceFactory = { local.getPagedArticlesFromDB() }
             ).flow.map { pagingData: PagingData<ArticleEntity> ->

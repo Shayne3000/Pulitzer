@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,7 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -73,10 +78,6 @@ internal fun HomeScreen(
             vm.onErrorMessageShown()
         }
     )
-
-    LaunchedEffect(Unit) {
-        vm.getArticles()
-    }
 }
 
 @Composable
@@ -132,14 +133,16 @@ internal fun HomeContent(
     ) { padding ->
         PullToRefreshBox(
             modifier = modifier.fillMaxSize(),
-            isRefreshing = pagedArticles.loadState.refresh is LoadState.Loading,
+            isRefreshing = pagedArticles.loadState.refresh is LoadState.Loading && pagedArticles.itemCount != 0,
             state = pullToRefreshState,
             onRefresh = {
                 pagedArticles.refresh()
             },
             indicator = {
                 Indicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 36.dp),
                     isRefreshing = pagedArticles.loadState.refresh is LoadState.Loading,
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -147,6 +150,78 @@ internal fun HomeContent(
                 )
             }
         ) {
+//            LazyColumn(
+//                modifier = modifier
+//                    .fillMaxSize()
+//                    .background(color = MaterialTheme.colorScheme.surface)
+//                    .padding(padding)
+//            ) {
+//                items(pagedArticles.itemCount) { index ->
+//                    val homeArticle = pagedArticles[index]
+//                    homeArticle?.let { article ->
+//                        HomeArticleItem(article = article, onArticleClicked = { articleId ->
+//                            onArticleClicked(articleId)
+//                        }, onArticleBookmarked = { articleId ->
+//                            onArticleBookmarked(articleId)
+//                        })
+//                    }
+//                }
+//                when (pagedArticles.loadState.refresh) {
+//                    is LoadState.Loading -> {
+//                        item {
+//                            PulitzerProgressIndicator(
+//                                modifier = modifier,
+//                                size = dimensionResource(id = R.dimen.density_64)
+//                            )
+//                        }
+//                    }
+//
+//                    is LoadState.Error -> {
+//                        item {
+//                            if (pagedArticles.itemCount == 0) {
+//                                EmptyScreen(
+//                                    modifier,
+//                                    text = R.string.no_articles_text,
+//                                    iconContentDescription = R.string.empty_article_list_content_desc
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    else -> {
+//                        // No op
+//                    }
+//                }
+//                when (pagedArticles.loadState.append) {
+//                    is LoadState.Loading -> {
+//                        Log.d("Paging", "Append loading")
+//                        item {
+//                            Box(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(16.dp),
+//                                contentAlignment = Alignment.Center
+//                            ) {
+//                                PulitzerProgressIndicator(
+//                                    modifier = modifier,
+//                                    size = dimensionResource(id = R.dimen.density_36)
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    is LoadState.Error -> {
+//                        item {
+//                            AppendErrorItem(pagedArticles = pagedArticles)
+//                        }
+//                    }
+//
+//                    else -> {
+//                        // No op
+//                    }
+//                }
+//            }
+
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -155,16 +230,18 @@ internal fun HomeContent(
             ) {
                 // TODO Handle refresh loading, content and error states
                 if (pagedArticles.loadState.refresh is LoadState.Loading && pagedArticles.itemCount == 0) {
-                } else if (pagedArticles.loadState.refresh is LoadState.Error && pagedArticles.itemCount == 0){
                     PulitzerProgressIndicator(
                         modifier = modifier,
                         size = dimensionResource(id = R.dimen.density_64)
                     )
+                } else if ((pagedArticles.loadState.refresh is LoadState.Error) && pagedArticles.itemCount == 0) {
                     EmptyScreen(
                         modifier,
                         text = R.string.no_articles_text,
                         iconContentDescription = R.string.empty_article_list_content_desc
                     )
+                } else if ((pagedArticles.loadState.refresh is LoadState.Error) && pagedArticles.itemCount != 0) {
+                    ShowError(pagedArticles, snackBarHostState)
                 } else {
                     HomeArticleList(
                         modifier = modifier,
@@ -174,22 +251,48 @@ internal fun HomeContent(
                         onArticleBookmarked = { articleId -> onArticleBookmarked(articleId) },
                     )
                 }
-
             }
         }
     }
 
     // Show snackbar only when there's an error during initial or refresh loading
     if (pagedArticles.loadState.refresh is LoadState.Error) {
-        val refreshError = pagedArticles.loadState.refresh as LoadState.Error
-        val errorMessage = refreshError.error.message
+        ShowError(pagedArticles, snackBarHostState)
+    }
+}
 
-        errorMessage?.let { message ->
-            LaunchedEffect(message) {
-                snackBarHostState.showSnackbar(message)
-            }
+@Composable
+internal fun ShowError(
+    pagedArticles: LazyPagingItems<HomeArticle>,
+    snackBarHostState: SnackbarHostState
+) {
+    val refreshError = pagedArticles.loadState.refresh as LoadState.Error
+    val errorMessage = refreshError.error.message
+
+    errorMessage?.let { message ->
+        LaunchedEffect(message, snackBarHostState) {
+            snackBarHostState.showSnackbar(message)
         }
+    }
+}
 
+@Composable
+fun RefreshText(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Refreshing articles...",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -201,23 +304,80 @@ internal fun HomeArticleList(
     onArticleClicked: (String) -> Unit = {},
     onArticleBookmarked: (String) -> Unit = {},
 ) {
-    // TODO Handle append loading, and error state
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.density_8)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.density_4)),
     ) {
-        items(pagedArticles.itemCount, key = { index ->  pagedArticles[index]!!.id }) { index ->
-            HomeArticleItem(article = pagedArticles[index]!!, onArticleClicked = { articleId ->
-                onArticleClicked(articleId)
-            }, onArticleBookmarked = { articleId ->
-                onArticleBookmarked(articleId)
-            })
-        }
-        pagedArticles.apply {
-            when {
-                
+        items(pagedArticles.itemCount) { index ->
+            val homeArticle = pagedArticles[index]
+            homeArticle?.let { article ->
+                HomeArticleItem(article = article, onArticleClicked = { articleId ->
+                    onArticleClicked(articleId)
+                }, onArticleBookmarked = { articleId ->
+                    onArticleBookmarked(articleId)
+                })
             }
+        }
+        when (pagedArticles.loadState.append) {
+            is LoadState.Loading -> {
+                item {
+                    PulitzerProgressIndicator(
+                        modifier = modifier,
+                        size = dimensionResource(id = R.dimen.density_36)
+                    )
+                }
+            }
+
+            is LoadState.Error -> {
+                item {
+                    AppendErrorItem(pagedArticles = pagedArticles)
+                }
+            }
+
+            else -> {
+                // No op
+            }
+        }
+    }
+}
+
+@Composable
+internal fun AppendErrorItem(
+    modifier: Modifier = Modifier,
+    pagedArticles: LazyPagingItems<HomeArticle>
+) {
+    val appendError = pagedArticles.loadState.append as LoadState.Error
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .fillMaxWidth()
+            .padding(
+                dimensionResource(R.dimen.density_8)
+            )
+    ) {
+        Text(
+            text = appendError.error.localizedMessage!!,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
+        Button(
+            onClick = {
+                pagedArticles.retry()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.article_list_retry),
+            )
         }
     }
 }
@@ -226,17 +386,19 @@ internal fun HomeArticleList(
 @PreviewPulitzerLightDarkBackground
 private fun HomeScreenPreview() {
     PulitzerTheme {
-        HomeContent(uiState = HomeUiState(
-            articles = fakeArticleList.map { article ->
-                HomeArticle(
-                    article.id,
-                    article.thumbnail,
-                    article.title,
-                    article.author,
-                    article.isBookmarked
-                )
-            },
-            errorMessage = "hey!"
-        ), pagedArticles = fakePagedArticleList.collectAsLazyPagingItems())
+        HomeContent(
+            uiState = HomeUiState(
+                articles = fakeArticleList.map { article ->
+                    HomeArticle(
+                        article.id,
+                        article.thumbnail,
+                        article.title,
+                        article.author,
+                        article.isBookmarked
+                    )
+                },
+                errorMessage = "hey!"
+            ), pagedArticles = fakePagedArticleList.collectAsLazyPagingItems()
+        )
     }
 }

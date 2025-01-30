@@ -51,9 +51,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":domain:articles"))
 
-    // Material components
-    implementation(libs.material)
-
     implementation(libs.lifecycle.compose)
 
     // Kotlin Serialization

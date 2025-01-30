@@ -54,6 +54,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 
 # Kotlin Coroutine & Flows
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -84,7 +85,7 @@ paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.r
 # Junit
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
-# Mockk
+# Mockk https://issuetracker.google.com/issues/340966212
 mockk = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 mockk-agent = { group = "io.mockk", name = "mockk-agent", version.ref = "mockk" }
 
@@ -107,7 +108,6 @@ kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 # Compose UI test
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material-material" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -5,6 +5,7 @@
     <string name="article_thumbnail_content_desc">Article thumbnail</string>
     <string name="article_bookmark_content_desc">Bookmark</string>
     <string name="bookmarks_menu_item">Bookmarks</string>
+    <string name="article_list_retry">Retry</string>
     <!-- Detail -->
     <string name="back_content_desc">Back</string>
     <string name="guardian_logo_content_desc">Guardian Logo</string>

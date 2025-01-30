@@ -85,6 +85,7 @@ dependencies {
     //// Test dependencies ////
 
     // Local tests
+    testImplementation(libs.paging.test)
     testImplementation(libs.coil.testing)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)

@@ -7,6 +7,8 @@ import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimitImpl
 import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSource
 import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSourceImpl
+import com.senijoshua.pulitzer.data.article.local.remotekey.LocalRemoteKeyDataSource
+import com.senijoshua.pulitzer.data.article.local.remotekey.LocalRemoteKeyDataSourceImpl
 import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSource
 import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSourceImpl
 import com.senijoshua.pulitzer.data.article.repository.ArticleRemoteMediator
@@ -23,11 +25,17 @@ import javax.inject.Singleton
 internal abstract class DataModule {
     @Singleton
     @Binds
-    internal abstract fun provideLocalDataSource(localDataSourceImpl: LocalArticleDataSourceImpl): LocalArticleDataSource
+    internal abstract fun provideLocalArticleDataSource(localDataSourceImpl: LocalArticleDataSourceImpl): LocalArticleDataSource
 
     @Singleton
     @Binds
-    internal abstract fun provideRemoteDataSource(remoteDataSourceImpl: RemoteArticleDataSourceImpl): RemoteArticleDataSource
+    internal abstract fun provideLocalRemoteKeyDataSource(
+        localRemoteKeyDataSourceImpl: LocalRemoteKeyDataSourceImpl
+    ): LocalRemoteKeyDataSource
+
+    @Singleton
+    @Binds
+    internal abstract fun provideRemoteArticleDataSource(remoteDataSourceImpl: RemoteArticleDataSourceImpl): RemoteArticleDataSource
 
     @Singleton
     @Binds
@@ -40,5 +48,5 @@ internal abstract class DataModule {
     @OptIn(ExperimentalPagingApi::class)
     @Singleton
     @Binds
-    internal abstract fun provideRemoteMediator(remoteMediator: RemoteMediator<Int, ArticleEntity>): ArticleRemoteMediator
+    internal abstract fun provideRemoteMediator(remoteMediator: ArticleRemoteMediator): RemoteMediator<Int, ArticleEntity>
 }

@@ -16,8 +16,7 @@ internal class LocalArticleDataSourceImpl @Inject constructor(
 ) : LocalArticleDataSource {
     override fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
 
-    override suspend fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity> =
-        dao.getPagedArticles()
+    override fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity> = dao.getPagedArticles()
 
     override suspend fun insertArticles(articles: List<ArticleEntity>) =
         dao.insertArticles(articles)
@@ -35,6 +34,4 @@ internal class LocalArticleDataSourceImpl @Inject constructor(
         dao.getBookmarkedArticles(searchQuery)
 
     override suspend fun clearArticles() = dao.clearArticles()
-
-    // transactions clear remote keys and articles, insert remote keys and articles
 }

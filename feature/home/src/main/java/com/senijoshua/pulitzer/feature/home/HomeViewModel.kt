@@ -69,6 +69,20 @@ internal class HomeViewModel @Inject constructor(
         }
     }
 
+    /*
+     * Remote mediator loads the data from the network and persists it to DB when we've scrolled to the end and run out of cached paged data.
+     * PagingSource then loads the paged cached data from the DB and supplies it to the UI through the ViewModel.
+     *
+     * The problem with the paging library is their technical choice where pagingData can only be collected once in the UI
+     * which messes up our architecture by increasing coupling/reducing separation of concerns as the UI
+     * now directly accesses and manages screen/Paging Library state (i.e. Error, Loading ) and behaviour (Refresh, append) and the fact
+     * that they force that technical choice on you. This approach gives us lesser control over the UI State e.g. when I need to reset error states
+     * Ideally, the UI shouldn't care about how its state is generated or what behaviours generate it. Its job is to just
+     * display state and call its own events that will change state. A paging library is a detail/framework. The UI shouldn't know about
+     * such details. Making it know about such makes things less maintainable and testable. This approach also makes it difficult to
+     * test the ViewModel especially if the application screen that uses pagination is complex. it gives us less control over the UI State.
+     */
+
     fun bookmarkArticle(articleId: String) {
         viewModelScope.launch {
             bookmarkArticleUseCase(articleId)
