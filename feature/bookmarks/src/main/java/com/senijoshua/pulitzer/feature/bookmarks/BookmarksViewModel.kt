@@ -95,5 +95,5 @@ internal data class BookmarksUiState(
     val bookmarkedArticles: List<BookmarksArticle> = emptyList(),
     val hasNoBookmarks: Boolean = true,
     val isLoading: Boolean = true,
-    val errorMessage: String? = "What?",
+    val errorMessage: String? = null,
 )

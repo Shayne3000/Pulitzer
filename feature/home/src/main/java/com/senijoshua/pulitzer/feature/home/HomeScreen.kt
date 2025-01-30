@@ -155,8 +155,11 @@ internal fun HomeContent(
             ) {
                 // TODO Handle refresh loading, content and error states
                 if (pagedArticles.loadState.refresh is LoadState.Loading && pagedArticles.itemCount == 0) {
-                    PulitzerProgressIndicator(modifier)
                 } else if (pagedArticles.loadState.refresh is LoadState.Error && pagedArticles.itemCount == 0){
+                    PulitzerProgressIndicator(
+                        modifier = modifier,
+                        size = dimensionResource(id = R.dimen.density_64)
+                    )
                     EmptyScreen(
                         modifier,
                         text = R.string.no_articles_text,
