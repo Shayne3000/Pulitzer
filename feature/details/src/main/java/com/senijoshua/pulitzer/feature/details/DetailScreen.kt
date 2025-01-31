@@ -294,30 +294,36 @@ internal fun ArticleDetail(
 
         val context = LocalContext.current
 
-//        val articleText = remember {
-//            MaterialTextView(context)
-//        }
-//
-//        AndroidView(modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(
-//                horizontal = dimensionResource(id = R.dimen.density_16)
-//            )
-//            .testTag(BODY),
-//            factory = {
-//                LinkifyCompat.addLinks(articleText, Linkify.WEB_URLS)
-//
-//                articleText.apply {
-//                    setTextColor(bodyTextColor)
-//                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-//                    articleText.setLinkTextColor(linkColor)
-//                    articleText.movementMethod = LinkMovementMethod.getInstance()
-//                }
-//            },
-//            update = { materialTextView ->
-//                materialTextView.text = articleBody
-//            })
+        // Ideally one would use AnnotatedString.fromHtml in a Text composable but given that its
+        // HTML parser is rather basic and does not fully replicate the rendering
+        // behavior of a traditional HTML renderer (i.e. adequately handling block-level elements like <p>),
+        // It would be best to use TextView via AndroidView as it has a more complete
+        // HTML rendering offering as HtmlCompat.fromHtml() is a more robust HTML parser that
+        // better handles block-level elements like paragraphs.
+        val articleText = remember {
+            TextView(context)
+        }
 
+        AndroidView(
+            modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.density_16)
+            )
+            .testTag(BODY),
+            factory = {
+                LinkifyCompat.addLinks(articleText, Linkify.WEB_URLS)
+
+                articleText.apply {
+                    setTextColor(bodyTextColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+                    articleText.setLinkTextColor(linkColor)
+                    articleText.movementMethod = LinkMovementMethod.getInstance()
+                }
+            },
+            update = { textView ->
+                textView.text = articleBody
+            })
     }
 }
 
