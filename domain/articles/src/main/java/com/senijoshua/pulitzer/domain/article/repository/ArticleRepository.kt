@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ArticleRepository {
     suspend fun getArticles(): Flow<Result<List<Article>>>
+    suspend fun getPagedArticles(page: Int, isRefresh: Boolean, isPaging: Boolean) : Flow<Result<List<Article>>>
     suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>>
     suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>>
     suspend fun bookmarkArticle(articleId: String)

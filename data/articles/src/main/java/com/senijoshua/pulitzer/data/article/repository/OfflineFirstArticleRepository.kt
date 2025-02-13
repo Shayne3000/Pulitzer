@@ -1,5 +1,6 @@
 package com.senijoshua.pulitzer.data.article.repository
 
+import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
@@ -33,6 +34,56 @@ internal class OfflineFirstArticleRepository @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
+    // Store internal page, offset and limit here and it should persist for the lifetime of the app since this class has singleton scope
+    private var isPagingInternally: Boolean = false
+
+    override suspend fun getPagedArticles(page: Int, isRefresh: Boolean, isPaging: Boolean): Flow<Result<List<Article>>> {
+        val offset = (page - GlobalConstants.INITIAL_PAGE) * GlobalConstants.PAGE_SIZE
+        isPagingInternally = isPaging
+
+        return withContext(dispatcher) {
+            if (isRefresh || (System.currentTimeMillis() - (local.getTimeCreated()
+                    ?: 0) > cacheLimit.clearCacheLimit)
+            ) {
+                // Clear DB if refresh OR if createdtime has exceeded 48 hours
+                local.clearArticles()
+            }
+            // Update offset and limit here given the page,
+            local.getArticlesFromDB().map { articles ->
+                articles.toDomainFormat()
+            }.onEach { domainArticles ->
+                if (domainArticles.isEmpty()) {
+                    // Load from network and insert into DB
+                    loadAndPersistNetworkData(page)
+                } else {
+                    // Check if is Paging,
+                    if (isPaging && isPagingInternally) {
+                        loadAndPersistNetworkData(page)
+                        isPagingInternally = false
+                    }
+                    // If it is, then load from the network, insert into the DB and then do the below.
+                }
+            }.map { domainArticles ->
+                if (isPaging) {
+                    // manipulate the returned DB list to only return list item whose index matches the offset if paging is true else return list as-is
+                    if (domainArticles.size > offset) {
+                        domainArticles.subList(offset, offset + GlobalConstants.PAGE_SIZE)
+                    } else {
+                        domainArticles
+                    }
+                } else {
+                    // If it isn't paging, then just return everything in the DB.
+                    domainArticles
+                }
+            }.toResult()
+        }
+    }
+
+    private suspend fun loadAndPersistNetworkData(page: Int) {
+        val networkResponse = remote.getPagedArticlesFromServer(page = page)
+        local.insertArticles(networkResponse.results.toLocalFormat())
+    }
+
     override suspend fun getArticles(): Flow<Result<List<Article>>> {
         return local.getArticlesFromDB().map { articles ->
             articles.toDomainFormat()
@@ -80,7 +131,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
      * if the database is empty.
      */
     private fun shouldLoadArticlesFromRemoteService() =
-        isLimitExceeded(cacheLimit.refreshCacheLimit)
+        isLimitExceeded(cacheLimit.clearCacheLimit)
 
     /**
      * We delete data from the DB if the data in the DB is stale.

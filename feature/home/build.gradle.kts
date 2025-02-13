@@ -78,9 +78,8 @@ dependencies {
     // Coil
     implementation(libs.coil)
 
-    // Paging
-    implementation(libs.paging.runtime)
-    implementation(libs.paging.compose)
+    // Preferences Datastore
+    implementation(libs.preferences.datastore)
 
     //// Test dependencies ////
 

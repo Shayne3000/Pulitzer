@@ -24,4 +24,6 @@
     <!-- Empty screen -->
     <string name="empty_article_list_content_desc">Empty list of articles</string>
     <string name="no_articles_text">There are no news articles at this time, check back in a few hours.</string>
+    <!--Refresh screen-->
+    <string name="refresh_articles_text">Refreshing your news articles…</string>
 </resources>

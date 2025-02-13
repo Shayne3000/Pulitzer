@@ -44,9 +44,6 @@ dependencies {
     implementation(project(":core:model"))
     // Kotlin Coroutines & Flow
     implementation(libs.kotlin.coroutines)
-    // Paging
-    implementation(libs.paging.runtime)
-    implementation(libs.paging.compose)
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
