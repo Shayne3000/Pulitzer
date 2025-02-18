@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":core:datastore")
-
-
 pluginManagement {
     repositories {
         google()
@@ -21,6 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "Pulitzer"
 include(":app")
 include(":core:database")
+include(":core:datastore")
 include(":core:model")
 include(":core:network")
 include(":core:ui")
