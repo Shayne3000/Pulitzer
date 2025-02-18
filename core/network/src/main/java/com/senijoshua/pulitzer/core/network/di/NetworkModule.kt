@@ -23,7 +23,7 @@ private const val API_KEY = "f874836f-9822-4f92-a3c3-41f9a485f03c"
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+internal object NetworkModule {
 
     @Singleton
     @Provides
@@ -75,7 +75,7 @@ object NetworkModule {
     fun provideArticleApi(retrofit: Retrofit): ArticleApi = retrofit.create(ArticleApi::class.java)
 }
 
-class AuthorisationInterceptor : Interceptor {
+internal class AuthorisationInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val authorisedRequestBuilder = request.newBuilder()

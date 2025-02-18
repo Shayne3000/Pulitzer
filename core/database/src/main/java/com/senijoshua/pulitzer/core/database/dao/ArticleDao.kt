@@ -12,7 +12,7 @@ interface ArticleDao {
     @Upsert
     suspend fun insertArticles(articles: List<ArticleEntity>)
 
-    @Query("SELECT * FROM articles ORDER BY created_at DESC")
+    @Query("SELECT * FROM articles")
     fun getArticles(): Flow<List<ArticleEntity>>
 
     @Query("SELECT * FROM articles WHERE id = :id")

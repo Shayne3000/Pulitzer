@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.senijoshua.pulitzer.core.database"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,8 +42,10 @@ android {
 }
 
 dependencies {
-    // Hilt
+    // KTX
     implementation(libs.core.ktx)
+
+    // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
