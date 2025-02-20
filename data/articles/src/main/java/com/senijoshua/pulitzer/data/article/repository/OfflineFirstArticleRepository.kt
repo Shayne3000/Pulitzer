@@ -1,5 +1,6 @@
 package com.senijoshua.pulitzer.data.article.repository
 
+import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferences
 import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
@@ -31,6 +32,7 @@ import javax.inject.Inject
 internal class OfflineFirstArticleRepository @Inject constructor(
     private val local: LocalArticleDataSource,
     private val remote: RemoteArticleDataSource,
+    private val pagingPreference: PagingPreferences,
     private val dispatcher: CoroutineDispatcher,
     private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
@@ -48,7 +50,6 @@ internal class OfflineFirstArticleRepository @Inject constructor(
                 // Clear DB if refresh OR if createdtime has exceeded 48 hours
                 local.clearArticles()
             }
-            // Update offset and limit here given the page,
             local.getArticlesFromDB().map { articles ->
                 articles.toDomainFormat()
             }.onEach { domainArticles ->
@@ -81,7 +82,14 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 
     private suspend fun loadAndPersistNetworkData(page: Int) {
         val networkResponse = remote.getPagedArticlesFromServer(page = page)
-        local.insertArticles(networkResponse.results.toLocalFormat())
+        val articlesList = networkResponse.results
+        var currentPage = networkResponse.currentPage
+
+        local.insertArticles(articlesList.toLocalFormat())
+        if (articlesList.isNotEmpty()) {
+            currentPage++
+            pagingPreference.setNextPageToLoad(currentPage)
+        }
     }
 
     override suspend fun getArticles(): Flow<Result<List<Article>>> {

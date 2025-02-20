@@ -52,11 +52,11 @@ import com.senijoshua.pulitzer.feature.home.model.fakeArticleList
 
 @Composable
 internal fun HomeScreen(
-    vm: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToDetailScreen: (String) -> Unit = {},
     onNavigateToBookmarksScreen: () -> Unit = {}
 ) {
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeContent(
         uiState = uiState,
@@ -67,21 +67,21 @@ internal fun HomeScreen(
             onNavigateToDetailScreen(articleId)
         },
         articleBookmarked = { articleId ->
-            vm.bookmarkArticle(articleId)
+            viewModel.bookmarkArticle(articleId)
         },
         page = {
-            vm.pageArticles()
+            viewModel.pageArticles()
         },
         refresh = {
-            vm.refreshPagedArticles()
+            viewModel.refreshPagedArticles()
         },
         errorMessageShown = {
-            vm.onErrorMessageShown()
+            viewModel.onErrorMessageShown()
         }
     )
 
     LaunchedEffect(Unit) {
-        vm.getPagedArticles()
+        viewModel.getPagedArticles()
     }
 }
 
@@ -201,7 +201,7 @@ internal fun HomeContent(
     }
 
     LaunchedEffect(hasScrolledListNearEnd.value) {
-        if (hasScrolledListNearEnd.value && !uiState.isPaging) {
+        if (hasScrolledListNearEnd.value && !uiState.isPaging && !uiState.isRefreshing) {
             page()
         }
     }

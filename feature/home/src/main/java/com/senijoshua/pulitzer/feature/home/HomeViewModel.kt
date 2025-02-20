@@ -2,6 +2,7 @@ package com.senijoshua.pulitzer.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferences
 import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.domain.article.usecase.BookmarkArticleUseCase
@@ -22,18 +23,20 @@ internal class HomeViewModel @Inject constructor(
     private val getNewsArticles: GetArticlesUseCase,
     private val getPagedNewsArticles: GetPagedArticlesUseCase,
     private val bookmarkArticleUseCase: BookmarkArticleUseCase,
+    private val preferences: PagingPreferences,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState
-    private var page: Int = 0 // persist currently loaded page in DB or DataStore
-
-    init {
-        // retrieve page from preferences data store, if null, return GlobalConstants.INITIAL_PAGE
-        // update page
-    }
+    private var page: Int = 0
 
     fun getPagedArticles(isRefresh: Boolean = false, isPaging: Boolean = false) {
         viewModelScope.launch {
+            page = if (isRefresh) {
+                GlobalConstants.INITIAL_PAGE
+            } else {
+                preferences.getPageToLoad() ?: GlobalConstants.INITIAL_PAGE
+            }
+
             getPagedNewsArticles(
                 page = page,
                 isRefresh = isRefresh,
@@ -43,14 +46,11 @@ internal class HomeViewModel @Inject constructor(
                     is Result.Success -> {
                         val articles = result.data
                         _uiState.update { currentState ->
-                            val updatedArticleList = if (page == GlobalConstants.INITIAL_PAGE || !isPaging) {
-                                // How do we handle when we're on the same page and we update a bookmark and we return the whole list
+                            val updatedArticleList = if (!isRefresh || !isPaging) {
                                 articles.toPresentationFormat()
                             } else {
                                 currentState.articles + articles.toPresentationFormat()
                             }
-                            page++
-                            // set isPaging or canPaginate to false
                             currentState.copy(
                                 articles = updatedArticleList,
                                 isLoading = false,
@@ -70,7 +70,6 @@ internal class HomeViewModel @Inject constructor(
                                 errorMessage = errorMessage,
                             )
                         }
-                        // set canPaginate or isPaging to false
                     }
                 }
             }
@@ -81,7 +80,6 @@ internal class HomeViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(articles = emptyList(), isRefreshing = true)
         }
-        page = GlobalConstants.INITIAL_PAGE
         getPagedArticles(isRefresh = true)
     }
 
@@ -89,10 +87,6 @@ internal class HomeViewModel @Inject constructor(
         _uiState.update { currentState ->
             currentState.copy(isPaging = true)
         }
-        getPagedArticles(isPaging = true)
-    }
-
-    fun retryPagedArticleRetrieval() {
         getPagedArticles(isPaging = true)
     }
 
@@ -133,11 +127,6 @@ internal class HomeViewModel @Inject constructor(
         _uiState.update { currentUiState ->
             currentUiState.copy(errorMessage = null)
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Store in preferences data store
     }
 }
 
