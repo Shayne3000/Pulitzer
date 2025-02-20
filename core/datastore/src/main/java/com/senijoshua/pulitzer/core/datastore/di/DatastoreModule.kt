@@ -7,8 +7,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferencesRepository
-import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferencesRepositoryImpl
+import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferences
+import com.senijoshua.pulitzer.core.datastore.repository.PagingPreferencesImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -44,5 +44,5 @@ internal object PreferencesDataStoreModule {
 internal abstract class PagingPreferencesModule {
     @Binds
     @Singleton
-    internal abstract fun providePagingPreferencesRepository(repository: PagingPreferencesRepositoryImpl): PagingPreferencesRepository
+    internal abstract fun providePagingPreferencesRepository(repository: PagingPreferencesImpl): PagingPreferences
 }

@@ -9,18 +9,18 @@ import com.senijoshua.pulitzer.core.datastore.PagingPreferenceKey
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-internal class PagingPreferencesRepositoryImpl @Inject constructor(
+internal class PagingPreferencesImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
-) : PagingPreferencesRepository {
+) : PagingPreferences {
 
-    override suspend fun getPageNumber(defaultPageNumber: Int): Int? {
+    override suspend fun getPageToLoad(): Int? {
         return errorSafeCall {
             val preferences = dataStore.data.first()
-            preferences[PagingPreferenceKey.PAGE_NUMBER] ?: defaultPageNumber
+            preferences[PagingPreferenceKey.PAGE_NUMBER]
         }
     }
 
-    override suspend fun updatePageNumber(pageNumber: Int) {
+    override suspend fun setNextPageToLoad(pageNumber: Int) {
         errorSafeCall {
             dataStore.edit { preferences ->
                 preferences[PagingPreferenceKey.PAGE_NUMBER] = pageNumber

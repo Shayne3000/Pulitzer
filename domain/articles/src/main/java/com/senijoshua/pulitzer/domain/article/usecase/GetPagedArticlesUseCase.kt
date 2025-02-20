@@ -13,7 +13,7 @@ class GetPagedArticlesUseCase @Inject constructor(private val repository: Articl
     suspend operator fun invoke(
         page: Int,
         isRefresh: Boolean,
-        isPaging: Boolean = false
+        isPaging: Boolean = false,
     ): Flow<Result<List<Article>>> =
         repository.getPagedArticles(page = page, isRefresh = isRefresh, isPaging = isPaging)
 }
