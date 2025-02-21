@@ -131,7 +131,6 @@ internal fun HomeContent(
             isRefreshing = pagedArticles.loadState.refresh is LoadState.Loading && pagedArticles.itemCount != 0,
             state = pullToRefreshState,
             onRefresh = {
-                errorMessageShown()
                 pagedArticles.refresh()
             },
             indicator = {
@@ -155,7 +154,10 @@ internal fun HomeContent(
                         modifier = modifier,
                         size = dimensionResource(id = R.dimen.density_64)
                     )
-                } else if ((pagedArticles.loadState.refresh is LoadState.Error) && pagedArticles.itemCount == 0) {
+                } else if (((pagedArticles.loadState.refresh is LoadState.Error) ||
+                            (pagedArticles.loadState.refresh is LoadState.NotLoading)) &&
+                    pagedArticles.itemCount == 0
+                ) {
                     EmptyScreen(
                         modifier,
                         text = R.string.no_articles_text,
@@ -174,15 +176,17 @@ internal fun HomeContent(
     }
 
     if (pagedArticles.loadState.refresh is LoadState.Error && canShowErrorSnack) {
-        ShowError(pagedArticles, snackBarHostState)
-        errorMessageShown()
+        ShowError(pagedArticles, snackBarHostState) {
+            errorMessageShown()
+        }
     }
 }
 
 @Composable
 internal fun ShowError(
     pagedArticles: LazyPagingItems<HomeArticle>,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    errorMessageShown: () -> Unit = {}
 ) {
     val refreshError = pagedArticles.loadState.refresh as LoadState.Error
     val errorMessage = refreshError.error.message
@@ -190,6 +194,7 @@ internal fun ShowError(
     errorMessage?.let { message ->
         LaunchedEffect(message, snackBarHostState) {
             snackBarHostState.showSnackbar(message)
+            errorMessageShown()
         }
     }
 }
