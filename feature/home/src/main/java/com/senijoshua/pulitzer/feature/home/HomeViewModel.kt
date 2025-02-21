@@ -51,10 +51,12 @@ internal class HomeViewModel @Inject constructor(
                             } else {
                                 currentState.articles + articles.toPresentationFormat()
                             }
+
                             currentState.copy(
                                 articles = updatedArticleList,
                                 isLoading = false,
-                                isRefreshing = false,
+                                // Hack for the extra state update when we clear the DB onRefresh
+                                isRefreshing = updatedArticleList.isEmpty(),
                                 isPaging = false,
                             )
                         }

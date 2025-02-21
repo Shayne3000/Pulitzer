@@ -38,6 +38,7 @@ internal class OfflineFirstArticleRepository @Inject constructor(
 ) : ArticleRepository {
     // Store internal page, offset and limit here and it should persist for the lifetime of the app since this class has singleton scope
     private var isPagingInternally: Boolean = false
+    private var shouldDeDuplicate: Boolean = false
 
     override suspend fun getPagedArticles(page: Int, isRefresh: Boolean, isPaging: Boolean): Flow<Result<List<Article>>> {
         val offset = (page - GlobalConstants.INITIAL_PAGE) * GlobalConstants.PAGE_SIZE
@@ -49,24 +50,28 @@ internal class OfflineFirstArticleRepository @Inject constructor(
             ) {
                 // Clear DB if refresh OR if createdtime has exceeded 48 hours
                 local.clearArticles()
+
+                if (isRefresh) {
+                    shouldDeDuplicate = true
+                }
             }
+
             local.getArticlesFromDB().map { articles ->
                 articles.toDomainFormat()
             }.onEach { domainArticles ->
-                if (domainArticles.isEmpty()) {
-                    // Load from network and insert into DB
+                if (domainArticles.isEmpty() && !shouldDeDuplicate) {
                     loadAndPersistNetworkData(page)
                 } else {
-                    // Check if is Paging,
                     if (isPaging && isPagingInternally) {
                         loadAndPersistNetworkData(page)
                         isPagingInternally = false
                     }
-                    // If it is, then load from the network, insert into the DB and then do the below.
                 }
+                shouldDeDuplicate = false
             }.map { domainArticles ->
                 if (isPaging) {
-                    // manipulate the returned DB list to only return list item whose index matches the offset if paging is true else return list as-is
+                    // manipulate the returned DB list to only return list item whose index
+                    // matches the offset if paging is true else return list as-is
                     if (domainArticles.size > offset) {
                         domainArticles.subList(offset, offset + GlobalConstants.PAGE_SIZE)
                     } else {

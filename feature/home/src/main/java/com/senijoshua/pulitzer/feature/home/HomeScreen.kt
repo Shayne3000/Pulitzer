@@ -154,8 +154,8 @@ internal fun HomeContent(
                     modifier = Modifier
                         .align(Alignment.TopCenter),
                     isRefreshing = uiState.isRefreshing,
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     state = pullToRefreshState
                 )
             }

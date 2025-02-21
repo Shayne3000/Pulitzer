@@ -10,5 +10,5 @@ class DbCacheLimitImpl @Inject constructor() : DbCacheLimit {
      * considered stale and deleted.
      */
     override val clearCacheLimit: Long =
-        TimeUnit.MILLISECONDS.convert(48, TimeUnit.HOURS)
+        TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS)
 }
