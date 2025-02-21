@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.RemoteMediator
 import androidx.paging.map
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
+import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
@@ -47,9 +48,9 @@ internal class OfflineFirstArticleRepository @Inject constructor(
         return withContext(dispatcher) {
             Pager(
                 config = PagingConfig(
-                    pageSize = 20,
+                    pageSize = GlobalConstants.PAGE_SIZE,
                     prefetchDistance = 0,
-                    initialLoadSize = 20
+                    initialLoadSize = GlobalConstants.PAGE_SIZE,
                 ),
                 remoteMediator = remoteMediator,
                 pagingSourceFactory = { local.getPagedArticlesFromDB() }

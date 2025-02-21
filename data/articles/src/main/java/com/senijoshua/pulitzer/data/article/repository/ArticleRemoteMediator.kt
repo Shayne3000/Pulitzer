@@ -7,6 +7,7 @@ import androidx.paging.RemoteMediator
 import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.database.entity.RemoteKeyEntity
 import com.senijoshua.pulitzer.core.database.utils.PulitzerDbTransactionProvider
+import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSource
 import com.senijoshua.pulitzer.data.article.local.remotekey.LocalRemoteKeyDataSource
@@ -43,7 +44,7 @@ internal class ArticleRemoteMediator @Inject constructor(
         state: PagingState<Int, ArticleEntity>
     ): MediatorResult {
         val pageToLoad: Int = when (loadType) {
-            LoadType.REFRESH -> 1
+            LoadType.REFRESH -> GlobalConstants.INITIAL_PAGE
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeyForLastArticleItem = state.lastItemOrNull()?.let { article ->
@@ -88,7 +89,8 @@ internal class ArticleRemoteMediator @Inject constructor(
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
             if (state.isEmpty()) {
-                // No locally-cached paged data either so send an error "no data" state to the presentation layer
+                // No locally-cached paged data either so send an
+                // error of "no data" state to the presentation layer
                 return MediatorResult.Error(exception)
             }
 
