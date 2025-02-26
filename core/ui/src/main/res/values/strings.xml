@@ -22,6 +22,12 @@
     <string name="close_content_desc">Close</string>
     <string name="no_article_search_result_text">Apologies! There are no bookmarks matching that title.</string>
     <string name="no_bookmarked_articles">You have no bookmarks. Please bookmark some articles.</string>
+    <!-- Confirmation Dialog -->
+    <string name="dialog_icon_content_desc">Info icon</string>
+    <string name="dialog_title">Delete All Bookmarks</string>
+    <string name="dialog_description">Are you sure you want to delete all of your bookmarks? This action is irreversible.</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
     <!-- Empty screen -->
     <string name="empty_article_list_content_desc">Empty list of articles</string>
     <string name="no_articles_text">There are no news articles at this time, check back in a few hours.</string>

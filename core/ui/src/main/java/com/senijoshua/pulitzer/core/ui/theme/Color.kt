@@ -44,6 +44,12 @@ val md_theme_light_surfaceVariant = Color(0xFFF5DDDB)
 // text on card background
 val md_theme_light_onSurfaceVariant = Color(0xFF534342)
 
+// Dialog container
+val md_theme_light_SurfaceContainerLow = Color(0xFFFFF0EF)
+
+// Dialog confirmation
+val md_theme_light_inversePrimary = Color(0xFFB62226)
+
 /**
  * Dark theme colors
  */
@@ -60,5 +66,7 @@ val md_theme_dark_surface = Color(0xFF201A19)
 val md_theme_dark_onSurface = Color(0xFFEDE0DE)
 val md_theme_dark_surfaceVariant = Color(0xFF534342)
 val md_theme_dark_onSurfaceVariant = Color(0xFFD8C2BF)
+val md_theme_dark_SurfaceContainerLow = Color(0xFF271817)
+val md_theme_dark_inversePrimary = Color(0xFFFFB3AD)
 
-private val seedColor = Color(0xFFcc3333)
+private val seedColor = Color(0xFFCC3333)

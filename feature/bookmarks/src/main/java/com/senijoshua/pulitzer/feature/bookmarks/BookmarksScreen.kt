@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +39,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -118,6 +121,8 @@ internal fun BookmarksContent(
 
     var isInSelectionMode by remember { mutableStateOf(false) }
 
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
     val resetSelectionMode = {
         isInSelectionMode = false
         clearArticleIds(selectedArticleIds)
@@ -151,9 +156,11 @@ internal fun BookmarksContent(
             enter = scaleIn() + expandVertically(),
             exit = scaleOut() + shrinkVertically(),
         ) {
+            val hasSelectedAllItems =
+                uiState.bookmarkedArticles.size == selectedArticleIds.value.size
             MultiSelectBar(
                 numberOfSelectedArticles = selectedArticleIds.value.size,
-                hasSelectedAllItems = uiState.bookmarkedArticles.size == selectedArticleIds.value.size,
+                hasSelectedAllItems = hasSelectedAllItems,
                 onSelectAll = { shouldSelectAll ->
                     if (shouldSelectAll) {
                         addAllArticleIds(
@@ -164,14 +171,18 @@ internal fun BookmarksContent(
                     }
                 },
                 unBookmarkSelectedArticles = {
-                    unBookmarkArticles(selectedArticleIds.value.toList())
-                    resetSelectionMode()
+                    if (hasSelectedAllItems) {
+                        showConfirmationDialog = true
+                    } else {
+                        unBookmarkArticles(selectedArticleIds.value.toList())
+                        resetSelectionMode()
+                    }
                 },
                 onClose = { resetSelectionMode() }
             )
         }
 
-        Box(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.bookmarkedArticles.isNotEmpty()) {
                 BookmarkedArticlesList(
                     modifier = modifier,
@@ -216,6 +227,18 @@ internal fun BookmarksContent(
                 }
             )
         }
+    }
+
+    if (showConfirmationDialog) {
+        DeleteAllDialog(
+            onConfirm = {
+                unBookmarkArticles(selectedArticleIds.value.toList())
+                resetSelectionMode()
+                showConfirmationDialog = false
+            }, onDismiss = {
+                showConfirmationDialog = false
+            }
+        )
     }
 
     uiState.errorMessage?.let { errorMessage ->
@@ -313,7 +336,8 @@ internal fun MultiSelectBar(
         modifier = Modifier.padding(
             start = dimensionResource(id = R.dimen.density_16),
             end = dimensionResource(id = R.dimen.density_16),
-            bottom = dimensionResource(id = R.dimen.density_8)),
+            bottom = dimensionResource(id = R.dimen.density_8)
+        ),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
@@ -423,6 +447,68 @@ internal fun BookmarkedArticlesList(
                 )
             }
         },
+    )
+}
+
+@Composable
+internal fun DeleteAllDialog(
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    AlertDialog(
+        icon = {
+            Icon(
+                imageVector = Icons.Filled.Info,
+                contentDescription = stringResource(R.string.dialog_icon_content_desc)
+            )
+        },
+        title = {
+            Text(
+                text = stringResource(R.string.dialog_title),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.dialog_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        },
+        onDismissRequest = {
+            onDismiss()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm()
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.confirm),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.inversePrimary,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.dismiss),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+        },
+        titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        textContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
     )
 }
 
