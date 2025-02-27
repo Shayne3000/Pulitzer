@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.senijoshua.pulitzer.domain.article"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -51,5 +51,8 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    testImplementation(project(":core:test"))
     testImplementation(libs.junit)
+    testImplementation(libs.paging.test)
+    testImplementation(libs.kotlin.coroutines.test)
 }

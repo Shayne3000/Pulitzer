@@ -18,18 +18,20 @@ class FakeArticleRepository : ArticleRepository {
     var shouldThrowError = false
 
     override suspend fun getPagedArticles(): Flow<PagingData<Article>> = flow {
-        if (shouldThrowError) {
-            PagingData.from(
-                data = emptyList(),
-                sourceLoadStates = LoadStates(
-                    refresh = LoadState.Error(Throwable(errorMessage)),
-                    prepend = LoadState.NotLoading(true),
-                    append = LoadState.NotLoading(true)
+        emit(
+            if (shouldThrowError) {
+                PagingData.from(
+                    data = emptyList(),
+                    sourceLoadStates = LoadStates(
+                        refresh = LoadState.Error(Throwable(errorMessage)),
+                        prepend = LoadState.NotLoading(true),
+                        append = LoadState.NotLoading(true)
+                    )
                 )
-            )
-        } else {
-            PagingData.from(fakeArticleList)
-        }
+            } else {
+                PagingData.from(fakeArticleList)
+            }
+        )
     }
 
     override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> {

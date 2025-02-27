@@ -3,7 +3,11 @@ package com.senijoshua.pulitzer.core.test.model
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import java.util.Date
 
-internal val fakeArticleList = List(10) { index ->
+/**
+ * Fake implementation of [Article] for testing.
+ */
+
+val fakeArticleList = List(10) { index ->
     Article(
         id = index.toString(),
         thumbnail = "Article $index",
