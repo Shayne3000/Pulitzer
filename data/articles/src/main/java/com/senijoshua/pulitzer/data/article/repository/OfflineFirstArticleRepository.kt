@@ -12,12 +12,9 @@ import com.senijoshua.pulitzer.core.database.entity.ArticleEntity
 import com.senijoshua.pulitzer.core.model.GlobalConstants
 import com.senijoshua.pulitzer.core.model.Result
 import com.senijoshua.pulitzer.core.model.toResult
-import com.senijoshua.pulitzer.data.article.local.DbCacheLimit
 import com.senijoshua.pulitzer.data.article.local.article.LocalArticleDataSource
 import com.senijoshua.pulitzer.data.article.mapper.toDomain
 import com.senijoshua.pulitzer.data.article.mapper.toDomainFormat
-import com.senijoshua.pulitzer.data.article.mapper.toLocalFormat
-import com.senijoshua.pulitzer.data.article.remote.RemoteArticleDataSource
 import com.senijoshua.pulitzer.domain.article.entity.Article
 import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +22,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -39,10 +35,8 @@ import javax.inject.Inject
  */
 internal class OfflineFirstArticleRepository @Inject constructor(
     private val local: LocalArticleDataSource,
-    private val remote: RemoteArticleDataSource,
     private val remoteMediator: RemoteMediator<Int, ArticleEntity>,
     private val dispatcher: CoroutineDispatcher,
-    private val cacheLimit: DbCacheLimit,
 ) : ArticleRepository {
     override suspend fun getPagedArticles(): Flow<PagingData<Article>> {
         return withContext(dispatcher) {
@@ -60,22 +54,6 @@ internal class OfflineFirstArticleRepository @Inject constructor(
                 }
             }
         }
-    }
-
-    override suspend fun getArticles(): Flow<Result<List<Article>>> {
-        return local.getArticlesFromDB().map { articles ->
-            articles.toDomainFormat()
-        }.onEach {
-            if (shouldLoadArticlesFromRemoteService()) {
-                val networkResponse = remote.getArticlesFromServer()
-
-                if (shouldClearStaleData()) {
-                    local.clearArticles()
-                }
-
-                local.insertArticles(networkResponse.toLocalFormat())
-            }
-        }.distinctUntilChanged().flowOn(dispatcher).toResult()
     }
 
     override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
@@ -103,19 +81,4 @@ internal class OfflineFirstArticleRepository @Inject constructor(
             local.unBookmarkArticles(articleIds)
         }
     }
-
-    /**
-     * We load fresh data from the remote service only if the data in the DB is old or
-     * if the database is empty.
-     */
-    private fun shouldLoadArticlesFromRemoteService() =
-        isLimitExceeded(cacheLimit.refreshCacheLimit)
-
-    /**
-     * We delete data from the DB if the data in the DB is stale.
-     */
-    private fun shouldClearStaleData(): Boolean = isLimitExceeded(cacheLimit.clearCacheLimit)
-
-    private fun isLimitExceeded(cacheLimit: Long) =
-        (System.currentTimeMillis() - (local.getTimeCreated() ?: 0)) > cacheLimit
 }

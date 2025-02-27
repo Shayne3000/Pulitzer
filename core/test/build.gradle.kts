@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.senijoshua.pulitzer.core.test"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -33,6 +33,14 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+    implementation(project(":core:model"))
+    implementation(project(":data:articles"))
+    implementation(project(":domain:articles"))
+
+    implementation(libs.paging.runtime)
+
+    // Test-specific dependencies
+    implementation(libs.kotlin.coroutines.test)
+    implementation(libs.junit)
+    implementation(libs.androidx.test.ext.junit)
 }
