@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.core.test.util
+package com.senijoshua.pulitzer.core.test.rules
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

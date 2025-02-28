@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.flow
  * "Working implementation" of [ArticleRepository] for testing purposes.
  */
 class FakeArticleRepository : ArticleRepository {
+    private var articleStorage = fakeArticleList.toMutableList()
     private val errorMessage = "Error!"
     var shouldThrowError = false
 
@@ -34,19 +35,38 @@ class FakeArticleRepository : ArticleRepository {
         )
     }
 
-    override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> {
-        TODO("Not yet implemented")
+    override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> = flow {
+        val article = getArticleFromStorage(articleId)
+
+        emit(
+            if (shouldThrowError) {
+                Result.Error(Throwable(errorMessage))
+            } else {
+                Result.Success(article)
+            }
+        )
     }
 
     override suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>> {
-        TODO("Not yet implemented")
+        TODO("get bookmarked articles whose titles match search query.")
     }
 
     override suspend fun bookmarkArticle(articleId: String) {
-        TODO("Not yet implemented")
+        val articleIndex = if (shouldThrowError) {
+            -1
+        } else {
+            articleStorage.indexOfFirst { it.id == articleId }
+        }
+
+        if (articleIndex != -1) {
+            articleStorage[articleIndex] = articleStorage[articleIndex].copy(isBookmarked = true)
+        }
     }
 
     override suspend fun unBookmarkArticles(articleIds: List<String>) {
         TODO("Not yet implemented")
     }
+
+    private fun getArticleFromStorage(articleId: String) =
+        articleStorage.find { it.id == articleId }!!
 }
