@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
  */
 class FakeArticleRepository : ArticleRepository {
     private var articleStorage = fakeArticleList.toMutableList()
-    private val errorMessage = "Error!"
+    val errorMessage = "Error!"
     var shouldThrowError = false
 
     override suspend fun getPagedArticles(): Flow<PagingData<Article>> = flow {
@@ -36,13 +36,11 @@ class FakeArticleRepository : ArticleRepository {
     }
 
     override suspend fun getArticleGivenId(articleId: String): Flow<Result<Article>> = flow {
-        val article = getArticleFromStorage(articleId)
-
         emit(
             if (shouldThrowError) {
                 Result.Error(Throwable(errorMessage))
             } else {
-                Result.Success(article)
+                Result.Success(getArticleFromStorage(articleId))
             }
         )
     }
