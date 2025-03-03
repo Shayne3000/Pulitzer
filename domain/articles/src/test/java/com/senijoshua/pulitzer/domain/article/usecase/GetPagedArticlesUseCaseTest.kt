@@ -11,7 +11,6 @@ import org.junit.Test
 
 class GetPagedArticlesUseCaseTest {
     private lateinit var repository: FakeArticleRepository
-
     private lateinit var useCase: GetPagedArticlesUseCase
 
     @Before

@@ -10,11 +10,9 @@ import org.junit.Before
 import org.junit.Test
 
 class GetArticleGivenIdUseCaseTest {
-    // Fake dependencies
     private lateinit var repository: FakeArticleRepository
-
-    // Setup class under test
     private lateinit var useCase: GetArticleGivenIdUseCase
+    private val articleId = fakeArticleList[2].id
 
     @Before
     fun setUp() {
@@ -24,8 +22,6 @@ class GetArticleGivenIdUseCaseTest {
 
     @Test
     fun `useCase returns article on successful response given the id`() = runTest {
-        val articleId = fakeArticleList[2].id
-
         val result = useCase(articleId).first()
 
         check(result is Result.Success)
@@ -35,7 +31,6 @@ class GetArticleGivenIdUseCaseTest {
     @Test
     fun `useCase returns error on unsuccessful response`() = runTest {
         repository.shouldThrowError = true
-        val articleId = fakeArticleList[2].id
 
         val result = useCase(articleId).first()
 

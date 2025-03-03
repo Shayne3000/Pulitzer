@@ -40,14 +40,21 @@ class FakeArticleRepository : ArticleRepository {
             if (shouldThrowError) {
                 Result.Error(Throwable(errorMessage))
             } else {
-                Result.Success(getArticleFromStorage(articleId))
+                Result.Success(getArticleFromStorageGivenId(articleId))
             }
         )
     }
 
-    override suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>> {
-        TODO("get bookmarked articles whose titles match search query.")
-    }
+    override suspend fun getBookmarkedArticles(searchQuery: String): Flow<Result<List<Article>>> =
+        flow {
+            emit(
+                if (shouldThrowError) {
+                    Result.Error(Throwable(errorMessage))
+                } else {
+                    Result.Success(getArticleFromStorageMatchesQuery(searchQuery))
+                }
+            )
+        }
 
     override suspend fun bookmarkArticle(articleId: String) {
         val articleIndex = if (shouldThrowError) {
@@ -62,9 +69,22 @@ class FakeArticleRepository : ArticleRepository {
     }
 
     override suspend fun unBookmarkArticles(articleIds: List<String>) {
-        TODO("Not yet implemented")
+        if (shouldThrowError) {
+            return
+        }
+
+        articleStorage.forEachIndexed { index, article ->
+            if (article.id in articleIds && article.isBookmarked) {
+                articleStorage[index] = articleStorage[index].copy(isBookmarked = false)
+            }
+        }
     }
 
-    private fun getArticleFromStorage(articleId: String) =
+    private fun getArticleFromStorageGivenId(articleId: String) =
         articleStorage.find { it.id == articleId }!!
+
+    private fun getArticleFromStorageMatchesQuery(searchQuery: String) =
+        articleStorage.filter { article ->
+            article.isBookmarked && article.title.contains(searchQuery)
+        }
 }
