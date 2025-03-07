@@ -1,7 +1,7 @@
 package com.senijoshua.pulitzer.domain.article.usecase
 
 import com.senijoshua.pulitzer.core.model.Result
-import com.senijoshua.pulitzer.core.test.repository.FakeArticleRepository
+import com.senijoshua.pulitzer.domain.article.repository.TestArticleRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -10,13 +10,13 @@ import org.junit.Before
 import org.junit.Test
 
 class GetBookmarkedArticlesUseCaseTest {
-    private lateinit var repository: FakeArticleRepository
+    private lateinit var repository: TestArticleRepository
     private lateinit var useCase: GetBookmarkedArticlesUseCase
     private val searchQuery = "title"
 
     @Before
     fun setUp() {
-        repository = FakeArticleRepository()
+        repository = TestArticleRepository()
         useCase = GetBookmarkedArticlesUseCase(repository)
     }
 

@@ -1,13 +1,12 @@
-package com.senijoshua.pulitzer.core.test.model
+package com.senijoshua.pulitzer.domain.article.entity
 
-import com.senijoshua.pulitzer.domain.article.entity.Article
 import java.util.Date
 
 /**
  * Fake implementation of [Article] for testing.
  */
 
-val fakeArticleList = List(10) { index ->
+internal val fakeArticleList = List(10) { index ->
     Article(
         id = index.toString(),
         thumbnail = "Article $index",

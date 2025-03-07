@@ -33,12 +33,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
-    implementation(project(":data:articles"))
     implementation(project(":domain:articles"))
-
-    implementation(libs.paging.runtime)
-
     // Test-specific dependencies
     implementation(libs.kotlin.coroutines.test)
     implementation(libs.junit)

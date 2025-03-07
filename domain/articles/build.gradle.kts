@@ -50,7 +50,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
-
+    // Test dependencies
     testImplementation(project(":core:test"))
     testImplementation(libs.junit)
     testImplementation(libs.paging.test)

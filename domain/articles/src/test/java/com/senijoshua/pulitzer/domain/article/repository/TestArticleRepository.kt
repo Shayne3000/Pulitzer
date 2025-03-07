@@ -1,19 +1,18 @@
-package com.senijoshua.pulitzer.core.test.repository
+package com.senijoshua.pulitzer.domain.article.repository
 
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import com.senijoshua.pulitzer.core.model.Result
-import com.senijoshua.pulitzer.core.test.model.fakeArticleList
 import com.senijoshua.pulitzer.domain.article.entity.Article
-import com.senijoshua.pulitzer.domain.article.repository.ArticleRepository
+import com.senijoshua.pulitzer.domain.article.entity.fakeArticleList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /**
  * "Working implementation" of [ArticleRepository] for testing purposes.
  */
-class FakeArticleRepository : ArticleRepository {
+internal class TestArticleRepository : ArticleRepository {
     private var articleStorage = fakeArticleList.toMutableList()
     val errorMessage = "Error!"
     var shouldThrowError = false
@@ -57,13 +56,8 @@ class FakeArticleRepository : ArticleRepository {
         }
 
     override suspend fun bookmarkArticle(articleId: String) {
-        val articleIndex = if (shouldThrowError) {
-            -1
-        } else {
-            articleStorage.indexOfFirst { it.id == articleId }
-        }
-
-        if (articleIndex != -1) {
+        if (!shouldThrowError) {
+            val articleIndex = articleStorage.indexOfFirst { it.id == articleId }
             articleStorage[articleIndex] = articleStorage[articleIndex].copy(isBookmarked = true)
         }
     }

@@ -1,8 +1,8 @@
 package com.senijoshua.pulitzer.domain.article.usecase
 
 import androidx.paging.testing.asSnapshot
-import com.senijoshua.pulitzer.core.test.model.fakeArticleList
-import com.senijoshua.pulitzer.core.test.repository.FakeArticleRepository
+import com.senijoshua.pulitzer.domain.article.entity.fakeArticleList
+import com.senijoshua.pulitzer.domain.article.repository.TestArticleRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -10,12 +10,12 @@ import org.junit.Before
 import org.junit.Test
 
 class GetPagedArticlesUseCaseTest {
-    private lateinit var repository: FakeArticleRepository
+    private lateinit var repository: TestArticleRepository
     private lateinit var useCase: GetPagedArticlesUseCase
 
     @Before
     fun setUp() {
-        repository = FakeArticleRepository()
+        repository = TestArticleRepository()
         useCase = GetPagedArticlesUseCase(repository)
     }
 

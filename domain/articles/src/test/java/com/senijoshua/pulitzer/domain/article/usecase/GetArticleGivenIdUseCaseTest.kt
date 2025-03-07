@@ -1,8 +1,8 @@
 package com.senijoshua.pulitzer.domain.article.usecase
 
 import com.senijoshua.pulitzer.core.model.Result
-import com.senijoshua.pulitzer.core.test.model.fakeArticleList
-import com.senijoshua.pulitzer.core.test.repository.FakeArticleRepository
+import com.senijoshua.pulitzer.domain.article.entity.fakeArticleList
+import com.senijoshua.pulitzer.domain.article.repository.TestArticleRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -10,13 +10,13 @@ import org.junit.Before
 import org.junit.Test
 
 class GetArticleGivenIdUseCaseTest {
-    private lateinit var repository: FakeArticleRepository
+    private lateinit var repository: TestArticleRepository
     private lateinit var useCase: GetArticleGivenIdUseCase
     private val articleId = fakeArticleList[2].id
 
     @Before
     fun setUp() {
-        repository = FakeArticleRepository()
+        repository = TestArticleRepository()
         useCase = GetArticleGivenIdUseCase(repository)
     }
 
