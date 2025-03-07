@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
  */
 internal interface LocalArticleDataSource {
     suspend fun insertArticles(articles: List<ArticleEntity>)
-    fun getArticlesFromDB(): Flow<List<ArticleEntity>>
     fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity>
     fun getArticleById(articleId: String): Flow<ArticleEntity>
     fun getBookmarkedArticles(searchQuery: String): Flow<List<BookmarkedArticles>>

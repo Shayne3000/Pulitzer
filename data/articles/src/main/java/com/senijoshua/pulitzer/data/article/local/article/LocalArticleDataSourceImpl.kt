@@ -14,7 +14,6 @@ import javax.inject.Inject
 internal class LocalArticleDataSourceImpl @Inject constructor(
     private val dao: ArticleDao
 ) : LocalArticleDataSource {
-    override fun getArticlesFromDB(): Flow<List<ArticleEntity>> = dao.getArticles()
 
     override fun getPagedArticlesFromDB(): PagingSource<Int, ArticleEntity> = dao.getPagedArticles()
 
