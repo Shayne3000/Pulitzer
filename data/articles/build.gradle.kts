@@ -56,5 +56,6 @@ dependencies {
 
     // Test dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.paging.test)
     testImplementation(libs.kotlin.coroutines.test)
 }
