@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":domain:articles"))
     implementation(project(":core:database"))
     implementation(project(":core:network"))
+    implementation(project(":core:test"))
 
     // Hilt
     implementation(libs.hilt)
@@ -55,6 +56,7 @@ dependencies {
     implementation(libs.paging.compose)
 
     // Test dependencies
+    testImplementation(libs.turbine)
     testImplementation(libs.junit)
     testImplementation(libs.paging.test)
     testImplementation(libs.kotlin.coroutines.test)

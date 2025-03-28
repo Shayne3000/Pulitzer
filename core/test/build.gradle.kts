@@ -34,8 +34,11 @@ android {
 
 dependencies {
     implementation(project(":domain:articles"))
+    // Paging
+    implementation(libs.paging.runtime)
     // Test-specific dependencies
     implementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.paging.test)
     implementation(libs.junit)
     implementation(libs.androidx.test.ext.junit)
 }

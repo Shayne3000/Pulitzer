@@ -1,4 +1,4 @@
-package com.senijoshua.pulitzer.data.article.repository.local
+package com.senijoshua.pulitzer.data.article.local
 
 import androidx.paging.PagingSource
 import androidx.paging.testing.asPagingSourceFactory
