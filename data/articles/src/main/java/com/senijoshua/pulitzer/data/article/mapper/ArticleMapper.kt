@@ -44,7 +44,7 @@ internal fun BookmarkedArticles.toDomain() =  Article(
     title = title,
     author = author,
     body = null,
-    isBookmarked = false,
+    isBookmarked = true,
     lastModifiedDate = null
 )
 

@@ -52,7 +52,7 @@ class TestLocalArticleDataSource : LocalArticleDataSource {
                     id = articleEntity.id,
                     thumbnail = articleEntity.thumbnail,
                     title = articleEntity.title,
-                    author = articleEntity.author
+                    author = articleEntity.author,
                 )
             })
             emit(bookmarkedArticles)

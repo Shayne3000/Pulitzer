@@ -24,14 +24,14 @@ internal class TestRemoteMediator(
             createdAt = System.currentTimeMillis(),
         )
     }
-    var shouldShowError = false
+    var shouldThrowError = false
     val errorMessage = "Error."
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, ArticleEntity>
     ): MediatorResult {
-        return if (shouldShowError) {
+        return if (shouldThrowError) {
            MediatorResult.Error(Throwable(errorMessage))
         }  else {
             localArticleDataSource.insertArticles(articles)
