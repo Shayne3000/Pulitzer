@@ -176,7 +176,7 @@ class OfflineFirstArticleRepositoryTest {
             local.shouldThrowError = true
 
             repo.unBookmarkArticles(bookmarkedArticles)
-            
+
             local.shouldThrowError = false
 
             verifyBookmarkedStatus(articleZeroId, shouldAssertTrue = true)

@@ -5,5 +5,5 @@ A news app built in ComposeUI that sources content from the Guardian API with th
 - Clean Architecture,
 - Concurrency with Kotlin Coroutines,
 - Observable data streams with Flow,
-- Pagination with Paging 3.0
+- Pagination with Paging 3.0,
 - and offline-support with Room...amongst others.
